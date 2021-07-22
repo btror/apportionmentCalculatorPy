@@ -19,4 +19,4 @@ Android (free with ads): https://play.google.com/store/apps/details?id=com.brand
 
 Android (pro no ads): https://play.google.com/store/apps/details?id=com.brandon.apportionmentcalculatorpro&hl=en_US&gl=US
 
-For more information visit the apps page of my website https://ticerapps.com/apps
+For more information visit the apps page of my website https://ticerapps.com
