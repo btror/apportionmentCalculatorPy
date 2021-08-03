@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from hamilton import Hamilton
-from jefferson import Jefferson
-from webster import Webster
-from adam import Adam
+from methods.hamilton import Hamilton
+from methods.jefferson import Jefferson
+from methods.webster import Webster
+from methods.adam import Adam
 
 
 def plot_points(points, title_labels):
