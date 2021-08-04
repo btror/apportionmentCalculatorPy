@@ -7,7 +7,8 @@ from kivy.uix.gridlayout import GridLayout
 
 
 class MyApp(App):
-    def build(self):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.layout_1 = GridLayout(cols=2)
         self.screen = Screen()
 
@@ -19,6 +20,7 @@ class MyApp(App):
         self.add_button = Button(text="add")
         self.remove_button = Button(text="remove")
 
+    def build(self):
         self.add_button.bind(on_press=self.add_state)
         self.remove_button.bind(on_press=self.remove_state)
 
