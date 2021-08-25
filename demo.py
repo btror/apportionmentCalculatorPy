@@ -7,6 +7,13 @@ from methods.adam import Adam
 
 
 def plot_points(points, title_labels):
+    """
+    plot_points - plots the modified divisor, estimated lowest divisor, and estimated highest divisor
+
+    :param points: list containing the estimator numbers, lowest estimated divisors, and highest estimated divisors
+    :param title_labels: title of the x and y labels for the graph
+    """
+
     fig, ax = plt.subplots(2, 2)
     index = 0
     for i in range(2):
@@ -25,6 +32,15 @@ def plot_points(points, title_labels):
 
 
 def plot_fair_shares(initial_fair_shares, final_fair_shares, title_labels, states):
+    """
+    plot_fair_shares - plots the initial and final calculated fair shares for each method
+
+    :param initial_fair_shares: list of initial fair shares for each method
+    :param final_fair_shares: list of final fair shares for each method
+    :param title_labels: title of the x and y label for the graph
+    :param states: number of states used in each method (same number for each method)
+    """
+
     fig, ax = plt.subplots(2, 2)
     width = .3
     index = 0
@@ -42,6 +58,10 @@ def plot_fair_shares(initial_fair_shares, final_fair_shares, title_labels, state
 
 
 def main():
+    """
+    main - function that initializes data to test with each method
+    """
+
     # initialize variables
     num_seats = 12
     state_populations = [20, 30, 44, 12]
