@@ -1,0 +1,28 @@
+Screen:
+    StackLayout:
+        orientation: 'lr-tb'
+        size: root.size
+
+        Label:
+            text: 'Method'
+            size_hint: .2, .1
+            halign: 'center'
+
+        Spinner:
+            size_hint: None, None
+            size_hint: .2, .1
+            pos_hint: {'center': (.5, .5)}
+            text: 'select'
+            values: 'Hamilton', 'Jefferson', 'Adam', 'Webster'
+
+        StackLayout:
+            orientation: 'lr-tb'
+            size: root.size
+
+            Label:
+                text: 'Seats'
+                size_hint: .2, .1
+
+            TextInput:
+                text: "0"
+                size_hint: .2, .1

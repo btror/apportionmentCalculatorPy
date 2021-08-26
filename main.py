@@ -4,6 +4,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.screenmanager import Screen
 from kivy.uix.gridlayout import GridLayout
+from kivy.lang import Builder
 
 
 class MyApp(App):
@@ -61,7 +62,8 @@ class MyApp(App):
         # add the layout to the screen and return it
         self.screen.add_widget(self.layout_1)
 
-        return self.screen
+        #  return self.screen
+        return Builder.load_file("layout_1.kv")
 
     def add_state(self, event):
         """
