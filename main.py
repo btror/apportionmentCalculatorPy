@@ -63,7 +63,7 @@ class MyApp(App):
         self.screen.add_widget(self.layout_1)
 
         #  return self.screen
-        return Builder.load_file("layout_1.kv")
+        return Builder.load_file("layouts/layout_1.kv")
 
     def add_state(self, event):
         """
