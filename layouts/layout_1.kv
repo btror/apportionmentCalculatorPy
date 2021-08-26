@@ -1,28 +1,109 @@
-Screen:
-    StackLayout:
-        orientation: 'lr-tb'
-        size: root.size
+BoxLayout
+    id: layout_1
+    orientation: 'vertical'
+    padding: [10,50,10,50]
+    spacing: 50
+
+    Label:
+        text: 'Ticer\'s Apportionment Calculator'
+        halign: 'center'
+        font_size: 32
+
+    BoxLayout:
+        orientation: 'vertical'
 
         Label:
             text: 'Method'
-            size_hint: .2, .1
-            halign: 'center'
+            font_size: 18
+            halign: 'left'
+            text_size: root.width-20, 20
 
         Spinner:
-            size_hint: None, None
-            size_hint: .2, .1
             pos_hint: {'center': (.5, .5)}
             text: 'select'
             values: 'Hamilton', 'Jefferson', 'Adam', 'Webster'
 
-        StackLayout:
-            orientation: 'lr-tb'
-            size: root.size
+    BoxLayout:
+        orientation: 'vertical'
 
-            Label:
-                text: 'Seats'
-                size_hint: .2, .1
+        Label:
+            text: 'Seats'
+            halign: 'left'
+            font_size: 18
+            text_size: root.width-20, 20
 
-            TextInput:
-                text: "0"
-                size_hint: .2, .1
+        TextInput:
+            id: seats
+            multiline:False
+            font_size: 28
+
+    BoxLayout:
+        orientation: 'horizontal'
+
+        Button:
+            text: "+"
+            font_size: 22
+
+        Button:
+            text: "-"
+            font_size: 22
+
+    GridLayout:
+        cols: 5
+        rows: 1
+
+        Label:
+            text: "state"
+            font_size: 16
+            halign: 'center'
+
+        Label:
+            text: "state population"
+            font_size: 16
+            halign: 'center'
+
+        Label:
+            text: "final quotas"
+            font_size: 16
+            halign: 'center'
+
+        Label:
+            text: "initial fair shares"
+            font_size: 16
+            halign: "center"
+
+        Label:
+            text: "final fair shares"
+            font_size: 16
+            halign: "center"
+
+    Button:
+        text: 'Calculate'
+        font_size: 24
+
+#Screen:
+#    StackLayout:
+#        orientation: 'lr-tb'
+#
+#        Label:
+#            text: 'Method'
+#            size_hint: .2, .1
+#            halign: 'center'
+#
+#        Spinner:
+#            size_hint: None, None
+#            size_hint: .2, .1
+#            pos_hint: {'center': (.5, .5)}
+#            text: 'select'
+#            values: 'Hamilton', 'Jefferson', 'Adam', 'Webster'
+#
+#    StackLayout:
+#        orientation: 'lr-tb'
+#
+#        Label:
+#            text: 'Seats'
+#            size_hint: .2, .1
+#
+#        TextInput:
+#            text: "0"
+#            size_hint: .2, .1
