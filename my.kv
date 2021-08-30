@@ -1,7 +1,6 @@
 <MyGrid>
     BoxLayout:
         orientation: 'vertical'
-        size: root.width, 150
 
         canvas:
             Color:
@@ -13,13 +12,10 @@
         Label:
             text: 'Ticer\'s Apportionment Calculator 0.1.0'
             font_size: 24
-            size_hint_x: 1
-            size_hint_y: .02
 
 
     BoxLayout:
         orientation: 'vertical'
-        size: root.width, 150
 
         canvas:
             Color:
@@ -31,13 +27,10 @@
         Spinner:
             text: 'select method'
             values: 'Hamilton', 'Jefferson', 'Adam', 'Webster'
-            size_hint_x: .2
-            size_hint_y: .02
 
 
     BoxLayout:
         orientation: 'vertical'
-        size: root.width, 150
 
         canvas:
             Color:
@@ -48,14 +41,11 @@
 
         TextInput:
             text: 'seats'
-            size_hint_x: .2
-            size_hint_y: .02
             halign: 'center'
 
 
     BoxLayout:
         orientation: 'horizontal'
-        size: root.width, 50
 
         canvas:
             Color:
@@ -67,23 +57,15 @@
         Button:
             text: '+'
             font_size: 22
-            size_hint_x: .1
-            size_hint_y: .1
 
         Button:
             text: '-'
             font_size: 22
-            size_hint_x: .1
-            size_hint_y: .1
 
         Button:
             text: 'clear'
             font_size: 22
-            size_hint_x: .1
-            size_hint_y: .1
 
         Button:
             text: '='
             font_size: 22
-            size_hint_x: .1
-            size_hint_y: .1
