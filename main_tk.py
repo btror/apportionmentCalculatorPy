@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
+import numpy as np
 
 
 class App:
@@ -11,12 +12,12 @@ class App:
         self.root.geometry('500x400')
         self.root.resizable(False, False)
 
-        frame_main = tk.Frame(self.root, bg='gray')
+        frame_main = tk.Frame(self.root)
         frame_main.grid(sticky='news')
 
         # title
         Label(frame_main, text='Ticer\'s Apportionment Calculator 0.1.0').place(relx=.5, y=20,
-                                                                                              anchor=CENTER)
+                                                                                anchor=CENTER)
 
         # select method
         options = [
@@ -27,7 +28,7 @@ class App:
         ]
         clicked = StringVar()
         clicked.set('Hamilton')
-        drop_down = OptionMenu(frame_main, clicked, *options).place(relx=.5, y=50, anchor=CENTER)
+        self.drop_down = OptionMenu(frame_main, clicked, *options).place(relx=.5, y=50, anchor=CENTER)
 
         # add seats
         Label(frame_main, text='seats: ').place(relx=.45, y=85, anchor=CENTER)
@@ -48,7 +49,7 @@ class App:
         frame_canvas.grid_propagate(False)
 
         # Add a canvas in that frame
-        canvas = tk.Canvas(frame_canvas, bg="yellow")
+        canvas = tk.Canvas(frame_canvas)
         canvas.grid(row=0, column=0, sticky="news")
 
         # Link a scrollbar to the canvas
@@ -57,28 +58,50 @@ class App:
         canvas.configure(yscrollcommand=vsb.set)
 
         # Create a frame to contain the buttons
-        frame_buttons = tk.Frame(canvas, bg="blue")
+        frame_buttons = tk.Frame(canvas)
         canvas.create_window((0, 0), window=frame_buttons, anchor='nw')
 
         # Add 9-by-5 buttons to the frame
-        rows = 9
-        columns = 5
-        buttons = [[tk.Button() for j in range(columns)] for i in range(rows)]
-        for i in range(1, rows):
-            for j in range(0, columns):
-                if i == 1:
-                    buttons[i][j] = Label(frame_buttons, text='state')
-                    buttons[i][j].grid(row=0, column=j, sticky='news')
+        self.rows = 5
+        self.columns = 5
+        self.grid = np.empty(shape=(self.rows, self.columns), dtype=list)
+
+        for i in range(0, self.rows):
+            for j in range(0, self.columns):
+                if i == 0:
+                    self.grid[i][0] = Label(frame_buttons, text='state', width=9)
+                    self.grid[i][0].grid(row=0, column=0, sticky='news')
+
+                    self.grid[i][1] = Label(frame_buttons, text='population', width=9)
+                    self.grid[i][1].grid(row=0, column=1, sticky='news')
+
+                    self.grid[i][2] = Label(frame_buttons, text='quota', width=9)
+                    self.grid[i][2].grid(row=0, column=2, sticky='news')
+
+                    self.grid[i][3] = Label(frame_buttons, text='initial FS', width=9)
+                    self.grid[i][3].grid(row=0, column=3, sticky='news')
+
+                    self.grid[i][4] = Label(frame_buttons, text='final FS', width=9)
+                    self.grid[i][4].grid(row=0, column=4, sticky='news')
+
                 else:
-                    buttons[i][j] = tk.Button(frame_buttons, text=("%d,%d" % (i + 1, j + 1)))
-                    buttons[i][j].grid(row=i, column=j, sticky='news')
+                    if j == 0:
+                        self.grid[i][j] = Label(frame_buttons, text=i, width=7)
+                        self.grid[i][j].grid(row=i, column=j, sticky='news', padx=10)
+                    elif j == 1:
+                        self.grid[i][j] = Entry(frame_buttons, text='-', width=7)
+                        self.grid[i][j].grid(row=i, column=j, sticky='news', padx=10)
+                    else:
+                        self.grid[i][j] = Label(frame_buttons, text='-', width=7)
+                        self.grid[i][j].grid(row=i, column=j, sticky='news', padx=10)
 
         # Update buttons frames idle tasks to let tkinter calculate buttons sizes
         frame_buttons.update_idletasks()
 
         # Resize the canvas frame to show exactly 5-by-5 buttons and the scrollbar
-        first5columns_width = sum([buttons[0][j].winfo_width() for j in range(0, 5)])
-        first5rows_height = sum([buttons[i][0].winfo_height() for i in range(0, 5)])
+        first5columns_width = sum(self.grid[0][j].winfo_width() for j in range(0, self.columns))
+        first5rows_height = sum([self.grid[i][0].winfo_height() for i in range(0, self.rows)])
+
         frame_canvas.config(width=first5columns_width + vsb.winfo_width(),
                             height=first5rows_height)
 
@@ -91,3 +114,4 @@ class App:
 
 if __name__ == '__main__':
     App()
+
