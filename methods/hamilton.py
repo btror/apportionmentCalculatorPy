@@ -48,13 +48,20 @@ class Hamilton:
             final_fair_shares[i] = math.floor(quota)
             self.initial_fair_shares[i] = math.floor(final_quotas[i])
 
+        time_keeper = 0
         while sum(final_fair_shares) != self.num_seats:
+            if time_keeper == 5000:
+                break
             if sum(final_fair_shares) != self.num_seats:
                 highest_decimal = max(self.decimal_list)
                 index = self.decimal_list.index(highest_decimal)
                 final_fair_shares[index] += 1
                 self.decimal_list[index] = 0
-        return final_fair_shares, final_quotas
+            time_keeper += 1
+        if time_keeper == 5000:
+            return None, None
+        else:
+            return final_fair_shares, final_quotas
 
     def calculate(self):
         """
@@ -69,5 +76,8 @@ class Hamilton:
         final_quotas = self.calculate_quotas([0] * self.states)
         final_fair_shares, final_quotas = self.calculate_fair_shares([0] * self.states, final_quotas)
 
-        return self.original_divisor, self.original_divisor, self.original_quotas, final_quotas, \
-               self.initial_fair_shares, final_fair_shares, sum(self.initial_fair_shares)
+        if final_fair_shares is None:
+            return None, None, None, None, None, None, None
+        else:
+            return self.original_divisor, self.original_divisor, self.original_quotas, final_quotas, \
+                   self.initial_fair_shares, final_fair_shares, sum(self.initial_fair_shares)
