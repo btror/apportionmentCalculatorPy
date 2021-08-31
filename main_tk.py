@@ -19,6 +19,13 @@ class App:
         self.root.resizable(False, False)
         self.root.title('Ticer\'s Apportionment Calculator 0.1.0')
 
+        # create lists to hold populations
+        self.populations = []
+        self.initial_quotas = []
+        self.final_quotas = []
+        self.initial_fair_shares = []
+        self.final_fair_shares = []
+
         frame_main = tk.Frame(self.root)
         frame_main.grid(sticky='news')
 
@@ -39,7 +46,8 @@ class App:
 
         # entry for amount of seats
         Label(frame_main, text='seats: ').place(relx=.45, y=85, anchor=CENTER)
-        self.input_seats = Entry(self.root, width=7).place(relx=.54, y=85, anchor=CENTER)
+        self.num_seats = IntVar()
+        self.input_seats = Entry(self.root, textvariable=self.num_seats, width=7).place(relx=.54, y=85, anchor=CENTER)
 
         # add, remove, clear, and calculate buttons
         self.button_add = Button(self.root, text='+', width=5, command=self.add_state).place(relx=.35, y=120,
@@ -73,19 +81,20 @@ class App:
         self.frame_buttons = tk.Frame(self.canvas)
         self.canvas.create_window((0, 0), window=self.frame_buttons, anchor='nw')
 
-        # initialize a default number of rows and columns (cols is ALWAYS 5 and rows is dynamic, but starts as 2)
+        # initialize a default number of rows and columns (cols is ALWAYS 6 and rows is dynamic, but starts as 2)
         self.rows = 2
-        self.columns = 5
+        self.columns = 6
 
         # create a list to hold the widgets
         self.grid = []
 
         # add the first row of widgets (all labels)
-        list_temp = [Label(self.frame_buttons, text='state', width=9),
-                     Label(self.frame_buttons, text='population', width=9),
-                     Label(self.frame_buttons, text='quota', width=9),
-                     Label(self.frame_buttons, text='initial FS', width=9),
-                     Label(self.frame_buttons, text='final FS', width=9)]
+        list_temp = [Label(self.frame_buttons, text='\nstate', width=9),
+                     Label(self.frame_buttons, text='state\npopulation', width=9),
+                     Label(self.frame_buttons, text='initial\nquotas', width=9),
+                     Label(self.frame_buttons, text='final\nquotas', width=9),
+                     Label(self.frame_buttons, text='initial\nFS', width=9),
+                     Label(self.frame_buttons, text='final\nFS', width=9)]
 
         self.grid.append(list_temp)
 
@@ -94,19 +103,36 @@ class App:
         self.grid[0][2].grid(row=0, column=2, sticky='news')
         self.grid[0][3].grid(row=0, column=3, sticky='news')
         self.grid[0][4].grid(row=0, column=4, sticky='news')
+        self.grid[0][5].grid(row=0, column=5, sticky='news')
+
+        self.default_entry_value = IntVar()
+        self.temp_1 = IntVar()
+        self.temp_2 = IntVar()
+        self.temp_3 = IntVar()
+        self.temp_4 = IntVar()
 
         # add the second row of widgets (all labels and one entry)
-        list_temp = [Label(self.frame_buttons, text='1', width=9), Entry(self.frame_buttons, width=7),
-                     Label(self.frame_buttons, text='-', width=7), Label(self.frame_buttons, text='-', width=7),
-                     Label(self.frame_buttons, text='-', width=7)]
+        list_temp = [Label(self.frame_buttons, text='1', width=9),
+                     Entry(self.frame_buttons, textvariable=self.default_entry_value, width=7),
+                     Label(self.frame_buttons, text='-', textvariable=self.temp_1, width=7),
+                     Label(self.frame_buttons, text='-', textvariable=self.temp_2, width=7),
+                     Label(self.frame_buttons, text='-', textvariable=self.temp_3, width=7),
+                     Label(self.frame_buttons, text='-', textvariable=self.temp_4, width=7)]
 
         self.grid.append(list_temp)
+        self.populations.append(self.default_entry_value)
+
+        self.initial_quotas.append(self.temp_1)
+        self.final_quotas.append(self.temp_2)
+        self.initial_fair_shares.append(self.temp_3)
+        self.final_fair_shares.append(self.temp_4)
 
         self.grid[1][0].grid(row=1, column=0, sticky='news', padx=10)
         self.grid[1][1].grid(row=1, column=1, sticky='news', padx=10)
         self.grid[1][2].grid(row=1, column=2, sticky='news', padx=10)
         self.grid[1][3].grid(row=1, column=3, sticky='news', padx=10)
         self.grid[1][4].grid(row=1, column=4, sticky='news', padx=10)
+        self.grid[1][5].grid(row=1, column=5, sticky='news', padx=10)
 
         # update widget frames idle tasks to let tkinter calculate widget sizes
         self.frame_buttons.update_idletasks()
@@ -132,18 +158,32 @@ class App:
         # increment rows
         self.rows += 1
 
+        value = IntVar()
+        temp_1 = IntVar()
+        temp_2 = IntVar()
+        temp_3 = IntVar()
+        temp_4 = IntVar()
+
         # add a new row of widgets to the grid
-        list_temp = [Label(self.frame_buttons, text=self.rows - 1, width=9), Entry(self.frame_buttons, width=7),
-                     Label(self.frame_buttons, text='-', width=7), Label(self.frame_buttons, text='-', width=7),
-                     Label(self.frame_buttons, text='-', width=7)]
+        list_temp = [Label(self.frame_buttons, text=self.rows - 1, width=9),
+                     Entry(self.frame_buttons, textvariable=value, width=7),
+                     Label(self.frame_buttons, text='-', textvariable=temp_1, width=7), Label(self.frame_buttons, text='-', textvariable=temp_2, width=7),
+                     Label(self.frame_buttons, text='-', textvariable=temp_3, width=7), Label(self.frame_buttons, text='-', textvariable=temp_4, width=7)]
+
+        self.initial_quotas.append(temp_1)
+        self.final_quotas.append(temp_2)
+        self.initial_fair_shares.append(temp_3)
+        self.final_fair_shares.append(temp_4)
 
         self.grid.append(list_temp)
+        self.populations.append(value)
 
         self.grid[self.rows - 1][0].grid(row=self.rows - 1, column=0, sticky='news', padx=10)
         self.grid[self.rows - 1][1].grid(row=self.rows - 1, column=1, sticky='news', padx=10)
         self.grid[self.rows - 1][2].grid(row=self.rows - 1, column=2, sticky='news', padx=10)
         self.grid[self.rows - 1][3].grid(row=self.rows - 1, column=3, sticky='news', padx=10)
         self.grid[self.rows - 1][4].grid(row=self.rows - 1, column=4, sticky='news', padx=10)
+        self.grid[self.rows - 1][5].grid(row=self.rows - 1, column=5, sticky='news', padx=10)
 
         # update widget frames idle tasks to calculate widget sizes
         self.frame_buttons.update_idletasks()
@@ -173,6 +213,12 @@ class App:
                 widget.grid_forget()
 
             self.grid.pop(len(self.grid) - 1)
+            self.initial_quotas.pop(len(self.initial_fair_shares) - 1)
+            self.final_quotas.pop(len(self.final_quotas) - 1)
+            self.initial_fair_shares.pop(len(self.initial_fair_shares) - 1)
+            self.final_fair_shares.pop(len(self.final_fair_shares) - 1)
+
+            self.populations.pop(len(self.populations) - 1)
 
             # update widget frames idle tasks to calculate widget sizes
             self.frame_buttons.update_idletasks()
@@ -202,8 +248,15 @@ class App:
         calculate - calculates the results for the selected method
         """
 
-        # TODO: gather input data (seats, populations, number of states)
-        # --------------------
+        for i, x in enumerate(self.populations):
+            print(x.get())
+
+        # gather input data (num_seats, list of populations, num_states)
+        num_seats = self.num_seats.get()
+        populations = []
+        for i, x in enumerate(self.populations):
+            populations.append(x.get())
+        num_states = self.rows - 1
 
         # pass data into desired method
         selected = self.clicked.get()
@@ -211,15 +264,40 @@ class App:
 
         # TODO: add parameters
         if selected == 'Hamilton':
-            method = Hamilton()
+            method = Hamilton(num_seats, num_states, populations)
         elif selected == 'Jefferson':
-            method = Jefferson()
+            method = Jefferson(num_seats, num_states, populations)
         elif selected == 'Adam':
-            method = Adam()
+            method = Adam(num_seats, num_states, populations)
         elif selected == 'Webster':
-            method = Webster()
+            method = Webster(num_seats, num_states, populations)
         else:
             print('ERROR - calculate: method selection')
+
+        # print results
+        original_divisor, modified_divisor, initial_quotas, final_quotas, initial_fair_shares, final_fair_shares, total_initial_fair_shares = method.calculate()
+        if original_divisor is None:
+            print("Warning: results could not be calculated. This can sometimes happen using", selected,
+                  "method with very specific numbers, and is rare. Make sure the correct numbers are entered in the table.")
+        else:
+            # update values in grid
+            for i, initial_quota in enumerate(initial_quotas):
+                self.initial_quotas[i].set(round(initial_quota, 4))
+            for i, final_quota in enumerate(final_quotas):
+                self.final_quotas[i].set(round(final_quota, 4))
+            for i, initial_fair_share in enumerate(initial_fair_shares):
+                self.initial_fair_shares[i].set(round(initial_fair_share, 4))
+            for i, final_fair_share in enumerate(final_fair_shares):
+                self.final_fair_shares[i].set(round(final_fair_share, 4))
+
+            print("results")
+            print("original_divisor", original_divisor)
+            print("modified divisor", modified_divisor)
+            print("initial quotas", initial_quotas)
+            print("final_quotas", final_quotas)
+            print("initial fair shares", initial_fair_shares)
+            print("final fair shares", final_fair_shares)
+            print("total initial fair shares", total_initial_fair_shares)
 
 
 if __name__ == '__main__':
