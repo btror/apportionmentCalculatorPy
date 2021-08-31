@@ -44,7 +44,7 @@ class App:
 
         # Create a frame for the canvas with non-zero row&column weights
         self.frame_canvas = tk.Frame(frame_main)
-        self.frame_canvas.place(relx=.5, y=210, anchor=CENTER)
+        self.frame_canvas.place(relx=.5, y=240, anchor=CENTER)
         self.frame_canvas.grid_rowconfigure(0, weight=1)
         self.frame_canvas.grid_columnconfigure(0, weight=1)
         # Set grid_propagate to False to allow 5-by-5 buttons resizing later
@@ -105,7 +105,8 @@ class App:
 
         # Resize the canvas frame to show exactly 5-by-5 buttons and the scrollbar
         first5columns_width = sum(self.grid[0][j].winfo_width() for j in range(0, self.columns))
-        first5rows_height = sum([self.grid[i][0].winfo_height() for i in range(0, self.rows)])
+        # first5rows_height = sum([self.grid[i][0].winfo_height() for i in range(0, self.rows)])
+        first5rows_height = 190
 
         self.frame_canvas.config(width=first5columns_width + self.vsb.winfo_width(),
                                  height=first5rows_height)
@@ -140,7 +141,8 @@ class App:
 
         # Resize the canvas frame to show exactly 5-by-5 buttons and the scrollbar
         first5columns_width = sum(self.grid[0][j].winfo_width() for j in range(0, self.columns))
-        first5rows_height = sum([self.grid[i][0].winfo_height() for i in range(0, self.rows)])
+        # first5rows_height = sum([self.grid[i][0].winfo_height() for i in range(0, self.rows)])
+        first5rows_height = 190
 
         self.frame_canvas.config(width=first5columns_width + self.vsb.winfo_width(),
                                  height=first5rows_height)
