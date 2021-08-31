@@ -45,7 +45,10 @@ class Webster:
         - updated divisor, estimator - updated heuristic
         """
 
+        time_keeper = 0
         while sum(final_fair_shares) != self.num_seats:
+            if time_keeper == 5000:
+                break
             for i, quota in enumerate(self.original_quotas):
                 final_fair_shares[i] = round(final_quotas[i])
                 self.initial_fair_shares[i] = round(quota)
@@ -63,7 +66,12 @@ class Webster:
                 for i, quota in enumerate(self.original_quotas):
                     final_fair_shares[i] = round(final_quotas[i])
                     self.initial_fair_shares[i] = round(quota)
-        return final_fair_shares, final_quotas, modified_divisor, estimator
+            time_keeper += 1
+
+        if time_keeper == 5000:
+            return None, None, None, None
+        else:
+            return final_fair_shares, final_quotas, modified_divisor, estimator
 
     def calculate(self):
         """
@@ -79,11 +87,15 @@ class Webster:
         final_fair_shares, final_quotas, modified_divisor, estimator = self.calculate_fair_shares([0] * self.states,
                                                                                                   final_quotas, sum(
                 self.populations) / self.num_seats, sum(self.populations) / self.num_seats)
-        lower_boundary = self.calculate_lower_boundary(modified_divisor)
-        upper_boundary = self.calculate_upper_boundary(modified_divisor)
 
-        return self.original_divisor, modified_divisor, self.original_quotas, final_quotas, self.initial_fair_shares, final_fair_shares, sum(
-            self.initial_fair_shares), lower_boundary, upper_boundary
+        # lower_boundary = self.calculate_lower_boundary(modified_divisor)
+        # upper_boundary = self.calculate_upper_boundary(modified_divisor)
+
+        if estimator is None:
+            return None, None, None, None, None, None, None
+        else:
+            return self.original_divisor, modified_divisor, self.original_quotas, final_quotas, self.initial_fair_shares, final_fair_shares, sum(
+                self.initial_fair_shares)
 
     def calculate_lower_boundary(self, divisor):
         """
