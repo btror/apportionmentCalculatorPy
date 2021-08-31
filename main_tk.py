@@ -93,8 +93,8 @@ class App:
                      Label(self.frame_buttons, text='state\npopulation', width=9),
                      Label(self.frame_buttons, text='initial\nquotas', width=9),
                      Label(self.frame_buttons, text='final\nquotas', width=9),
-                     Label(self.frame_buttons, text='initial\nFS', width=9),
-                     Label(self.frame_buttons, text='final\nFS', width=9)]
+                     Label(self.frame_buttons, text='initial\nfair share', width=9),
+                     Label(self.frame_buttons, text='final\nfair share', width=9)]
 
         self.grid.append(list_temp)
 
@@ -242,6 +242,13 @@ class App:
         if self.rows > 2:
             for i in range(self.rows - 2):
                 self.remove_state()
+
+            # clear default label entry
+            self.initial_quotas[0].set(0)
+            self.final_quotas[0].set(0)
+            self.initial_fair_shares[0].set(0)
+            self.final_fair_shares[0].set(0)
+            self.populations[0].set(0)
 
     def calculate(self):
         """
