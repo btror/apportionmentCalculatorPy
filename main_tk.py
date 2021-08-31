@@ -1,5 +1,9 @@
 import tkinter as tk
 from tkinter import *
+from methods.hamilton import Hamilton
+from methods.jefferson import Jefferson
+from methods.adam import Adam
+from methods.webster import Webster
 
 
 class App:
@@ -29,9 +33,9 @@ class App:
             'Adam',
             'Webster'
         ]
-        clicked = StringVar()
-        clicked.set('Hamilton')
-        self.drop_down = OptionMenu(frame_main, clicked, *options).place(relx=.5, y=50, anchor=CENTER)
+        self.clicked = StringVar()
+        self.clicked.set('Hamilton')
+        self.drop_down = OptionMenu(frame_main, self.clicked, *options).place(relx=.5, y=50, anchor=CENTER)
 
         # entry for amount of seats
         Label(frame_main, text='seats: ').place(relx=.45, y=85, anchor=CENTER)
@@ -42,8 +46,10 @@ class App:
                                                                                              anchor=CENTER)
         self.button_remove = Button(self.root, text='-', width=5, command=self.remove_state).place(relx=.45, y=120,
                                                                                                    anchor=CENTER)
-        self.button_clear = Button(self.root, text='CLEAR', width=5, command=self.clear_states).place(relx=.55, y=120, anchor=CENTER)
-        self.button_calculate = Button(self.root, text='=', width=5).place(relx=.65, y=120, anchor=CENTER)
+        self.button_clear = Button(self.root, text='CLEAR', width=5, command=self.clear_states).place(relx=.55, y=120,
+                                                                                                      anchor=CENTER)
+        self.button_calculate = Button(self.root, text='=', width=5, command=self.calculate).place(relx=.65, y=120,
+                                                                                                   anchor=CENTER)
 
         # create a frame for the canvas
         self.frame_canvas = tk.Frame(frame_main)
@@ -190,6 +196,30 @@ class App:
         if self.rows > 2:
             for i in range(self.rows - 2):
                 self.remove_state()
+
+    def calculate(self):
+        """
+        calculate - calculates the results for the selected method
+        """
+
+        # TODO: gather input data (seats, populations, number of states)
+        # --------------------
+
+        # pass data into desired method
+        selected = self.clicked.get()
+        method = None
+
+        # TODO: add parameters
+        if selected == 'Hamilton':
+            method = Hamilton()
+        elif selected == 'Jefferson':
+            method = Jefferson()
+        elif selected == 'Adam':
+            method = Adam()
+        elif selected == 'Webster':
+            method = Webster()
+        else:
+            print('ERROR - calculate: method selection')
 
 
 if __name__ == '__main__':
