@@ -17,7 +17,7 @@ class App:
         self.root.columnconfigure(0, weight=1)
         self.root.geometry('500x400')
         self.root.resizable(False, False)
-        self.root.title('Ticer\'s Apportionment Calculator 0.2.1')
+        self.root.title('Ticer\'s Apportionment Calculator 0.2.2')
 
         # create lists to hold populations
         self.populations = []
@@ -31,7 +31,7 @@ class App:
         frame_main.grid(sticky='news')
 
         # top label (title)
-        Label(frame_main, text='Ticer\'s Apportionment Calculator 0.2.1').place(relx=.5, y=20,
+        Label(frame_main, text='Ticer\'s Apportionment Calculator 0.2.2').place(relx=.5, y=20,
                                                                                 anchor=CENTER)
 
         # select apportionment method
@@ -47,7 +47,7 @@ class App:
 
         # entry for amount of seats
         Label(frame_main, text='seats: ').place(relx=.45, y=85, anchor=CENTER)
-        self.num_seats = IntVar()
+        self.num_seats = StringVar()
         self.input_seats = Entry(self.root, textvariable=self.num_seats, width=7).place(relx=.54, y=85, anchor=CENTER)
 
         # add, remove, clear, and calculate buttons
@@ -106,11 +106,16 @@ class App:
         self.grid[0][4].grid(row=0, column=4, sticky='news')
         self.grid[0][5].grid(row=0, column=5, sticky='news')
 
-        self.default_entry_value = IntVar()
-        self.temp_1 = IntVar()
-        self.temp_2 = IntVar()
-        self.temp_3 = IntVar()
-        self.temp_4 = IntVar()
+        self.default_entry_value = StringVar()
+        self.temp_1 = StringVar()
+        self.temp_2 = StringVar()
+        self.temp_3 = StringVar()
+        self.temp_4 = StringVar()
+
+        self.temp_1.set('-')
+        self.temp_2.set('-')
+        self.temp_3.set('-')
+        self.temp_4.set('-')
 
         # add the second row of widgets (all labels and one entry)
         list_temp = [Label(self.frame_buttons, text='1', width=9),
@@ -167,19 +172,24 @@ class App:
         # increment rows
         self.rows += 1
 
-        value = IntVar()
-        temp_1 = IntVar()
-        temp_2 = IntVar()
-        temp_3 = IntVar()
-        temp_4 = IntVar()
+        value = StringVar()
+        temp_1 = StringVar()
+        temp_2 = StringVar()
+        temp_3 = StringVar()
+        temp_4 = StringVar()
+
+        temp_1.set('-')
+        temp_2.set('-')
+        temp_3.set('-')
+        temp_4.set('-')
 
         # add a new row of widgets to the grid
         list_temp = [Label(self.frame_buttons, text=self.rows - 1, width=9),
                      Entry(self.frame_buttons, textvariable=value, width=7),
-                     Label(self.frame_buttons, text='-', textvariable=temp_1, width=7),
-                     Label(self.frame_buttons, text='-', textvariable=temp_2, width=7),
-                     Label(self.frame_buttons, text='-', textvariable=temp_3, width=7),
-                     Label(self.frame_buttons, text='-', textvariable=temp_4, width=7)]
+                     Label(self.frame_buttons, textvariable=temp_1, width=7),
+                     Label(self.frame_buttons, textvariable=temp_2, width=7),
+                     Label(self.frame_buttons, textvariable=temp_3, width=7),
+                     Label(self.frame_buttons, textvariable=temp_4, width=7)]
 
         self.initial_quotas.append(temp_1)
         self.final_quotas.append(temp_2)
@@ -271,11 +281,11 @@ class App:
                 self.remove_state()
 
             # clear default label entry
-            self.initial_quotas[0].set(0)
-            self.final_quotas[0].set(0)
-            self.initial_fair_shares[0].set(0)
-            self.final_fair_shares[0].set(0)
-            self.populations[0].set(0)
+            self.initial_quotas[0].set('-')
+            self.final_quotas[0].set('-')
+            self.initial_fair_shares[0].set('-')
+            self.final_fair_shares[0].set('-')
+            self.populations[0].set('')
 
     def calculate(self):
         """
@@ -291,89 +301,99 @@ class App:
             self.calculate_pressed = False
 
         # gather input data (num_seats, list of populations, num_states)
-        num_seats = self.num_seats.get()
-        populations = []
-        for i, x in enumerate(self.populations):
-            populations.append(x.get())
-        num_states = self.rows - 1
-
-        # pass data into desired method
-        selected = self.clicked.get()
-        method = None
-
-        # TODO: add parameters
-        if selected == 'Hamilton':
-            method = Hamilton(num_seats, num_states, populations)
-        elif selected == 'Jefferson':
-            method = Jefferson(num_seats, num_states, populations)
-        elif selected == 'Adam':
-            method = Adam(num_seats, num_states, populations)
-        elif selected == 'Webster':
-            method = Webster(num_seats, num_states, populations)
+        if self.num_seats.get() == '':
+            print("missing seat input")
         else:
-            print('ERROR - calculate: method selection')
+            num_seats = float(self.num_seats.get())
+            populations = []
+            valid_input = True
+            for i, x in enumerate(self.populations):
+                if x.get() == '':
+                    valid_input = False
+                    break
+                populations.append(float(x.get()))
+            if not valid_input:
+                print('missing population input')
+            else:
+                num_states = self.rows - 1
 
-        # print results
-        original_divisor, modified_divisor, initial_quotas, final_quotas, initial_fair_shares, final_fair_shares, total_initial_fair_shares = method.calculate()
-        if original_divisor is None:
-            print("Warning: results could not be calculated. This can sometimes happen using", selected,
-                  "method with very specific numbers, and is rare. Make sure the correct numbers are entered in the "
-                  "table.")
-        else:
-            # update values in grid
-            for i, initial_quota in enumerate(initial_quotas):
-                self.initial_quotas[i].set(round(initial_quota, 4))
-            for i, final_quota in enumerate(final_quotas):
-                self.final_quotas[i].set(round(final_quota, 4))
-            for i, initial_fair_share in enumerate(initial_fair_shares):
-                self.initial_fair_shares[i].set(round(initial_fair_share, 4))
-            for i, final_fair_share in enumerate(final_fair_shares):
-                self.final_fair_shares[i].set(round(final_fair_share, 4))
+                # pass data into desired method
+                selected = self.clicked.get()
+                method = None
 
-            print("results")
-            print("original_divisor", original_divisor)
-            print("modified divisor", modified_divisor)
-            print("initial quotas", initial_quotas)
-            print("final_quotas", final_quotas)
-            print("initial fair shares", initial_fair_shares)
-            print("final fair shares", final_fair_shares)
-            print("total initial fair shares", total_initial_fair_shares)
+                # TODO: add parameters
+                if selected == 'Hamilton':
+                    method = Hamilton(num_seats, num_states, populations)
+                elif selected == 'Jefferson':
+                    method = Jefferson(num_seats, num_states, populations)
+                elif selected == 'Adam':
+                    method = Adam(num_seats, num_states, populations)
+                elif selected == 'Webster':
+                    method = Webster(num_seats, num_states, populations)
+                else:
+                    print('ERROR - calculate: method selection')
 
-            # create a new row for total values
-            self.rows += 1
+                # print results
+                original_divisor, modified_divisor, initial_quotas, final_quotas, initial_fair_shares, final_fair_shares, total_initial_fair_shares = method.calculate()
+                if original_divisor is None:
+                    print("Warning: results could not be calculated. This can sometimes happen using", selected,
+                          "method with very specific numbers, and is rare. Make sure the correct numbers are entered in the "
+                          "table.")
+                else:
+                    # update values in grid
+                    for i, initial_quota in enumerate(initial_quotas):
+                        self.initial_quotas[i].set(round(initial_quota, 4))
+                    for i, final_quota in enumerate(final_quotas):
+                        self.final_quotas[i].set(round(final_quota, 4))
+                    for i, initial_fair_share in enumerate(initial_fair_shares):
+                        self.initial_fair_shares[i].set(round(initial_fair_share, 4))
+                    for i, final_fair_share in enumerate(final_fair_shares):
+                        self.final_fair_shares[i].set(round(final_fair_share, 4))
 
-            # add a new row of widgets to the grid
-            list_temp = [Label(self.frame_buttons, text='total', width=9),
-                         Label(self.frame_buttons, text=sum(populations), width=7),
-                         Label(self.frame_buttons, text=('~', round(sum(initial_quotas), 4)), width=7),
-                         Label(self.frame_buttons, text=('~', round(sum(final_quotas), 4)), width=7),
-                         Label(self.frame_buttons, text=sum(initial_fair_shares), width=7),
-                         Label(self.frame_buttons, text=sum(final_fair_shares), width=7)]
+                    print("results")
+                    print("original_divisor", original_divisor)
+                    print("modified divisor", modified_divisor)
+                    print("initial quotas", initial_quotas)
+                    print("final_quotas", final_quotas)
+                    print("initial fair shares", initial_fair_shares)
+                    print("final fair shares", final_fair_shares)
+                    print("total initial fair shares", total_initial_fair_shares)
 
-            self.grid.append(list_temp)
+                    # create a new row for total values
+                    self.rows += 1
 
-            self.grid[self.rows - 1][0].grid(row=self.rows - 1, column=0, sticky='news', padx=10)
-            self.grid[self.rows - 1][1].grid(row=self.rows - 1, column=1, sticky='news', padx=10)
-            self.grid[self.rows - 1][2].grid(row=self.rows - 1, column=2, sticky='news', padx=10)
-            self.grid[self.rows - 1][3].grid(row=self.rows - 1, column=3, sticky='news', padx=10)
-            self.grid[self.rows - 1][4].grid(row=self.rows - 1, column=4, sticky='news', padx=10)
-            self.grid[self.rows - 1][5].grid(row=self.rows - 1, column=5, sticky='news', padx=10)
+                    # add a new row of widgets to the grid
+                    list_temp = [Label(self.frame_buttons, text='total', width=9),
+                                 Label(self.frame_buttons, text=sum(populations), width=7),
+                                 Label(self.frame_buttons, text=('~', round(sum(initial_quotas), 4)), width=7),
+                                 Label(self.frame_buttons, text=('~', round(sum(final_quotas), 4)), width=7),
+                                 Label(self.frame_buttons, text=sum(initial_fair_shares), width=7),
+                                 Label(self.frame_buttons, text=sum(final_fair_shares), width=7)]
 
-            # update widget frames idle tasks to calculate widget sizes
-            self.frame_buttons.update_idletasks()
+                    self.grid.append(list_temp)
 
-            # resize the canvas frame (width fits depending on input, height is static)
-            first5columns_width = sum(self.grid[0][j].winfo_width() for j in range(0, self.columns))
-            first5rows_height = 190
+                    self.grid[self.rows - 1][0].grid(row=self.rows - 1, column=0, sticky='news', padx=10)
+                    self.grid[self.rows - 1][1].grid(row=self.rows - 1, column=1, sticky='news', padx=10)
+                    self.grid[self.rows - 1][2].grid(row=self.rows - 1, column=2, sticky='news', padx=10)
+                    self.grid[self.rows - 1][3].grid(row=self.rows - 1, column=3, sticky='news', padx=10)
+                    self.grid[self.rows - 1][4].grid(row=self.rows - 1, column=4, sticky='news', padx=10)
+                    self.grid[self.rows - 1][5].grid(row=self.rows - 1, column=5, sticky='news', padx=10)
 
-            self.frame_canvas.config(width=first5columns_width + self.vsb.winfo_width(),
-                                     height=first5rows_height)
+                    # update widget frames idle tasks to calculate widget sizes
+                    self.frame_buttons.update_idletasks()
 
-            # set canvas scrolling region
-            self.canvas.config(scrollregion=self.canvas.bbox("all"))
+                    # resize the canvas frame (width fits depending on input, height is static)
+                    first5columns_width = sum(self.grid[0][j].winfo_width() for j in range(0, self.columns))
+                    first5rows_height = 190
 
-            # set calculate pressed to true
-            self.calculate_pressed = True
+                    self.frame_canvas.config(width=first5columns_width + self.vsb.winfo_width(),
+                                             height=first5rows_height)
+
+                    # set canvas scrolling region
+                    self.canvas.config(scrollregion=self.canvas.bbox("all"))
+
+                    # set calculate pressed to true
+                    self.calculate_pressed = True
 
 
 if __name__ == '__main__':
