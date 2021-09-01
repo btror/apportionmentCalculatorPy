@@ -17,7 +17,7 @@ class App:
         self.root.columnconfigure(0, weight=1)
         self.root.geometry('500x400')
         self.root.resizable(False, False)
-        self.root.title('Ticer\'s Apportionment Calculator 0.2.2')
+        self.root.title('Ticer\'s Apportionment Calculator 0.3.3')
 
         # create lists to hold populations
         self.populations = []
@@ -31,7 +31,7 @@ class App:
         frame_main.grid(sticky='news')
 
         # top label (title)
-        Label(frame_main, text='Ticer\'s Apportionment Calculator 0.2.2').place(relx=.5, y=20,
+        Label(frame_main, text='Ticer\'s Apportionment Calculator 0.3.3').place(relx=.5, y=20,
                                                                                 anchor=CENTER)
 
         # select apportionment method
@@ -48,17 +48,27 @@ class App:
         # entry for amount of seats
         Label(frame_main, text='seats: ').place(relx=.45, y=85, anchor=CENTER)
         self.num_seats = StringVar()
-        self.input_seats = Entry(self.root, textvariable=self.num_seats, width=7).place(relx=.54, y=85, anchor=CENTER)
+        self.input_seats = Entry(frame_main, textvariable=self.num_seats, width=7).place(relx=.54, y=85, anchor=CENTER)
 
         # add, remove, clear, and calculate buttons
-        self.button_add = Button(self.root, text='+', width=5, command=self.add_state).place(relx=.35, y=120,
-                                                                                             anchor=CENTER)
-        self.button_remove = Button(self.root, text='-', width=5, command=self.remove_state).place(relx=.45, y=120,
-                                                                                                   anchor=CENTER)
-        self.button_clear = Button(self.root, text='CLEAR', width=5, command=self.clear_states).place(relx=.55, y=120,
-                                                                                                      anchor=CENTER)
-        self.button_calculate = Button(self.root, text='=', width=5, command=self.calculate).place(relx=.65, y=120,
-                                                                                                   anchor=CENTER)
+        self.button_add = Button(frame_main, text='+', width=5, command=self.add_state).place(relx=.35, y=120,
+                                                                                              anchor=CENTER)
+        self.button_remove = Button(frame_main, text='-', width=5, command=self.remove_state).place(relx=.45, y=120,
+                                                                                                    anchor=CENTER)
+        self.button_clear = Button(frame_main, text='CLEAR', width=5, command=self.clear_states).place(relx=.55, y=120,
+                                                                                                       anchor=CENTER)
+        self.button_calculate = Button(frame_main, text='=', width=5, command=self.calculate).place(relx=.65, y=120,
+                                                                                                    anchor=CENTER)
+
+        # create labels for original and modified divisor
+        self.original_divisor = StringVar()
+        self.modified_divisor = StringVar()
+
+        Label(frame_main, textvariable=self.original_divisor, width=32).place(
+            relx=.25, y=365, anchor=CENTER)
+        Label(frame_main, textvariable=self.modified_divisor, width=32).place(
+            relx=.75, y=365,
+            anchor=CENTER)
 
         # create a frame for the canvas
         self.frame_canvas = tk.Frame(frame_main)
@@ -166,11 +176,21 @@ class App:
             self.rows -= 1
             for i, widget in enumerate(self.grid[len(self.grid) - 1]):
                 widget.grid_forget()
+
+            self.original_divisor.set('')
+            self.modified_divisor.set('')
             self.grid.pop(len(self.grid) - 1)
             self.calculate_pressed = False
 
         # increment rows
         self.rows += 1
+
+        # remove calculation values
+        for i in range(len(self.populations)):
+            self.initial_quotas[i].set('-')
+            self.final_quotas[i].set('-')
+            self.initial_fair_shares[i].set('-')
+            self.final_fair_shares[i].set('-')
 
         value = StringVar()
         temp_1 = StringVar()
@@ -229,6 +249,8 @@ class App:
             self.rows -= 1
             for i, widget in enumerate(self.grid[len(self.grid) - 1]):
                 widget.grid_forget()
+            self.original_divisor.set('')
+            self.modified_divisor.set('')
             self.grid.pop(len(self.grid) - 1)
             self.calculate_pressed = False
 
@@ -240,6 +262,13 @@ class App:
             # remove the widget from the grid
             for i, widget in enumerate(self.grid[len(self.grid) - 1]):
                 widget.grid_forget()
+
+            # remove calculation values
+            for i in range(len(self.populations) - 1):
+                self.initial_quotas[i].set('-')
+                self.final_quotas[i].set('-')
+                self.initial_fair_shares[i].set('-')
+                self.final_fair_shares[i].set('-')
 
             self.grid.pop(len(self.grid) - 1)
             self.initial_quotas.pop(len(self.initial_fair_shares) - 1)
@@ -273,6 +302,8 @@ class App:
             for i, widget in enumerate(self.grid[len(self.grid) - 1]):
                 widget.grid_forget()
             self.grid.pop(len(self.grid) - 1)
+            self.original_divisor.set('')
+            self.modified_divisor.set('')
             self.calculate_pressed = False
 
         # always keep the first two default rows
@@ -365,12 +396,15 @@ class App:
                     # add a new row of widgets to the grid
                     list_temp = [Label(self.frame_buttons, text='total', width=9),
                                  Label(self.frame_buttons, text=sum(populations), width=7),
-                                 Label(self.frame_buttons, text=('~', round(sum(initial_quotas), 4)), width=7),
-                                 Label(self.frame_buttons, text=('~', round(sum(final_quotas), 4)), width=7),
+                                 Label(self.frame_buttons, text=f'~{round(sum(initial_quotas), 4)}', width=7),
+                                 Label(self.frame_buttons, text=f'~{round(sum(final_quotas), 4)}', width=7),
                                  Label(self.frame_buttons, text=sum(initial_fair_shares), width=7),
                                  Label(self.frame_buttons, text=sum(final_fair_shares), width=7)]
 
                     self.grid.append(list_temp)
+
+                    self.original_divisor.set(f'original divisor: {round(original_divisor, 4)}')
+                    self.modified_divisor.set(f'modified divisor: {round(modified_divisor, 4)}')
 
                     self.grid[self.rows - 1][0].grid(row=self.rows - 1, column=0, sticky='news', padx=10)
                     self.grid[self.rows - 1][1].grid(row=self.rows - 1, column=1, sticky='news', padx=10)
