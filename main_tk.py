@@ -17,7 +17,7 @@ class App:
         self.root.columnconfigure(0, weight=1)
         self.root.geometry('500x400')
         self.root.resizable(False, False)
-        self.root.title('Ticer\'s Apportionment Calculator 0.3.4')
+        self.root.title('Ticer\'s Apportionment Calculator 0.4.4')
 
         # create lists to hold populations
         self.populations = []
@@ -31,7 +31,7 @@ class App:
         frame_main.grid(sticky='news')
 
         # top label (title)
-        Label(frame_main, text='Ticer\'s Apportionment Calculator 0.3.4').place(relx=.5, y=20,
+        Label(frame_main, text='Ticer\'s Apportionment Calculator 0.4.4').place(relx=.5, y=20,
                                                                                 anchor=CENTER)
 
         # select apportionment method
@@ -61,14 +61,10 @@ class App:
                                                                                                     anchor=CENTER)
 
         # create labels for original and modified divisor
-        self.original_divisor = StringVar()
-        self.modified_divisor = StringVar()
+        self.message_variable = StringVar()
 
-        Label(frame_main, textvariable=self.original_divisor, width=32).place(
-            relx=.25, y=365, anchor=CENTER)
-        Label(frame_main, textvariable=self.modified_divisor, width=32).place(
-            relx=.75, y=365,
-            anchor=CENTER)
+        Label(frame_main, textvariable=self.message_variable, width=50).place(
+            relx=.5, y=365, anchor=CENTER)
 
         # create a frame for the canvas
         self.frame_canvas = tk.Frame(frame_main)
@@ -177,8 +173,7 @@ class App:
             for i, widget in enumerate(self.grid[len(self.grid) - 1]):
                 widget.grid_forget()
 
-            self.original_divisor.set('')
-            self.modified_divisor.set('')
+            self.message_variable.set('')
             self.grid.pop(len(self.grid) - 1)
             self.calculate_pressed = False
 
@@ -249,8 +244,7 @@ class App:
             self.rows -= 1
             for i, widget in enumerate(self.grid[len(self.grid) - 1]):
                 widget.grid_forget()
-            self.original_divisor.set('')
-            self.modified_divisor.set('')
+            self.message_variable.set('')
             self.grid.pop(len(self.grid) - 1)
             self.calculate_pressed = False
 
@@ -302,8 +296,7 @@ class App:
             for i, widget in enumerate(self.grid[len(self.grid) - 1]):
                 widget.grid_forget()
             self.grid.pop(len(self.grid) - 1)
-            self.original_divisor.set('')
-            self.modified_divisor.set('')
+            self.message_variable.set('')
             self.calculate_pressed = False
 
         # always keep the first two default rows
@@ -360,7 +353,6 @@ class App:
             selected = self.clicked.get()
             method = None
 
-            # TODO: add parameters
             if selected == 'Hamilton':
                 method = Hamilton(num_seats, num_states, populations)
             elif selected == 'Jefferson':
@@ -372,12 +364,25 @@ class App:
             else:
                 print('ERROR - calculate: method selection')
 
-            # print results
-            original_divisor, modified_divisor, initial_quotas, final_quotas, initial_fair_shares, final_fair_shares, total_initial_fair_shares = method.calculate()
+            # gather filtered results
+            original_divisor, modified_divisor, initial_quotas, final_quotas, initial_fair_shares, final_fair_shares, \
+            total_initial_fair_shares = method.calculate()
+
             if original_divisor is None:
                 print("Warning: results could not be calculated. This can sometimes happen using", selected,
-                      "method with very specific numbers, and is rare. Make sure the correct numbers are entered in the "
+                      "method with very specific numbers, and is rare. Make sure the correct numbers are entered in "
+                      "the "
                       "table.")
+                self.message_variable.set(f'Warning: results could not be calculated. This can sometimes\n'
+                                          f'happen using {selected}\'s method with very specific number\n'
+                                          f'combinations and is rare. Make sure the correct values are entered.')
+
+                # remove calculation values
+                for i in range(len(self.populations)):
+                    self.initial_quotas[i].set('-')
+                    self.final_quotas[i].set('-')
+                    self.initial_fair_shares[i].set('-')
+                    self.final_fair_shares[i].set('-')
             else:
                 # update values in grid
                 for i, initial_quota in enumerate(initial_quotas):
@@ -388,15 +393,6 @@ class App:
                     self.initial_fair_shares[i].set(round(initial_fair_share, 4))
                 for i, final_fair_share in enumerate(final_fair_shares):
                     self.final_fair_shares[i].set(round(final_fair_share, 4))
-
-                print("results")
-                print("original_divisor", original_divisor)
-                print("modified divisor", modified_divisor)
-                print("initial quotas", initial_quotas)
-                print("final_quotas", final_quotas)
-                print("initial fair shares", initial_fair_shares)
-                print("final fair shares", final_fair_shares)
-                print("total initial fair shares", total_initial_fair_shares)
 
                 # create a new row for total values
                 self.rows += 1
@@ -411,8 +407,7 @@ class App:
 
                 self.grid.append(list_temp)
 
-                self.original_divisor.set(f'original divisor: {round(original_divisor, 4)}')
-                self.modified_divisor.set(f'modified divisor: {round(modified_divisor, 4)}')
+                self.message_variable.set(f'original divisor: {round(original_divisor, 4)}\tmodified divisor: {round(modified_divisor, 4)}')
 
                 self.grid[self.rows - 1][0].grid(row=self.rows - 1, column=0, sticky='news', padx=10)
                 self.grid[self.rows - 1][1].grid(row=self.rows - 1, column=1, sticky='news', padx=10)
@@ -436,7 +431,6 @@ class App:
 
                 # set calculate pressed to true
                 self.calculate_pressed = True
-
 
 
 if __name__ == '__main__':
