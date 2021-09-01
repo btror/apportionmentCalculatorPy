@@ -17,7 +17,7 @@ class App:
         self.root.columnconfigure(0, weight=1)
         self.root.geometry('500x400')
         self.root.resizable(False, False)
-        self.root.title('Ticer\'s Apportionment Calculator 0.3.3')
+        self.root.title('Ticer\'s Apportionment Calculator 0.3.4')
 
         # create lists to hold populations
         self.populations = []
@@ -31,7 +31,7 @@ class App:
         frame_main.grid(sticky='news')
 
         # top label (title)
-        Label(frame_main, text='Ticer\'s Apportionment Calculator 0.3.3').place(relx=.5, y=20,
+        Label(frame_main, text='Ticer\'s Apportionment Calculator 0.3.4').place(relx=.5, y=20,
                                                                                 anchor=CENTER)
 
         # select apportionment method
@@ -335,99 +335,108 @@ class App:
         if self.num_seats.get() == '':
             print("missing seat input")
         else:
+            valid_input = True
+            if self.num_seats.get() == '':
+                valid_input = False
+            if not valid_input:
+                print("invalid input type, only use numbers")
+                return
+
             num_seats = float(self.num_seats.get())
             populations = []
-            valid_input = True
             for i, x in enumerate(self.populations):
                 if x.get() == '':
                     valid_input = False
                     break
                 populations.append(float(x.get()))
+
             if not valid_input:
                 print('missing population input')
+                return
+
+            num_states = self.rows - 1
+
+            # pass data into desired method
+            selected = self.clicked.get()
+            method = None
+
+            # TODO: add parameters
+            if selected == 'Hamilton':
+                method = Hamilton(num_seats, num_states, populations)
+            elif selected == 'Jefferson':
+                method = Jefferson(num_seats, num_states, populations)
+            elif selected == 'Adam':
+                method = Adam(num_seats, num_states, populations)
+            elif selected == 'Webster':
+                method = Webster(num_seats, num_states, populations)
             else:
-                num_states = self.rows - 1
+                print('ERROR - calculate: method selection')
 
-                # pass data into desired method
-                selected = self.clicked.get()
-                method = None
+            # print results
+            original_divisor, modified_divisor, initial_quotas, final_quotas, initial_fair_shares, final_fair_shares, total_initial_fair_shares = method.calculate()
+            if original_divisor is None:
+                print("Warning: results could not be calculated. This can sometimes happen using", selected,
+                      "method with very specific numbers, and is rare. Make sure the correct numbers are entered in the "
+                      "table.")
+            else:
+                # update values in grid
+                for i, initial_quota in enumerate(initial_quotas):
+                    self.initial_quotas[i].set(round(initial_quota, 4))
+                for i, final_quota in enumerate(final_quotas):
+                    self.final_quotas[i].set(round(final_quota, 4))
+                for i, initial_fair_share in enumerate(initial_fair_shares):
+                    self.initial_fair_shares[i].set(round(initial_fair_share, 4))
+                for i, final_fair_share in enumerate(final_fair_shares):
+                    self.final_fair_shares[i].set(round(final_fair_share, 4))
 
-                # TODO: add parameters
-                if selected == 'Hamilton':
-                    method = Hamilton(num_seats, num_states, populations)
-                elif selected == 'Jefferson':
-                    method = Jefferson(num_seats, num_states, populations)
-                elif selected == 'Adam':
-                    method = Adam(num_seats, num_states, populations)
-                elif selected == 'Webster':
-                    method = Webster(num_seats, num_states, populations)
-                else:
-                    print('ERROR - calculate: method selection')
+                print("results")
+                print("original_divisor", original_divisor)
+                print("modified divisor", modified_divisor)
+                print("initial quotas", initial_quotas)
+                print("final_quotas", final_quotas)
+                print("initial fair shares", initial_fair_shares)
+                print("final fair shares", final_fair_shares)
+                print("total initial fair shares", total_initial_fair_shares)
 
-                # print results
-                original_divisor, modified_divisor, initial_quotas, final_quotas, initial_fair_shares, final_fair_shares, total_initial_fair_shares = method.calculate()
-                if original_divisor is None:
-                    print("Warning: results could not be calculated. This can sometimes happen using", selected,
-                          "method with very specific numbers, and is rare. Make sure the correct numbers are entered in the "
-                          "table.")
-                else:
-                    # update values in grid
-                    for i, initial_quota in enumerate(initial_quotas):
-                        self.initial_quotas[i].set(round(initial_quota, 4))
-                    for i, final_quota in enumerate(final_quotas):
-                        self.final_quotas[i].set(round(final_quota, 4))
-                    for i, initial_fair_share in enumerate(initial_fair_shares):
-                        self.initial_fair_shares[i].set(round(initial_fair_share, 4))
-                    for i, final_fair_share in enumerate(final_fair_shares):
-                        self.final_fair_shares[i].set(round(final_fair_share, 4))
+                # create a new row for total values
+                self.rows += 1
 
-                    print("results")
-                    print("original_divisor", original_divisor)
-                    print("modified divisor", modified_divisor)
-                    print("initial quotas", initial_quotas)
-                    print("final_quotas", final_quotas)
-                    print("initial fair shares", initial_fair_shares)
-                    print("final fair shares", final_fair_shares)
-                    print("total initial fair shares", total_initial_fair_shares)
+                # add a new row of widgets to the grid
+                list_temp = [Label(self.frame_buttons, text='total', width=9),
+                             Label(self.frame_buttons, text=sum(populations), width=7),
+                             Label(self.frame_buttons, text=f'~{round(sum(initial_quotas), 4)}', width=7),
+                             Label(self.frame_buttons, text=f'~{round(sum(final_quotas), 4)}', width=7),
+                             Label(self.frame_buttons, text=sum(initial_fair_shares), width=7),
+                             Label(self.frame_buttons, text=sum(final_fair_shares), width=7)]
 
-                    # create a new row for total values
-                    self.rows += 1
+                self.grid.append(list_temp)
 
-                    # add a new row of widgets to the grid
-                    list_temp = [Label(self.frame_buttons, text='total', width=9),
-                                 Label(self.frame_buttons, text=sum(populations), width=7),
-                                 Label(self.frame_buttons, text=f'~{round(sum(initial_quotas), 4)}', width=7),
-                                 Label(self.frame_buttons, text=f'~{round(sum(final_quotas), 4)}', width=7),
-                                 Label(self.frame_buttons, text=sum(initial_fair_shares), width=7),
-                                 Label(self.frame_buttons, text=sum(final_fair_shares), width=7)]
+                self.original_divisor.set(f'original divisor: {round(original_divisor, 4)}')
+                self.modified_divisor.set(f'modified divisor: {round(modified_divisor, 4)}')
 
-                    self.grid.append(list_temp)
+                self.grid[self.rows - 1][0].grid(row=self.rows - 1, column=0, sticky='news', padx=10)
+                self.grid[self.rows - 1][1].grid(row=self.rows - 1, column=1, sticky='news', padx=10)
+                self.grid[self.rows - 1][2].grid(row=self.rows - 1, column=2, sticky='news', padx=10)
+                self.grid[self.rows - 1][3].grid(row=self.rows - 1, column=3, sticky='news', padx=10)
+                self.grid[self.rows - 1][4].grid(row=self.rows - 1, column=4, sticky='news', padx=10)
+                self.grid[self.rows - 1][5].grid(row=self.rows - 1, column=5, sticky='news', padx=10)
 
-                    self.original_divisor.set(f'original divisor: {round(original_divisor, 4)}')
-                    self.modified_divisor.set(f'modified divisor: {round(modified_divisor, 4)}')
+                # update widget frames idle tasks to calculate widget sizes
+                self.frame_buttons.update_idletasks()
 
-                    self.grid[self.rows - 1][0].grid(row=self.rows - 1, column=0, sticky='news', padx=10)
-                    self.grid[self.rows - 1][1].grid(row=self.rows - 1, column=1, sticky='news', padx=10)
-                    self.grid[self.rows - 1][2].grid(row=self.rows - 1, column=2, sticky='news', padx=10)
-                    self.grid[self.rows - 1][3].grid(row=self.rows - 1, column=3, sticky='news', padx=10)
-                    self.grid[self.rows - 1][4].grid(row=self.rows - 1, column=4, sticky='news', padx=10)
-                    self.grid[self.rows - 1][5].grid(row=self.rows - 1, column=5, sticky='news', padx=10)
+                # resize the canvas frame (width fits depending on input, height is static)
+                first5columns_width = sum(self.grid[0][j].winfo_width() for j in range(0, self.columns))
+                first5rows_height = 190
 
-                    # update widget frames idle tasks to calculate widget sizes
-                    self.frame_buttons.update_idletasks()
+                self.frame_canvas.config(width=first5columns_width + self.vsb.winfo_width(),
+                                         height=first5rows_height)
 
-                    # resize the canvas frame (width fits depending on input, height is static)
-                    first5columns_width = sum(self.grid[0][j].winfo_width() for j in range(0, self.columns))
-                    first5rows_height = 190
+                # set canvas scrolling region
+                self.canvas.config(scrollregion=self.canvas.bbox("all"))
 
-                    self.frame_canvas.config(width=first5columns_width + self.vsb.winfo_width(),
-                                             height=first5rows_height)
+                # set calculate pressed to true
+                self.calculate_pressed = True
 
-                    # set canvas scrolling region
-                    self.canvas.config(scrollregion=self.canvas.bbox("all"))
-
-                    # set calculate pressed to true
-                    self.calculate_pressed = True
 
 
 if __name__ == '__main__':
