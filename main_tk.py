@@ -17,7 +17,7 @@ class App:
         self.root.columnconfigure(0, weight=1)
         self.root.geometry('500x400')
         self.root.resizable(False, False)
-        self.root.title('Ticer\'s Apportionment Calculator 0.4.6')
+        self.root.title('Ticer\'s Apportionment Calculator 0.4.7')
 
         # create lists to hold populations
         self.populations = []
@@ -31,7 +31,7 @@ class App:
         frame_main.grid(sticky='news')
 
         # top label (title)
-        Label(frame_main, text='Ticer\'s Apportionment Calculator 0.4.6').place(relx=.5, y=20,
+        Label(frame_main, text='Ticer\'s Apportionment Calculator 0.4.7').place(relx=.5, y=20,
                                                                                 anchor=CENTER)
 
         # select apportionment method
@@ -300,7 +300,7 @@ class App:
             self.calculate_pressed = False
 
         # always keep the first two default rows
-        if self.rows > 2:
+        if self.rows > 1:
             for i in range(self.rows - 2):
                 self.remove_state()
 
