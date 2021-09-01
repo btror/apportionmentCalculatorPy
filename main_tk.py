@@ -17,7 +17,7 @@ class App:
         self.root.columnconfigure(0, weight=1)
         self.root.geometry('500x400')
         self.root.resizable(False, False)
-        self.root.title('Ticer\'s Apportionment Calculator 0.4.5')
+        self.root.title('Ticer\'s Apportionment Calculator 0.4.6')
 
         # create lists to hold populations
         self.populations = []
@@ -31,7 +31,7 @@ class App:
         frame_main.grid(sticky='news')
 
         # top label (title)
-        Label(frame_main, text='Ticer\'s Apportionment Calculator 0.4.5').place(relx=.5, y=20,
+        Label(frame_main, text='Ticer\'s Apportionment Calculator 0.4.6').place(relx=.5, y=20,
                                                                                 anchor=CENTER)
 
         # select apportionment method
@@ -335,99 +335,118 @@ class App:
                 self.message_variable.set("Invalid input type for amount of seats. Make sure there are\n"
                                           "not any letters in the textbox for the amount of seats.")
             else:
-                num_seats = float(self.num_seats.get())
-                populations = []
-                for i, x in enumerate(self.populations):
-                    if x.get() == '':
-                        valid_input = False
-                        break
-                    populations.append(float(x.get()))
+                num_seats = 0
+                try:
+                    num_seats = float(self.num_seats.get())
+                except ValueError as e:
+                    valid_input = False
 
                 if not valid_input:
-                    self.message_variable.set("At least one population textfield is empty. Remove it\n"
-                                              "or enter a value.")
+                    self.message_variable.set('Invalid character type detected in seats textbox. Make\n'
+                                              'sure the seats field doesn\'t contain letters.')
                 else:
-                    num_states = self.rows - 1
+                    populations = []
+                    for i, x in enumerate(self.populations):
+                        if x.get() == '':
+                            valid_input = False
+                            break
+                        try:
+                            populations.append(float(x.get()))
+                        except ValueError as e:
+                            valid_input = False
+                            break
 
-                    # pass data into desired method
-                    selected = self.clicked.get()
-                    method = None
-
-                    if selected == 'Hamilton':
-                        method = Hamilton(num_seats, num_states, populations)
-                    elif selected == 'Jefferson':
-                        method = Jefferson(num_seats, num_states, populations)
-                    elif selected == 'Adam':
-                        method = Adam(num_seats, num_states, populations)
-                    elif selected == 'Webster':
-                        method = Webster(num_seats, num_states, populations)
+                    if not valid_input:
+                        self.message_variable.set("At least one population textfield is empty or contains\n"
+                                                  "invalid characters. Remove the state or enter a valid value.")
                     else:
-                        self.message_variable.set('drop-down menu error!')
+                        num_states = self.rows - 1
 
-                    # gather filtered results
-                    original_divisor, modified_divisor, initial_quotas, final_quotas, initial_fair_shares, \
-                    final_fair_shares, total_initial_fair_shares = method.calculate()
+                        # pass data into desired method
+                        selected = self.clicked.get()
+                        method = None
 
-                    if original_divisor is None:
-                        self.message_variable.set(f'Warning: results could not be calculated. This can sometimes\n'
-                                                  f'happen using {selected}\'s method with very specific number\n'
-                                                  f'combinations and is rare. Make sure the correct values are entered.')
+                        if num_seats < 1:
+                            self.message_variable.set("Number of seats must be greater than 0.")
+                            valid_input = False
 
-                        # remove calculation values
-                        for i in range(len(self.populations)):
-                            self.initial_quotas[i].set('-')
-                            self.final_quotas[i].set('-')
-                            self.initial_fair_shares[i].set('-')
-                            self.final_fair_shares[i].set('-')
-                    else:
-                        # update values in grid
-                        for i, initial_quota in enumerate(initial_quotas):
-                            self.initial_quotas[i].set(round(initial_quota, 4))
-                        for i, final_quota in enumerate(final_quotas):
-                            self.final_quotas[i].set(round(final_quota, 4))
-                        for i, initial_fair_share in enumerate(initial_fair_shares):
-                            self.initial_fair_shares[i].set(round(initial_fair_share, 4))
-                        for i, final_fair_share in enumerate(final_fair_shares):
-                            self.final_fair_shares[i].set(round(final_fair_share, 4))
+                        if valid_input:
+                            if selected == 'Hamilton':
+                                method = Hamilton(num_seats, num_states, populations)
+                            elif selected == 'Jefferson':
+                                method = Jefferson(num_seats, num_states, populations)
+                            elif selected == 'Adam':
+                                method = Adam(num_seats, num_states, populations)
+                            elif selected == 'Webster':
+                                method = Webster(num_seats, num_states, populations)
+                            else:
+                                self.message_variable.set('drop-down menu error!')
 
-                        # create a new row for total values
-                        self.rows += 1
+                            # gather filtered results
+                            original_divisor, modified_divisor, initial_quotas, final_quotas, initial_fair_shares, \
+                            final_fair_shares, total_initial_fair_shares = method.calculate()
 
-                        # add a new row of widgets to the grid
-                        list_temp = [Label(self.frame_buttons, text='total', width=9),
-                                     Label(self.frame_buttons, text=sum(populations), width=7),
-                                     Label(self.frame_buttons, text=f'~{round(sum(initial_quotas), 4)}', width=7),
-                                     Label(self.frame_buttons, text=f'~{round(sum(final_quotas), 4)}', width=7),
-                                     Label(self.frame_buttons, text=sum(initial_fair_shares), width=7),
-                                     Label(self.frame_buttons, text=sum(final_fair_shares), width=7)]
+                            if original_divisor is None:
+                                self.message_variable.set(f'Warning: results could not be calculated. This can sometimes\n'
+                                                          f'happen using {selected}\'s method with very specific number\n'
+                                                          f'combinations and is rare. Make sure the correct values are '
+                                                          f'entered.')
 
-                        self.grid.append(list_temp)
+                                # remove calculation values
+                                for i in range(len(self.populations)):
+                                    self.initial_quotas[i].set('-')
+                                    self.final_quotas[i].set('-')
+                                    self.initial_fair_shares[i].set('-')
+                                    self.final_fair_shares[i].set('-')
+                            else:
+                                # update values in grid
+                                for i, initial_quota in enumerate(initial_quotas):
+                                    self.initial_quotas[i].set(round(initial_quota, 4))
+                                for i, final_quota in enumerate(final_quotas):
+                                    self.final_quotas[i].set(round(final_quota, 4))
+                                for i, initial_fair_share in enumerate(initial_fair_shares):
+                                    self.initial_fair_shares[i].set(round(initial_fair_share, 4))
+                                for i, final_fair_share in enumerate(final_fair_shares):
+                                    self.final_fair_shares[i].set(round(final_fair_share, 4))
 
-                        self.message_variable.set(
-                            f'original divisor: {round(original_divisor, 4)}\tmodified divisor: {round(modified_divisor, 4)}')
+                                # create a new row for total values
+                                self.rows += 1
 
-                        self.grid[self.rows - 1][0].grid(row=self.rows - 1, column=0, sticky='news', padx=10)
-                        self.grid[self.rows - 1][1].grid(row=self.rows - 1, column=1, sticky='news', padx=10)
-                        self.grid[self.rows - 1][2].grid(row=self.rows - 1, column=2, sticky='news', padx=10)
-                        self.grid[self.rows - 1][3].grid(row=self.rows - 1, column=3, sticky='news', padx=10)
-                        self.grid[self.rows - 1][4].grid(row=self.rows - 1, column=4, sticky='news', padx=10)
-                        self.grid[self.rows - 1][5].grid(row=self.rows - 1, column=5, sticky='news', padx=10)
+                                # add a new row of widgets to the grid
+                                list_temp = [Label(self.frame_buttons, text='total', width=9),
+                                             Label(self.frame_buttons, text=sum(populations), width=7),
+                                             Label(self.frame_buttons, text=f'~{round(sum(initial_quotas), 4)}', width=7),
+                                             Label(self.frame_buttons, text=f'~{round(sum(final_quotas), 4)}', width=7),
+                                             Label(self.frame_buttons, text=sum(initial_fair_shares), width=7),
+                                             Label(self.frame_buttons, text=sum(final_fair_shares), width=7)]
 
-                        # update widget frames idle tasks to calculate widget sizes
-                        self.frame_buttons.update_idletasks()
+                                self.grid.append(list_temp)
 
-                        # resize the canvas frame (width fits depending on input, height is static)
-                        first5columns_width = sum(self.grid[0][j].winfo_width() for j in range(0, self.columns))
-                        first5rows_height = 190
+                                self.message_variable.set(
+                                    f'original divisor: {round(original_divisor, 4)}\tmodified divisor: {round(modified_divisor, 4)}')
 
-                        self.frame_canvas.config(width=first5columns_width + self.vsb.winfo_width(),
-                                                 height=first5rows_height)
+                                self.grid[self.rows - 1][0].grid(row=self.rows - 1, column=0, sticky='news', padx=10)
+                                self.grid[self.rows - 1][1].grid(row=self.rows - 1, column=1, sticky='news', padx=10)
+                                self.grid[self.rows - 1][2].grid(row=self.rows - 1, column=2, sticky='news', padx=10)
+                                self.grid[self.rows - 1][3].grid(row=self.rows - 1, column=3, sticky='news', padx=10)
+                                self.grid[self.rows - 1][4].grid(row=self.rows - 1, column=4, sticky='news', padx=10)
+                                self.grid[self.rows - 1][5].grid(row=self.rows - 1, column=5, sticky='news', padx=10)
 
-                        # set canvas scrolling region
-                        self.canvas.config(scrollregion=self.canvas.bbox("all"))
+                                # update widget frames idle tasks to calculate widget sizes
+                                self.frame_buttons.update_idletasks()
 
-                        # set calculate pressed to true
-                        self.calculate_pressed = True
+                                # resize the canvas frame (width fits depending on input, height is static)
+                                first5columns_width = sum(self.grid[0][j].winfo_width() for j in range(0, self.columns))
+                                first5rows_height = 190
+
+                                self.frame_canvas.config(width=first5columns_width + self.vsb.winfo_width(),
+                                                         height=first5rows_height)
+
+                                # set canvas scrolling region
+                                self.canvas.config(scrollregion=self.canvas.bbox("all"))
+
+                                # set calculate pressed to true
+                                self.calculate_pressed = True
 
 
 if __name__ == '__main__':
