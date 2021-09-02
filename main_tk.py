@@ -15,9 +15,9 @@ class App:
         self.root = tk.Tk()
         self.root.grid_rowconfigure(0, weight=1)
         self.root.columnconfigure(0, weight=1)
-        self.root.geometry('500x400')
-        self.root.resizable(False, False)
-        self.root.title('Ticer\'s Apportionment Calculator 0.4.7')
+        self.root.geometry('600x400')
+        # self.root.resizable(False, False)
+        self.root.title('Ticer\'s Apportionment Calculator')
 
         # create lists to hold populations
         self.populations = []
@@ -31,8 +31,8 @@ class App:
         frame_main.grid(sticky='news')
 
         # top label (title)
-        Label(frame_main, text='Ticer\'s Apportionment Calculator 0.4.7').place(relx=.5, y=20,
-                                                                                anchor=CENTER)
+        Label(frame_main, text='Desktop 0.5.7').place(x=66, y=20,
+                                                      anchor=CENTER)
 
         # select apportionment method
         options = [
@@ -43,22 +43,25 @@ class App:
         ]
         self.clicked = StringVar()
         self.clicked.set('Hamilton')
-        self.drop_down = OptionMenu(frame_main, self.clicked, *options).place(relx=.5, y=50, anchor=CENTER)
+        self.drop_down = OptionMenu(frame_main, self.clicked, *options).place(x=310, y=70, anchor=CENTER)
 
         # entry for amount of seats
-        Label(frame_main, text='seats: ').place(relx=.45, y=85, anchor=CENTER)
+        Label(frame_main, text='seats: ').place(x=50, y=70, anchor=CENTER)
         self.num_seats = StringVar()
-        self.input_seats = Entry(frame_main, textvariable=self.num_seats, width=7).place(relx=.54, y=85, anchor=CENTER)
+        self.input_seats = Entry(frame_main, textvariable=self.num_seats, width=7).place(x=95, y=70, anchor=CENTER)
 
         # add, remove, clear, and calculate buttons
-        self.button_add = Button(frame_main, text='+', width=5, command=self.add_state).place(relx=.35, y=120,
-                                                                                              anchor=CENTER)
-        self.button_remove = Button(frame_main, text='-', width=5, command=self.remove_state).place(relx=.45, y=120,
-                                                                                                    anchor=CENTER)
-        self.button_clear = Button(frame_main, text='CLEAR', width=5, command=self.clear_states).place(relx=.55, y=120,
-                                                                                                       anchor=CENTER)
-        self.button_calculate = Button(frame_main, text='=', width=5, command=self.calculate).place(relx=.65, y=120,
-                                                                                                    anchor=CENTER)
+        self.button_remove = Button(frame_main, text='-', width=3, height=1, command=self.remove_state).place(x=160,
+                                                                                                              y=70,
+                                                                                                              anchor=CENTER)
+        self.button_add = Button(frame_main, text='+', width=3, height=1, command=self.add_state).place(x=190, y=70,
+                                                                                                        anchor=CENTER)
+        self.button_clear = Button(frame_main, text='CLEAR', width=6, height=1, command=self.clear_states).place(
+            x=210, y=100,
+            anchor=CENTER)
+        self.button_calculate = Button(frame_main, text='=', width=3, height=1, command=self.calculate).place(x=220,
+                                                                                                              y=70,
+                                                                                                              anchor=CENTER)
 
         # create labels for original and modified divisor
         self.message_variable = StringVar()
@@ -68,7 +71,7 @@ class App:
 
         # create a frame for the canvas
         self.frame_canvas = tk.Frame(frame_main)
-        self.frame_canvas.place(relx=.5, y=240, anchor=CENTER)
+        self.frame_canvas.place(x=240, y=220, anchor=CENTER)
         self.frame_canvas.grid_rowconfigure(0, weight=1)
         self.frame_canvas.grid_columnconfigure(0, weight=1)
 
@@ -124,7 +127,7 @@ class App:
         self.temp_4.set('-')
 
         # add the second row of widgets (all labels and one entry)
-        list_temp = [Label(self.frame_buttons, text='1', width=9),
+        list_temp = [Label(self.frame_buttons, text='1', width=7),
                      Entry(self.frame_buttons, textvariable=self.default_entry_value, width=7),
                      Label(self.frame_buttons, text='-', textvariable=self.temp_1, width=7),
                      Label(self.frame_buttons, text='-', textvariable=self.temp_2, width=7),
@@ -199,7 +202,7 @@ class App:
         temp_4.set('-')
 
         # add a new row of widgets to the grid
-        list_temp = [Label(self.frame_buttons, text=self.rows - 1, width=9),
+        list_temp = [Label(self.frame_buttons, text=self.rows - 1, width=7),
                      Entry(self.frame_buttons, textvariable=value, width=7),
                      Label(self.frame_buttons, textvariable=temp_1, width=7),
                      Label(self.frame_buttons, textvariable=temp_2, width=7),
@@ -387,10 +390,11 @@ class App:
                             final_fair_shares, total_initial_fair_shares = method.calculate()
 
                             if original_divisor is None:
-                                self.message_variable.set(f'Warning: results could not be calculated. This can sometimes\n'
-                                                          f'happen using {selected}\'s method with very specific number\n'
-                                                          f'combinations and is rare. Make sure the correct values are '
-                                                          f'entered.')
+                                self.message_variable.set(
+                                    f'Warning: results could not be calculated. This can sometimes\n'
+                                    f'happen using {selected}\'s method with very specific number\n'
+                                    f'combinations and is rare. Make sure the correct values are '
+                                    f'entered.')
 
                                 # remove calculation values
                                 for i in range(len(self.populations)):
@@ -415,7 +419,8 @@ class App:
                                 # add a new row of widgets to the grid
                                 list_temp = [Label(self.frame_buttons, text='total', width=9),
                                              Label(self.frame_buttons, text=sum(populations), width=7),
-                                             Label(self.frame_buttons, text=f'~{round(sum(initial_quotas), 4)}', width=7),
+                                             Label(self.frame_buttons, text=f'~{round(sum(initial_quotas), 4)}',
+                                                   width=7),
                                              Label(self.frame_buttons, text=f'~{round(sum(final_quotas), 4)}', width=7),
                                              Label(self.frame_buttons, text=sum(initial_fair_shares), width=7),
                                              Label(self.frame_buttons, text=sum(final_fair_shares), width=7)]
