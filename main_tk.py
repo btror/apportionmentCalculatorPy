@@ -16,7 +16,7 @@ class App:
         self.root = tk.Tk()
         self.root.grid_rowconfigure(0, weight=1)
         self.root.columnconfigure(0, weight=1)
-        self.root.geometry('600x450')
+        self.root.geometry('750x450')
         # self.root.resizable(False, False)
         self.root.title('Ticer\'s Apportionment Calculator')
 
@@ -41,7 +41,7 @@ class App:
         frame_main.configure(bg=self.frame_background)
 
         # top label (title)
-        Label(frame_main, text='Desktop 0.6.7', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
+        Label(frame_main, text='Desktop 0.7.7', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
                                                                                                            anchor=CENTER)
 
         # select apportionment method
@@ -94,12 +94,13 @@ class App:
         # create labels for original and modified divisor
         self.message_variable = StringVar()
 
-        Label(frame_main, textvariable=self.message_variable, width=50, bg=self.frame_background, fg=self.widget_foreground, font=self.tiny_font).place(
-            x=240, y=377, anchor=CENTER)
+        Label(frame_main, textvariable=self.message_variable, bg=self.frame_background,
+              fg=self.widget_foreground, font=self.tiny_font).place(
+            x=15, y=377, anchor='w')
 
         # create a frame for the canvas
         self.frame_canvas = tk.Frame(frame_main)
-        self.frame_canvas.place(x=245, y=240, anchor=CENTER)
+        self.frame_canvas.place(x=335, y=240, anchor=CENTER)
         self.frame_canvas.grid_rowconfigure(0, weight=1)
         self.frame_canvas.grid_columnconfigure(0, weight=1)
 
@@ -128,22 +129,22 @@ class App:
         self.grid = []
 
         # add the first row of widgets (all labels)
-        list_temp = [Label(self.frame_buttons, text='\nstate', width=9, bg=self.frame_background,
+        list_temp = [Label(self.frame_buttons, text='\nstate', width=14, bg=self.frame_background,
                            fg=self.widget_foreground,
                            relief='flat'),
-                     Label(self.frame_buttons, text='state\npopulation', width=9, bg=self.frame_background,
+                     Label(self.frame_buttons, text='state\npopulation', width=14, bg=self.frame_background,
                            fg=self.widget_foreground,
                            relief='flat'),
-                     Label(self.frame_buttons, text='initial\nquotas', width=9, bg=self.frame_background,
+                     Label(self.frame_buttons, text='initial\nquotas', width=14, bg=self.frame_background,
                            fg=self.widget_foreground,
                            relief='flat'),
-                     Label(self.frame_buttons, text='final\nquotas', width=9, bg=self.frame_background,
+                     Label(self.frame_buttons, text='final\nquotas', width=14, bg=self.frame_background,
                            fg=self.widget_foreground,
                            relief='flat'),
-                     Label(self.frame_buttons, text='initial\nfair share', width=9, bg=self.frame_background,
+                     Label(self.frame_buttons, text='initial\nfair share', width=14, bg=self.frame_background,
                            fg=self.widget_foreground,
                            relief='flat'),
-                     Label(self.frame_buttons, text='final\nfair share', width=9, bg=self.frame_background,
+                     Label(self.frame_buttons, text='final\nfair share', width=14, bg=self.frame_background,
                            fg=self.widget_foreground,
                            relief='flat')]
 
@@ -168,21 +169,22 @@ class App:
         self.temp_4.set('-')
 
         # add the second row of widgets (all labels and one entry)
-        list_temp = [Label(self.frame_buttons, text='1', width=7, bg=self.frame_background,
+        list_temp = [Label(self.frame_buttons, text='1', width=10, bg=self.frame_background,
                            fg=self.widget_foreground),
-                     Entry(self.frame_buttons, textvariable=self.default_entry_value, width=7, bg=self.frame_background,
+                     Entry(self.frame_buttons, textvariable=self.default_entry_value, width=10,
+                           bg=self.frame_background,
                            fg=self.widget_foreground, relief='solid', highlightthickness=1,
                            highlightbackground=self.widget_foreground),
-                     Label(self.frame_buttons, text='-', textvariable=self.temp_1, width=7, bg=self.frame_background,
+                     Label(self.frame_buttons, text='-', textvariable=self.temp_1, width=10, bg=self.frame_background,
                            fg=self.widget_foreground,
                            relief='flat'),
-                     Label(self.frame_buttons, text='-', textvariable=self.temp_2, width=7, bg=self.frame_background,
+                     Label(self.frame_buttons, text='-', textvariable=self.temp_2, width=10, bg=self.frame_background,
                            fg=self.widget_foreground,
                            relief='flat'),
-                     Label(self.frame_buttons, text='-', textvariable=self.temp_3, width=7, bg=self.frame_background,
+                     Label(self.frame_buttons, text='-', textvariable=self.temp_3, width=10, bg=self.frame_background,
                            fg=self.widget_foreground,
                            relief='flat'),
-                     Label(self.frame_buttons, text='-', textvariable=self.temp_4, width=7, bg=self.frame_background,
+                     Label(self.frame_buttons, text='-', textvariable=self.temp_4, width=10, bg=self.frame_background,
                            fg=self.widget_foreground,
                            relief='flat')]
 
@@ -205,7 +207,7 @@ class App:
         self.frame_buttons.update_idletasks()
 
         # resize the canvas frame (width fits depending on input, height is static)
-        first5columns_width = sum(self.grid[0][j].winfo_width() for j in range(0, self.columns))
+        first5columns_width = sum(self.grid[0][j].winfo_width() for j in range(0, self.columns)) + 4
         first5rows_height = 190
 
         self.frame_canvas.config(width=first5columns_width + self.vsb.winfo_width(),
@@ -254,18 +256,18 @@ class App:
         temp_4.set('-')
 
         # add a new row of widgets to the grid
-        list_temp = [Label(self.frame_buttons, text=self.rows - 1, width=7, bg=self.frame_background,
+        list_temp = [Label(self.frame_buttons, text=self.rows - 1, width=10, bg=self.frame_background,
                            fg=self.widget_foreground),
-                     Entry(self.frame_buttons, textvariable=value, width=7, bg=self.frame_background,
+                     Entry(self.frame_buttons, textvariable=value, width=10, bg=self.frame_background,
                            fg=self.widget_foreground, relief='solid', highlightthickness=1,
                            highlightbackground=self.widget_foreground),
-                     Label(self.frame_buttons, textvariable=temp_1, width=7, bg=self.frame_background,
+                     Label(self.frame_buttons, textvariable=temp_1, width=10, bg=self.frame_background,
                            fg=self.widget_foreground),
-                     Label(self.frame_buttons, textvariable=temp_2, width=7, bg=self.frame_background,
+                     Label(self.frame_buttons, textvariable=temp_2, width=10, bg=self.frame_background,
                            fg=self.widget_foreground),
-                     Label(self.frame_buttons, textvariable=temp_3, width=7, bg=self.frame_background,
+                     Label(self.frame_buttons, textvariable=temp_3, width=10, bg=self.frame_background,
                            fg=self.widget_foreground),
-                     Label(self.frame_buttons, textvariable=temp_4, width=7, bg=self.frame_background,
+                     Label(self.frame_buttons, textvariable=temp_4, width=10, bg=self.frame_background,
                            fg=self.widget_foreground)]
 
         self.initial_quotas.append(temp_1)
@@ -287,7 +289,7 @@ class App:
         self.frame_buttons.update_idletasks()
 
         # resize the canvas frame (width fits depending on input, height is static)
-        first5columns_width = sum(self.grid[0][j].winfo_width() for j in range(0, self.columns))
+        first5columns_width = sum(self.grid[0][j].winfo_width() for j in range(0, self.columns)) + 4
         first5rows_height = 190
 
         self.frame_canvas.config(width=first5columns_width + self.vsb.winfo_width(),
@@ -338,7 +340,7 @@ class App:
             self.frame_buttons.update_idletasks()
 
             # resize the canvas frame (width fits depending on input, height is static)
-            first5columns_width = sum(self.grid[0][j].winfo_width() for j in range(0, self.columns))
+            first5columns_width = sum(self.grid[0][j].winfo_width() for j in range(0, self.columns)) + 4
             first5rows_height = 190
 
             self.frame_canvas.config(width=first5columns_width + self.vsb.winfo_width(),
@@ -394,8 +396,9 @@ class App:
             if self.num_seats.get() == '':
                 valid_input = False
             if not valid_input:
-                self.message_variable.set("Invalid input type for amount of seats. Make sure there are\n"
-                                          "not any letters in the textbox for the amount of seats.")
+                self.message_variable.set(
+                    "Invalid input type for amount of seats. Make sure there are not any letters in the textbox for the\n"
+                    "amount of seats. not any letters in the textbox for the amount of seats.")
             else:
                 num_seats = 0
                 try:
@@ -404,8 +407,8 @@ class App:
                     valid_input = False
 
                 if not valid_input:
-                    self.message_variable.set('Invalid character type detected in seats textbox. Make\n'
-                                              'sure the seats field doesn\'t contain letters.')
+                    self.message_variable.set(
+                        'Invalid character type detected in seats textbox. Make sure the seats field doesn\'t contain letters.')
                 else:
                     populations = []
                     for i, x in enumerate(self.populations):
@@ -419,8 +422,9 @@ class App:
                             break
 
                     if not valid_input:
-                        self.message_variable.set("At least one population textfield is empty or contains\n"
-                                                  "invalid characters. Remove the state or enter a valid value.")
+                        self.message_variable.set(
+                            "At least one population textfield is empty or contains invalid characters. Remove the state or enter\n"
+                            "a valid population value.")
                     else:
                         num_states = self.rows - 1
 
@@ -450,10 +454,8 @@ class App:
 
                             if original_divisor is None:
                                 self.message_variable.set(
-                                    f'Warning: results could not be calculated. This can sometimes\n'
-                                    f'happen using {selected}\'s method with very specific number\n'
-                                    f'combinations and is rare. Make sure the correct values are '
-                                    f'entered.')
+                                    f'Warning: results could not be calculated. This can sometimes happen using {selected}\'s method\n'
+                                    f'with very specific number combinations and is rare. Make sure the correct values are entered.\n')
 
                                 # remove calculation values
                                 for i in range(len(self.populations)):
@@ -476,21 +478,21 @@ class App:
                                 self.rows += 1
 
                                 # add a new row of widgets to the grid
-                                list_temp = [Label(self.frame_buttons, text='total', width=7, bg=self.frame_background,
+                                list_temp = [Label(self.frame_buttons, text='total', width=10, bg=self.frame_background,
                                                    fg=self.widget_foreground),
-                                             Label(self.frame_buttons, text=sum(populations), width=7,
+                                             Label(self.frame_buttons, text=sum(populations), width=10,
                                                    bg=self.frame_background,
                                                    fg=self.widget_foreground),
                                              Label(self.frame_buttons, text=f'~{round(sum(initial_quotas), 4)}',
-                                                   width=7, bg=self.frame_background,
+                                                   width=10, bg=self.frame_background,
                                                    fg=self.widget_foreground),
-                                             Label(self.frame_buttons, text=f'~{round(sum(final_quotas), 4)}', width=7,
+                                             Label(self.frame_buttons, text=f'~{round(sum(final_quotas), 4)}', width=10,
                                                    bg=self.frame_background,
                                                    fg=self.widget_foreground),
-                                             Label(self.frame_buttons, text=sum(initial_fair_shares), width=7,
+                                             Label(self.frame_buttons, text=sum(initial_fair_shares), width=10,
                                                    bg=self.frame_background,
                                                    fg=self.widget_foreground),
-                                             Label(self.frame_buttons, text=sum(final_fair_shares), width=7,
+                                             Label(self.frame_buttons, text=sum(final_fair_shares), width=10,
                                                    bg=self.frame_background,
                                                    fg=self.widget_foreground)]
 
@@ -510,7 +512,8 @@ class App:
                                 self.frame_buttons.update_idletasks()
 
                                 # resize the canvas frame (width fits depending on input, height is static)
-                                first5columns_width = sum(self.grid[0][j].winfo_width() for j in range(0, self.columns))
+                                first5columns_width = sum(
+                                    self.grid[0][j].winfo_width() for j in range(0, self.columns)) + 4
                                 first5rows_height = 190
 
                                 self.frame_canvas.config(width=first5columns_width + self.vsb.winfo_width(),
