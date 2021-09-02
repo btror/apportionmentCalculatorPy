@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.font as font
 from tkinter import *
 from methods.hamilton import Hamilton
 from methods.jefferson import Jefferson
@@ -15,9 +16,17 @@ class App:
         self.root = tk.Tk()
         self.root.grid_rowconfigure(0, weight=1)
         self.root.columnconfigure(0, weight=1)
-        self.root.geometry('600x400')
+        self.root.geometry('600x450')
         # self.root.resizable(False, False)
         self.root.title('Ticer\'s Apportionment Calculator')
+
+        # colors
+        self.frame_background = 'gray23'
+        self.widget_foreground = 'ghost white'
+
+        # fonts
+        self.font = font.Font(family='Helvetica', size=12, weight='bold')
+        self.tiny_font = font.Font(family='Helvetica', size=10, weight='bold')
 
         # create lists to hold populations
         self.populations = []
@@ -29,10 +38,11 @@ class App:
 
         frame_main = tk.Frame(self.root)
         frame_main.grid(sticky='news')
+        frame_main.configure(bg=self.frame_background)
 
         # top label (title)
-        Label(frame_main, text='Desktop 0.5.7').place(x=66, y=20,
-                                                      anchor=CENTER)
+        Label(frame_main, text='Desktop 0.6.7', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
+                                                                                                           anchor=CENTER)
 
         # select apportionment method
         options = [
@@ -43,35 +53,53 @@ class App:
         ]
         self.clicked = StringVar()
         self.clicked.set('Hamilton')
-        self.drop_down = OptionMenu(frame_main, self.clicked, *options).place(x=310, y=70, anchor=CENTER)
+        self.drop_down = OptionMenu(frame_main, self.clicked, *options).place(x=365, y=70, anchor=CENTER)
 
         # entry for amount of seats
-        Label(frame_main, text='seats: ').place(x=50, y=70, anchor=CENTER)
+        Label(frame_main, text='seats: ', bg=self.frame_background, fg=self.widget_foreground, font=self.font).place(
+            x=45, y=70,
+            anchor=CENTER)
         self.num_seats = StringVar()
-        self.input_seats = Entry(frame_main, textvariable=self.num_seats, width=7).place(x=95, y=70, anchor=CENTER)
+        self.input_seats = Entry(frame_main, textvariable=self.num_seats, width=7, bg=self.frame_background,
+                                 fg=self.widget_foreground, relief='solid', highlightthickness=1,
+                                 highlightbackground=self.widget_foreground, font=self.font).place(x=110, y=71,
+                                                                                                   anchor=CENTER)
 
         # add, remove, clear, and calculate buttons
-        self.button_remove = Button(frame_main, text='-', width=3, height=1, command=self.remove_state).place(x=160,
-                                                                                                              y=70,
-                                                                                                              anchor=CENTER)
-        self.button_add = Button(frame_main, text='+', width=3, height=1, command=self.add_state).place(x=190, y=70,
-                                                                                                        anchor=CENTER)
-        self.button_clear = Button(frame_main, text='CLEAR', width=6, height=1, command=self.clear_states).place(
-            x=210, y=100,
+        self.button_remove = Button(frame_main, text='-', width=3, height=1, bg=self.frame_background,
+                                    fg=self.widget_foreground, relief='groove',
+                                    borderwidth=2, font=self.font,
+                                    command=self.remove_state).place(x=190,
+                                                                     y=70,
+                                                                     anchor=CENTER)
+
+        self.button_add = Button(frame_main, text='+', width=3, height=1, bg=self.frame_background,
+                                 fg=self.widget_foreground, relief='groove',
+                                 borderwidth=2, font=self.font, command=self.add_state).place(x=231, y=70,
+                                                                                              anchor=CENTER)
+
+        self.button_calculate = Button(frame_main, text='=', width=3, height=1, bg=self.frame_background,
+                                       fg=self.widget_foreground,
+                                       relief='groove', borderwidth=2, font=self.font, command=self.calculate).place(
+            x=272,
+            y=70,
             anchor=CENTER)
-        self.button_calculate = Button(frame_main, text='=', width=3, height=1, command=self.calculate).place(x=220,
-                                                                                                              y=70,
-                                                                                                              anchor=CENTER)
+
+        self.button_clear = Button(frame_main, text='CLEAR', width=7, height=1, bg=self.frame_background,
+                                   fg=self.widget_foreground,
+                                   relief='groove', borderwidth=2, font=self.font, command=self.clear_states).place(
+            x=210, y=105,
+            anchor=CENTER)
 
         # create labels for original and modified divisor
         self.message_variable = StringVar()
 
-        Label(frame_main, textvariable=self.message_variable, width=50).place(
-            relx=.5, y=365, anchor=CENTER)
+        Label(frame_main, textvariable=self.message_variable, width=50, bg=self.frame_background, fg=self.widget_foreground, font=self.tiny_font).place(
+            x=240, y=377, anchor=CENTER)
 
         # create a frame for the canvas
         self.frame_canvas = tk.Frame(frame_main)
-        self.frame_canvas.place(x=240, y=220, anchor=CENTER)
+        self.frame_canvas.place(x=245, y=240, anchor=CENTER)
         self.frame_canvas.grid_rowconfigure(0, weight=1)
         self.frame_canvas.grid_columnconfigure(0, weight=1)
 
@@ -79,7 +107,8 @@ class App:
         self.frame_canvas.grid_propagate(False)
 
         # add a canvas to the frame
-        self.canvas = tk.Canvas(self.frame_canvas)
+        self.canvas = tk.Canvas(self.frame_canvas, bg=self.frame_background,
+                                relief='flat')  # ---------------------------------------
         self.canvas.grid(row=0, column=0, sticky="news")
 
         # add a scrollbar to the canvas
@@ -88,7 +117,7 @@ class App:
         self.canvas.configure(yscrollcommand=self.vsb.set)
 
         # create a frame to contain the widgets
-        self.frame_buttons = tk.Frame(self.canvas)
+        self.frame_buttons = tk.Frame(self.canvas, bg=self.frame_background)
         self.canvas.create_window((0, 0), window=self.frame_buttons, anchor='nw')
 
         # initialize a default number of rows and columns (cols is ALWAYS 6 and rows is dynamic, but starts as 2)
@@ -99,12 +128,24 @@ class App:
         self.grid = []
 
         # add the first row of widgets (all labels)
-        list_temp = [Label(self.frame_buttons, text='\nstate', width=9),
-                     Label(self.frame_buttons, text='state\npopulation', width=9),
-                     Label(self.frame_buttons, text='initial\nquotas', width=9),
-                     Label(self.frame_buttons, text='final\nquotas', width=9),
-                     Label(self.frame_buttons, text='initial\nfair share', width=9),
-                     Label(self.frame_buttons, text='final\nfair share', width=9)]
+        list_temp = [Label(self.frame_buttons, text='\nstate', width=9, bg=self.frame_background,
+                           fg=self.widget_foreground,
+                           relief='flat'),
+                     Label(self.frame_buttons, text='state\npopulation', width=9, bg=self.frame_background,
+                           fg=self.widget_foreground,
+                           relief='flat'),
+                     Label(self.frame_buttons, text='initial\nquotas', width=9, bg=self.frame_background,
+                           fg=self.widget_foreground,
+                           relief='flat'),
+                     Label(self.frame_buttons, text='final\nquotas', width=9, bg=self.frame_background,
+                           fg=self.widget_foreground,
+                           relief='flat'),
+                     Label(self.frame_buttons, text='initial\nfair share', width=9, bg=self.frame_background,
+                           fg=self.widget_foreground,
+                           relief='flat'),
+                     Label(self.frame_buttons, text='final\nfair share', width=9, bg=self.frame_background,
+                           fg=self.widget_foreground,
+                           relief='flat')]
 
         self.grid.append(list_temp)
 
@@ -127,12 +168,23 @@ class App:
         self.temp_4.set('-')
 
         # add the second row of widgets (all labels and one entry)
-        list_temp = [Label(self.frame_buttons, text='1', width=7),
-                     Entry(self.frame_buttons, textvariable=self.default_entry_value, width=7),
-                     Label(self.frame_buttons, text='-', textvariable=self.temp_1, width=7),
-                     Label(self.frame_buttons, text='-', textvariable=self.temp_2, width=7),
-                     Label(self.frame_buttons, text='-', textvariable=self.temp_3, width=7),
-                     Label(self.frame_buttons, text='-', textvariable=self.temp_4, width=7)]
+        list_temp = [Label(self.frame_buttons, text='1', width=7, bg=self.frame_background,
+                           fg=self.widget_foreground),
+                     Entry(self.frame_buttons, textvariable=self.default_entry_value, width=7, bg=self.frame_background,
+                           fg=self.widget_foreground, relief='solid', highlightthickness=1,
+                           highlightbackground=self.widget_foreground),
+                     Label(self.frame_buttons, text='-', textvariable=self.temp_1, width=7, bg=self.frame_background,
+                           fg=self.widget_foreground,
+                           relief='flat'),
+                     Label(self.frame_buttons, text='-', textvariable=self.temp_2, width=7, bg=self.frame_background,
+                           fg=self.widget_foreground,
+                           relief='flat'),
+                     Label(self.frame_buttons, text='-', textvariable=self.temp_3, width=7, bg=self.frame_background,
+                           fg=self.widget_foreground,
+                           relief='flat'),
+                     Label(self.frame_buttons, text='-', textvariable=self.temp_4, width=7, bg=self.frame_background,
+                           fg=self.widget_foreground,
+                           relief='flat')]
 
         self.grid.append(list_temp)
         self.populations.append(self.default_entry_value)
@@ -202,12 +254,19 @@ class App:
         temp_4.set('-')
 
         # add a new row of widgets to the grid
-        list_temp = [Label(self.frame_buttons, text=self.rows - 1, width=7),
-                     Entry(self.frame_buttons, textvariable=value, width=7),
-                     Label(self.frame_buttons, textvariable=temp_1, width=7),
-                     Label(self.frame_buttons, textvariable=temp_2, width=7),
-                     Label(self.frame_buttons, textvariable=temp_3, width=7),
-                     Label(self.frame_buttons, textvariable=temp_4, width=7)]
+        list_temp = [Label(self.frame_buttons, text=self.rows - 1, width=7, bg=self.frame_background,
+                           fg=self.widget_foreground),
+                     Entry(self.frame_buttons, textvariable=value, width=7, bg=self.frame_background,
+                           fg=self.widget_foreground, relief='solid', highlightthickness=1,
+                           highlightbackground=self.widget_foreground),
+                     Label(self.frame_buttons, textvariable=temp_1, width=7, bg=self.frame_background,
+                           fg=self.widget_foreground),
+                     Label(self.frame_buttons, textvariable=temp_2, width=7, bg=self.frame_background,
+                           fg=self.widget_foreground),
+                     Label(self.frame_buttons, textvariable=temp_3, width=7, bg=self.frame_background,
+                           fg=self.widget_foreground),
+                     Label(self.frame_buttons, textvariable=temp_4, width=7, bg=self.frame_background,
+                           fg=self.widget_foreground)]
 
         self.initial_quotas.append(temp_1)
         self.final_quotas.append(temp_2)
@@ -417,13 +476,23 @@ class App:
                                 self.rows += 1
 
                                 # add a new row of widgets to the grid
-                                list_temp = [Label(self.frame_buttons, text='total', width=9),
-                                             Label(self.frame_buttons, text=sum(populations), width=7),
+                                list_temp = [Label(self.frame_buttons, text='total', width=7, bg=self.frame_background,
+                                                   fg=self.widget_foreground),
+                                             Label(self.frame_buttons, text=sum(populations), width=7,
+                                                   bg=self.frame_background,
+                                                   fg=self.widget_foreground),
                                              Label(self.frame_buttons, text=f'~{round(sum(initial_quotas), 4)}',
-                                                   width=7),
-                                             Label(self.frame_buttons, text=f'~{round(sum(final_quotas), 4)}', width=7),
-                                             Label(self.frame_buttons, text=sum(initial_fair_shares), width=7),
-                                             Label(self.frame_buttons, text=sum(final_fair_shares), width=7)]
+                                                   width=7, bg=self.frame_background,
+                                                   fg=self.widget_foreground),
+                                             Label(self.frame_buttons, text=f'~{round(sum(final_quotas), 4)}', width=7,
+                                                   bg=self.frame_background,
+                                                   fg=self.widget_foreground),
+                                             Label(self.frame_buttons, text=sum(initial_fair_shares), width=7,
+                                                   bg=self.frame_background,
+                                                   fg=self.widget_foreground),
+                                             Label(self.frame_buttons, text=sum(final_fair_shares), width=7,
+                                                   bg=self.frame_background,
+                                                   fg=self.widget_foreground)]
 
                                 self.grid.append(list_temp)
 
