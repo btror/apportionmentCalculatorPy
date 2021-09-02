@@ -41,7 +41,7 @@ class App:
         frame_main.configure(bg=self.frame_background)
 
         # top label (title)
-        Label(frame_main, text='Desktop 0.7.0', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
+        Label(frame_main, text='Desktop 0.8.0', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
                                                                                                            anchor=CENTER)
 
         # select apportionment method
@@ -53,7 +53,40 @@ class App:
         ]
         self.clicked = StringVar()
         self.clicked.set('Hamilton')
-        self.drop_down = OptionMenu(frame_main, self.clicked, *options).place(x=365, y=70, anchor=CENTER)
+        # self.drop_down = OptionMenu(frame_main, self.clicked, *options).place(x=365, y=70, anchor=CENTER)
+        self.button_hamilton = Button(frame_main, text='Hamilton', width=8, height=1, bg=self.frame_background,
+                                      fg=self.widget_foreground, relief='groove',
+                                      borderwidth=2, font=self.font,
+                                      command=self.change_method_hamilton)
+        self.button_hamilton.place(x=365,
+                                   y=70,
+                                   anchor=CENTER)
+
+        self.button_jefferson = Button(frame_main, text='Jefferson', width=8, height=1, bg=self.frame_background,
+                                       fg=self.widget_foreground, relief='groove',
+                                       borderwidth=2, font=self.font,
+                                       command=self.change_method_jefferson)
+        self.button_jefferson.place(x=456,
+                                    y=70,
+                                    anchor=CENTER)
+
+        self.button_adam = Button(frame_main, text='Adam', width=5, height=1, bg=self.frame_background,
+                                  fg=self.widget_foreground, relief='groove',
+                                  borderwidth=2, font=self.font,
+                                  command=self.change_method_adam)
+        self.button_adam.place(x=532,
+                               y=70,
+                               anchor=CENTER)
+
+        self.button_webster = Button(frame_main, text='Webster', width=7, height=1, bg=self.frame_background,
+                                     fg=self.widget_foreground, relief='groove',
+                                     borderwidth=2, font=self.font,
+                                     command=self.change_method_webster)
+        self.button_webster.place(x=603,
+                                  y=70,
+                                  anchor=CENTER)
+
+        self.change_method_hamilton()
 
         # entry for amount of seats
         Label(frame_main, text='seats: ', bg=self.frame_background, fg=self.widget_foreground, font=self.font).place(
@@ -100,7 +133,7 @@ class App:
 
         # create a frame for the canvas
         self.frame_canvas = tk.Frame(frame_main)
-        self.frame_canvas.place(x=335, y=240, anchor=CENTER)
+        self.frame_canvas.place(x=341, y=240, anchor=CENTER)
         self.frame_canvas.grid_rowconfigure(0, weight=1)
         self.frame_canvas.grid_columnconfigure(0, weight=1)
 
@@ -218,6 +251,38 @@ class App:
 
         # launch
         self.root.mainloop()
+
+    def change_method_hamilton(self):
+        self.clicked.set('Hamilton')
+        self.button_hamilton.config(background=self.widget_foreground, foreground=self.frame_background)
+
+        self.button_jefferson.config(background=self.frame_background, foreground=self.widget_foreground)
+        self.button_adam.config(background=self.frame_background, foreground=self.widget_foreground)
+        self.button_webster.config(background=self.frame_background, foreground=self.widget_foreground)
+
+    def change_method_jefferson(self):
+        self.clicked.set('Jefferson')
+        self.button_jefferson.config(background=self.widget_foreground, foreground=self.frame_background)
+
+        self.button_hamilton.config(background=self.frame_background, foreground=self.widget_foreground)
+        self.button_adam.config(background=self.frame_background, foreground=self.widget_foreground)
+        self.button_webster.config(background=self.frame_background, foreground=self.widget_foreground)
+
+    def change_method_adam(self):
+        self.clicked.set('Adam')
+        self.button_adam.config(background=self.widget_foreground, foreground=self.frame_background)
+
+        self.button_jefferson.config(background=self.frame_background, foreground=self.widget_foreground)
+        self.button_hamilton.config(background=self.frame_background, foreground=self.widget_foreground)
+        self.button_webster.config(background=self.frame_background, foreground=self.widget_foreground)
+
+    def change_method_webster(self):
+        self.clicked.set('Webster')
+        self.button_webster.config(background=self.widget_foreground, foreground=self.frame_background)
+
+        self.button_jefferson.config(background=self.frame_background, foreground=self.widget_foreground)
+        self.button_adam.config(background=self.frame_background, foreground=self.widget_foreground)
+        self.button_hamilton.config(background=self.frame_background, foreground=self.widget_foreground)
 
     def add_state(self):
         """
