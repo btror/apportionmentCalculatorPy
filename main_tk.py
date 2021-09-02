@@ -16,7 +16,7 @@ class App:
         self.root = tk.Tk()
         self.root.grid_rowconfigure(0, weight=1)
         self.root.columnconfigure(0, weight=1)
-        self.root.geometry('750x450')
+        self.root.geometry('750x430')
         # self.root.resizable(False, False)
         self.root.title('Ticer\'s Apportionment Calculator')
 
@@ -41,7 +41,7 @@ class App:
         frame_main.configure(bg=self.frame_background)
 
         # top label (title)
-        Label(frame_main, text='Desktop 0.7.7', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
+        Label(frame_main, text='Desktop 0.7.0', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
                                                                                                            anchor=CENTER)
 
         # select apportionment method
@@ -131,22 +131,22 @@ class App:
         # add the first row of widgets (all labels)
         list_temp = [Label(self.frame_buttons, text='\nstate', width=14, bg=self.frame_background,
                            fg=self.widget_foreground,
-                           relief='flat'),
+                           relief='flat', pady=10),
                      Label(self.frame_buttons, text='state\npopulation', width=14, bg=self.frame_background,
                            fg=self.widget_foreground,
-                           relief='flat'),
+                           relief='flat', pady=10),
                      Label(self.frame_buttons, text='initial\nquotas', width=14, bg=self.frame_background,
                            fg=self.widget_foreground,
-                           relief='flat'),
+                           relief='flat', pady=10),
                      Label(self.frame_buttons, text='final\nquotas', width=14, bg=self.frame_background,
                            fg=self.widget_foreground,
-                           relief='flat'),
+                           relief='flat', pady=10),
                      Label(self.frame_buttons, text='initial\nfair share', width=14, bg=self.frame_background,
                            fg=self.widget_foreground,
-                           relief='flat'),
+                           relief='flat', pady=10),
                      Label(self.frame_buttons, text='final\nfair share', width=14, bg=self.frame_background,
                            fg=self.widget_foreground,
-                           relief='flat')]
+                           relief='flat', pady=10)]
 
         self.grid.append(list_temp)
 
