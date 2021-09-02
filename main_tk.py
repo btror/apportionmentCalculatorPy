@@ -16,7 +16,7 @@ class App:
         self.root = tk.Tk()
         self.root.grid_rowconfigure(0, weight=1)
         self.root.columnconfigure(0, weight=1)
-        self.root.geometry('750x430')
+        self.root.geometry('685x430')
         # self.root.resizable(False, False)
         self.root.title('Ticer\'s Apportionment Calculator')
 
@@ -27,6 +27,7 @@ class App:
         # fonts
         self.font = font.Font(family='Helvetica', size=12, weight='bold')
         self.tiny_font = font.Font(family='Helvetica', size=10, weight='bold')
+        self.seats_font = font.Font(family='Helvetica', size=15, weight='bold')
 
         # create lists to hold populations
         self.populations = []
@@ -41,19 +42,13 @@ class App:
         frame_main.configure(bg=self.frame_background)
 
         # top label (title)
-        Label(frame_main, text='Desktop 0.8.0', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
+        Label(frame_main, text='Desktop 0.8.1', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
                                                                                                            anchor=CENTER)
 
         # select apportionment method
-        options = [
-            'Hamilton',
-            'Jefferson',
-            'Adam',
-            'Webster'
-        ]
+
         self.clicked = StringVar()
         self.clicked.set('Hamilton')
-        # self.drop_down = OptionMenu(frame_main, self.clicked, *options).place(x=365, y=70, anchor=CENTER)
         self.button_hamilton = Button(frame_main, text='Hamilton', width=8, height=1, bg=self.frame_background,
                                       fg=self.widget_foreground, relief='groove',
                                       borderwidth=2, font=self.font,
@@ -89,13 +84,14 @@ class App:
         self.change_method_hamilton()
 
         # entry for amount of seats
-        Label(frame_main, text='seats: ', bg=self.frame_background, fg=self.widget_foreground, font=self.font).place(
-            x=45, y=70,
+        Label(frame_main, text='seats: ', bg=self.frame_background, fg=self.widget_foreground,
+              font=self.font).place(
+            x=45, y=69,
             anchor=CENTER)
         self.num_seats = StringVar()
-        self.input_seats = Entry(frame_main, textvariable=self.num_seats, width=7, bg=self.frame_background,
+        self.input_seats = Entry(frame_main, textvariable=self.num_seats, width=6, bg=self.frame_background,
                                  fg=self.widget_foreground, relief='solid', highlightthickness=1,
-                                 highlightbackground=self.widget_foreground, font=self.font).place(x=110, y=71,
+                                 highlightbackground=self.widget_foreground, font=self.seats_font).place(x=108, y=70,
                                                                                                    anchor=CENTER)
 
         # add, remove, clear, and calculate buttons
