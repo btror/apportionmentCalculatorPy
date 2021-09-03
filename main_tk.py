@@ -47,7 +47,7 @@ class App:
         frame_main.configure(bg=self.frame_background)
 
         # top label (title)
-        Label(frame_main, text='Desktop 0.9.0', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
+        Label(frame_main, text='Desktop 0.9.1', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
                                                                                                            anchor=CENTER)
 
         # select apportionment method
@@ -444,7 +444,7 @@ class App:
         )
 
         for i, d in enumerate(data):
-            for j in range(len(d) - 1):
+            for j in range(len(d)):
                 worksheet.write(j, i, d[j])
 
         workbook.close()
