@@ -1,8 +1,9 @@
 import tkinter as tk
 import tkinter.font as font
 import csv
-import pandas as pd
+import xlsxwriter
 from tkinter import *
+from tkinter.filedialog import asksaveasfile
 from methods.hamilton import Hamilton
 from methods.jefferson import Jefferson
 from methods.adam import Adam
@@ -46,7 +47,7 @@ class App:
         frame_main.configure(bg=self.frame_background)
 
         # top label (title)
-        Label(frame_main, text='Desktop 0.8.2', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
+        Label(frame_main, text='Desktop 0.9.0', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
                                                                                                            anchor=CENTER)
 
         # select apportionment method
@@ -254,10 +255,12 @@ class App:
 
         file = Menu(menu_bar, tearoff=0)
         menu_bar.add_cascade(label='File', menu=file)
-        file.add_command(label='New', command=None)
-        file.add_command(label='Open...', command=None)
-        file.add_command(label='Save', command=self.save_data)
-        file.add_command(label='Save as', command=self.save_data)
+        file.add_command(label='Import', command=None)
+        submenu_1 = Menu(file, tearoff=0)
+        submenu_1.add_command(label='Save as .csv', command=self.save_csv)
+        submenu_1.add_command(label='Save as .xlsx', command=self.save_xlsx)
+        file.add_cascade(label='Export', menu=submenu_1)
+
         file.add_separator()
         file.add_command(label='Exit', command=self.root.destroy)
 
@@ -277,14 +280,14 @@ class App:
         # launch
         self.root.mainloop()
 
-    def save_data(self):
-        file = open('data/data.csv', 'w', newline='')
+    def save_csv(self):
+        new_file = asksaveasfile(defaultextension='*.*', filetypes=[('csv file', '.csv')])
 
-        with file:
+        with new_file:
             headers = ['method', 'seats', 'original_divisor', 'modified_divisor', 'state_number', 'population',
                        'initial_quota', 'final_quota', 'initial_fair_share',
                        'final_fair_share']
-            writer = csv.DictWriter(file, fieldnames=headers)
+            writer = csv.DictWriter(new_file, fieldnames=headers)
             writer.writeheader()
 
             method = self.clicked.get()
@@ -327,19 +330,124 @@ class App:
                 list_final_fair_shares.append(self.final_fair_shares[i].get())
 
             for i in range(len(list_state_numbers)):
-                writer.writerow({headers[0]: method,
-                                 headers[1]: seats,
-                                 headers[2]: original_divisor,
-                                 headers[3]: modified_divisor,
-                                 headers[4]: list_state_numbers[i],
-                                 headers[5]: list_populations[i],
-                                 headers[6]: list_initial_quotas[i],
-                                 headers[7]: list_final_quotas[i],
-                                 headers[8]: list_initial_fair_shares[i],
-                                 headers[9]: list_final_fair_shares[i]})
+                if i == 0:
+                    writer.writerow({headers[0]: method,
+                                     headers[1]: seats,
+                                     headers[2]: original_divisor,
+                                     headers[3]: modified_divisor,
+                                     headers[4]: list_state_numbers[i],
+                                     headers[5]: list_populations[i],
+                                     headers[6]: list_initial_quotas[i],
+                                     headers[7]: list_final_quotas[i],
+                                     headers[8]: list_initial_fair_shares[i],
+                                     headers[9]: list_final_fair_shares[i]})
+                else:
+                    writer.writerow({headers[0]: '',
+                                     headers[1]: '',
+                                     headers[2]: '',
+                                     headers[3]: '',
+                                     headers[4]: list_state_numbers[i],
+                                     headers[5]: list_populations[i],
+                                     headers[6]: list_initial_quotas[i],
+                                     headers[7]: list_final_quotas[i],
+                                     headers[8]: list_initial_fair_shares[i],
+                                     headers[9]: list_final_fair_shares[i]})
 
-        # data = pd.read_csv(r'data/data.csv')
-        # data.to_excel(r'data/data.xlsx', index=None, header=True)
+    def save_xlsx(self):
+        new_file = asksaveasfile(defaultextension='*.*', filetypes=[('xlsx file', '.xlsx')])
+
+        workbook = xlsxwriter.Workbook(new_file.name)
+        worksheet = workbook.add_worksheet("Data Sheet")
+
+        headers = ['method', 'seats', 'original_divisor', 'modified_divisor', 'state_number', 'population',
+                   'initial_quota', 'final_quota', 'initial_fair_share',
+                   'final_fair_share']
+
+        method = self.clicked.get()
+        seats = self.num_seats.get()
+
+        if seats == '':
+            seats = '-'
+
+        original_divisor = self.original_divisor
+        modified_divisor = self.modified_divisor
+
+        if self.original_divisor is None:
+            original_divisor = '-'
+
+        if self.modified_divisor is None:
+            modified_divisor = '-'
+
+        list_method = [headers[0]]
+        for i in range(len(self.populations)):
+            if i == 0:
+                list_method.append(method)
+            else:
+                list_method.append('')
+
+        list_seats = [headers[1]]
+        for i in range(len(self.populations)):
+            if i == 0:
+                list_seats.append(seats)
+            else:
+                list_seats.append('')
+
+        list_original_divisor = [headers[2]]
+        for i in range(len(self.populations)):
+            if i == 0:
+                list_original_divisor.append(original_divisor)
+            else:
+                list_original_divisor.append('')
+
+        list_modified_divisor = [headers[3]]
+        for i in range(len(self.populations)):
+            if i == 0:
+                list_modified_divisor.append(modified_divisor)
+            else:
+                list_modified_divisor.append('')
+
+        list_state_numbers = [headers[4]]
+        for i in range(len(self.populations)):
+            list_state_numbers.append(i + 1)
+
+        list_populations = [headers[5]]
+        for i in range(len(self.populations)):
+            list_populations.append(self.populations[i].get())
+
+        list_initial_quotas = [headers[6]]
+        for i in range(len(self.initial_quotas)):
+            list_initial_quotas.append(self.initial_quotas[i].get())
+
+        list_final_quotas = [headers[7]]
+        for i in range(len(self.final_quotas)):
+            list_final_quotas.append(self.final_quotas[i].get())
+
+        list_initial_fair_shares = [headers[8]]
+        for i in range(len(self.initial_fair_shares)):
+            list_initial_fair_shares.append(self.initial_fair_shares[i].get())
+
+        list_final_fair_shares = [headers[9]]
+        for i in range(len(self.final_fair_shares)):
+            list_final_fair_shares.append(self.final_fair_shares[i].get())
+
+        data = (
+            list_method,
+            list_seats,
+            list_original_divisor,
+            list_modified_divisor,
+            list_state_numbers,
+            list_populations,
+            list_initial_quotas,
+            list_final_quotas,
+            list_initial_fair_shares,
+            list_final_fair_shares
+        )
+
+        for i, d in enumerate(data):
+            for j in range(len(d) - 1):
+                worksheet.write(j, i, d[j])
+
+        workbook.close()
 
     def change_method_hamilton(self):
         self.clicked.set('Hamilton')
