@@ -1,5 +1,7 @@
 import tkinter as tk
 import tkinter.font as font
+import csv
+import pandas as pd
 from tkinter import *
 from methods.hamilton import Hamilton
 from methods.jefferson import Jefferson
@@ -17,7 +19,7 @@ class App:
         self.root.grid_rowconfigure(0, weight=1)
         self.root.columnconfigure(0, weight=1)
         self.root.geometry('685x430')
-        # self.root.resizable(False, False)
+        self.root.resizable(False, False)
         self.root.title('Ticer\'s Apportionment Calculator')
 
         # colors
@@ -36,13 +38,15 @@ class App:
         self.initial_fair_shares = []
         self.final_fair_shares = []
         self.calculate_pressed = False
+        self.original_divisor = None
+        self.modified_divisor = None
 
         frame_main = tk.Frame(self.root)
         frame_main.grid(sticky='news')
         frame_main.configure(bg=self.frame_background)
 
         # top label (title)
-        Label(frame_main, text='Desktop 0.8.1', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
+        Label(frame_main, text='Desktop 0.8.2', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
                                                                                                            anchor=CENTER)
 
         # select apportionment method
@@ -92,7 +96,7 @@ class App:
         self.input_seats = Entry(frame_main, textvariable=self.num_seats, width=6, bg=self.frame_background,
                                  fg=self.widget_foreground, relief='solid', highlightthickness=1,
                                  highlightbackground=self.widget_foreground, font=self.seats_font).place(x=108, y=70,
-                                                                                                   anchor=CENTER)
+                                                                                                         anchor=CENTER)
 
         # add, remove, clear, and calculate buttons
         self.button_remove = Button(frame_main, text='-', width=3, height=1, bg=self.frame_background,
@@ -245,8 +249,97 @@ class App:
         # set the canvas scrolling region
         self.canvas.config(scrollregion=self.canvas.bbox("all"))
 
+        # create menu bar
+        menu_bar = Menu(self.root)
+
+        file = Menu(menu_bar, tearoff=0)
+        menu_bar.add_cascade(label='File', menu=file)
+        file.add_command(label='New', command=None)
+        file.add_command(label='Open...', command=None)
+        file.add_command(label='Save', command=self.save_data)
+        file.add_command(label='Save as', command=self.save_data)
+        file.add_separator()
+        file.add_command(label='Exit', command=self.root.destroy)
+
+        view = Menu(menu_bar, tearoff=0)
+        menu_bar.add_cascade(label='View', menu=view)
+        view.add_command(label='Theme', command=None)
+
+        help_ = Menu(menu_bar, tearoff=0)
+        menu_bar.add_cascade(label='Help', menu=help_)
+        help_.add_command(label='Guide', command=None)
+        help_.add_command(label='Demo', command=None)
+        help_.add_separator()
+        help_.add_command(label='About', command=None)
+
+        self.root.config(menu=menu_bar)
+
         # launch
         self.root.mainloop()
+
+    def save_data(self):
+        file = open('data/data.csv', 'w', newline='')
+
+        with file:
+            headers = ['method', 'seats', 'original_divisor', 'modified_divisor', 'state_number', 'population',
+                       'initial_quota', 'final_quota', 'initial_fair_share',
+                       'final_fair_share']
+            writer = csv.DictWriter(file, fieldnames=headers)
+            writer.writeheader()
+
+            method = self.clicked.get()
+            seats = self.num_seats.get()
+
+            if seats == '':
+                seats = '-'
+
+            original_divisor = self.original_divisor
+            modified_divisor = self.modified_divisor
+
+            if self.original_divisor is None:
+                original_divisor = '-'
+
+            if self.modified_divisor is None:
+                modified_divisor = '-'
+
+            list_state_numbers = []
+            for i in range(len(self.populations)):
+                list_state_numbers.append(i + 1)
+
+            list_populations = []
+            for i in range(len(self.populations)):
+                list_populations.append(self.populations[i].get())
+
+            list_initial_quotas = []
+            for i in range(len(self.initial_quotas)):
+                list_initial_quotas.append(self.initial_quotas[i].get())
+
+            list_final_quotas = []
+            for i in range(len(self.final_quotas)):
+                list_final_quotas.append(self.final_quotas[i].get())
+
+            list_initial_fair_shares = []
+            for i in range(len(self.initial_fair_shares)):
+                list_initial_fair_shares.append(self.initial_fair_shares[i].get())
+
+            list_final_fair_shares = []
+            for i in range(len(self.final_fair_shares)):
+                list_final_fair_shares.append(self.final_fair_shares[i].get())
+
+            for i in range(len(list_state_numbers)):
+                writer.writerow({headers[0]: method,
+                                 headers[1]: seats,
+                                 headers[2]: original_divisor,
+                                 headers[3]: modified_divisor,
+                                 headers[4]: list_state_numbers[i],
+                                 headers[5]: list_populations[i],
+                                 headers[6]: list_initial_quotas[i],
+                                 headers[7]: list_final_quotas[i],
+                                 headers[8]: list_initial_fair_shares[i],
+                                 headers[9]: list_final_fair_shares[i]})
+
+        # data = pd.read_csv(r'data/data.csv')
+        # data.to_excel(r'data/data.xlsx', index=None, header=True)
 
     def change_method_hamilton(self):
         self.clicked.set('Hamilton')
@@ -525,6 +618,9 @@ class App:
                                     self.initial_fair_shares[i].set('-')
                                     self.final_fair_shares[i].set('-')
                             else:
+                                self.original_divisor = original_divisor
+                                self.modified_divisor = modified_divisor
+
                                 # update values in grid
                                 for i, initial_quota in enumerate(initial_quotas):
                                     self.initial_quotas[i].set(round(initial_quota, 4))
