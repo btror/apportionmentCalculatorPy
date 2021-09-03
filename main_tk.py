@@ -1,5 +1,6 @@
 import tkinter as tk
 import tkinter.font as font
+from tkinter import ttk
 import csv
 import xlsxwriter
 from tkinter import *
@@ -49,7 +50,7 @@ class App:
         frame_main.configure(bg=self.frame_background)
 
         # top label (title)
-        Label(frame_main, text='Desktop 0.9.2', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
+        Label(frame_main, text='Desktop 0.9.3', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
                                                                                                            anchor=CENTER)
 
         # select apportionment method
@@ -131,8 +132,25 @@ class App:
         self.message_variable = StringVar()
 
         Label(frame_main, textvariable=self.message_variable, bg=self.frame_background,
-              fg=self.widget_foreground, font=self.tiny_font, width=80).place(
-            relx=.5, y=377, anchor=CENTER)
+              fg=self.widget_foreground, font=self.tiny_font).place(
+            x=20, y=347)
+
+        # create a slider for the divisors
+        self.slider_value = StringVar()
+        style = ttk.Style()
+        style.configure('scale.Horizontal.TScale', background=self.frame_background)
+        self.slider = ttk.Scale(frame_main, from_=0, to=10, orient=HORIZONTAL, style='scale.Horizontal.TScale',
+                                command=self.slider_changed)  # -----------------------------------------------------------------------------------------------------
+        self.slider.place(y=368, x=545)
+
+        self.slider_label_title = Label(frame_main, bg=self.frame_background, fg=self.widget_foreground, font=self.tiny_font, width=13, text='Divisor')
+        self.slider_label_title.place(x=568, y=355, anchor=CENTER)
+
+        self.slider.configure(state='disabled')
+
+        self.slider_label = Label(frame_main, bg=self.frame_background, fg=self.widget_foreground,
+                                  font=self.tiny_font)
+        self.slider_label.place(x=545, y=395)
 
         # create a frame for the canvas
         self.frame_canvas = tk.Frame(frame_main)
@@ -145,7 +163,7 @@ class App:
 
         # add a canvas to the frame
         self.canvas = tk.Canvas(self.frame_canvas, bg=self.frame_background,
-                                relief='flat')  # ---------------------------------------
+                                relief='flat')
         self.canvas.grid(row=0, column=0, sticky="news")
 
         # add a scrollbar to the canvas
@@ -281,6 +299,10 @@ class App:
 
         # launch
         self.root.mainloop()
+
+    def slider_changed(self, event):
+        if self.calculate_pressed and self.clicked != 'Hamilton':
+            self.slider_label.config(text=round(self.slider.get(), 4))
 
     def save_csv(self):
         new_file = asksaveasfile(defaultextension='*.*', filetypes=[('csv file', '.csv')])
@@ -771,8 +793,9 @@ class App:
                                     self.message_variable.set(
                                         f'divisor: {round(original_divisor, 4)}')
                                 else:
-                                    self.message_variable.set(f'original divisor: {round(original_divisor, 4)}  |  modified divisor: {round(modified_divisor, 4)}\n\n'
-                                                              f'lowest possible divisor: ~{round(lower_boundary, 4)}  |  highest possible divisor: ~{round(upper_boundary, 4)}')
+                                    self.message_variable.set(
+                                        f'original divisor: {round(original_divisor, 4)}  |  modified divisor: {round(modified_divisor, 4)}\n\n'
+                                        f'lowest possible divisor: ~{round(lower_boundary, 4)}  |  highest possible divisor: ~{round(upper_boundary, 4)}')
 
                                 self.grid[self.rows - 1][0].grid(row=self.rows - 1, column=0, sticky='news', padx=10)
                                 self.grid[self.rows - 1][1].grid(row=self.rows - 1, column=1, sticky='news', padx=10)
@@ -794,6 +817,10 @@ class App:
 
                                 # set canvas scrolling region
                                 self.canvas.config(scrollregion=self.canvas.bbox("all"))
+
+                                if selected != 'Hamilton':
+                                    self.slider.config(state='normal', from_=self.lower_boundary, to=self.upper_boundary, value=self.modified_divisor)
+                                    self.slider_label.config(text=round(self.modified_divisor, 4))
 
                                 # set calculate pressed to true
                                 self.calculate_pressed = True
