@@ -132,8 +132,8 @@ class App:
         self.message_variable = StringVar()
 
         Label(frame_main, textvariable=self.message_variable, bg=self.frame_background,
-              fg=self.widget_foreground, font=self.tiny_font).place(
-            x=20, y=347)
+              fg=self.widget_foreground, font=self.tiny_font, width=65).place(
+            relx=.56, y=380, anchor=CENTER)
 
         # create a slider for the divisors
         self.slider_value = StringVar()
@@ -141,16 +141,16 @@ class App:
         style.configure('scale.Horizontal.TScale', background=self.frame_background)
         self.slider = ttk.Scale(frame_main, from_=0, to=10, orient=HORIZONTAL, style='scale.Horizontal.TScale',
                                 command=self.slider_changed)  # -----------------------------------------------------------------------------------------------------
-        self.slider.place(y=368, x=545)
+        self.slider.place(y=368, x=20)
 
-        self.slider_label_title = Label(frame_main, bg=self.frame_background, fg=self.widget_foreground, font=self.tiny_font, width=13, text='Divisor')
-        self.slider_label_title.place(x=568, y=355, anchor=CENTER)
+        self.slider_label_title = Label(frame_main, bg=self.frame_background, fg=self.widget_foreground, font=self.tiny_font, text='Divisor')
+        self.slider_label_title.place(x=18, y=345)
 
         self.slider.configure(state='disabled')
 
         self.slider_label = Label(frame_main, bg=self.frame_background, fg=self.widget_foreground,
                                   font=self.tiny_font)
-        self.slider_label.place(x=545, y=395)
+        self.slider_label.place(x=18, y=395)
 
         # create a frame for the canvas
         self.frame_canvas = tk.Frame(frame_main)
@@ -683,8 +683,9 @@ class App:
                 valid_input = False
             if not valid_input:
                 self.message_variable.set(
-                    "Invalid input type for amount of seats. Make sure there are not any letters in the textbox for the\n"
-                    "amount of seats. not any letters in the textbox for the amount of seats.")
+                    "Invalid input type for amount of seats. Make sure there are not\n"
+                    "any letters in the textbox for the amount of seats. not any letters\n"
+                    "in the textbox for the amount of seats.                  ")
             else:
                 num_seats = 0
                 try:
@@ -694,7 +695,8 @@ class App:
 
                 if not valid_input:
                     self.message_variable.set(
-                        'Invalid character type detected in seats textbox. Make sure the seats field doesn\'t contain letters.')
+                        'Invalid character type detected in seats textbox. Make sure\n'
+                        'the seats field doesn\'t contain letters.                    ')
                 else:
                     populations = []
                     for i, x in enumerate(self.populations):
@@ -709,7 +711,8 @@ class App:
 
                     if not valid_input:
                         self.message_variable.set(
-                            "At least one population textfield is empty or contains invalid characters. Remove the state or enter\n"
+                            "At least one population textfield is empty or contains invalid\n"
+                            "characters. Remove the state or enter a valid population value.\n"
                             "a valid population value.")
                     else:
                         num_states = self.rows - 1
@@ -740,8 +743,10 @@ class App:
 
                             if original_divisor is None:
                                 self.message_variable.set(
-                                    f'Warning: results could not be calculated. This can sometimes happen using {selected}\'s method\n'
-                                    f'with very specific number combinations and is rare. Make sure the correct values are entered.\n')
+                                    f'Warning: results could not be calculated. This can sometimes\n'
+                                    f'happen using {selected}\'s method with very specific number\n'
+                                    f'combinations and is rare. Make sure the correct values are\n'
+                                    f'entered.')
 
                                 # remove calculation values
                                 for i in range(len(self.populations)):
