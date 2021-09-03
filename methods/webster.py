@@ -88,14 +88,14 @@ class Webster:
                                                                                                   final_quotas, sum(
                 self.populations) / self.num_seats, sum(self.populations) / self.num_seats)
 
-        # lower_boundary = self.calculate_lower_boundary(modified_divisor)
-        # upper_boundary = self.calculate_upper_boundary(modified_divisor)
+        lower_boundary = self.calculate_lower_boundary(modified_divisor)
+        upper_boundary = self.calculate_upper_boundary(modified_divisor)
 
         if estimator is None:
             return None, None, None, None, None, None, None
         else:
             return self.original_divisor, modified_divisor, self.original_quotas, final_quotas, self.initial_fair_shares, final_fair_shares, sum(
-                self.initial_fair_shares)
+                self.initial_fair_shares), lower_boundary, upper_boundary
 
     def calculate_lower_boundary(self, divisor):
         """
@@ -120,9 +120,9 @@ class Webster:
                 estimator = estimator / 10
                 divisor = lowest_divisor - estimator
             else:
-                prev_divisor = divisor
+                lowest_divisor = divisor
                 divisor = divisor - estimator
-                if prev_divisor == divisor:
+                if lowest_divisor == divisor:
                     break
             counter += 1
         return lowest_divisor
@@ -150,9 +150,9 @@ class Webster:
                 estimator = estimator / 10
                 divisor = highest_divisor + estimator
             else:
-                prev_divisor = divisor
+                highest_divisor = divisor
                 divisor = divisor + estimator
-                if prev_divisor == divisor:
+                if highest_divisor == divisor:
                     break
             counter += 1
         return highest_divisor

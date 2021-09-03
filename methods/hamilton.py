@@ -80,4 +80,4 @@ class Hamilton:
             return None, None, None, None, None, None, None
         else:
             return self.original_divisor, self.original_divisor, self.original_quotas, final_quotas, \
-                   self.initial_fair_shares, final_fair_shares, sum(self.initial_fair_shares)
+                   self.initial_fair_shares, final_fair_shares, sum(self.initial_fair_shares), 0, 0

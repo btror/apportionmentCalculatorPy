@@ -41,13 +41,15 @@ class App:
         self.calculate_pressed = False
         self.original_divisor = None
         self.modified_divisor = None
+        self.lower_boundary = None
+        self.upper_boundary = None
 
         frame_main = tk.Frame(self.root)
         frame_main.grid(sticky='news')
         frame_main.configure(bg=self.frame_background)
 
         # top label (title)
-        Label(frame_main, text='Desktop 0.9.1', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
+        Label(frame_main, text='Desktop 0.9.2', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
                                                                                                            anchor=CENTER)
 
         # select apportionment method
@@ -129,8 +131,8 @@ class App:
         self.message_variable = StringVar()
 
         Label(frame_main, textvariable=self.message_variable, bg=self.frame_background,
-              fg=self.widget_foreground, font=self.tiny_font).place(
-            x=15, y=377, anchor='w')
+              fg=self.widget_foreground, font=self.tiny_font, width=80).place(
+            relx=.5, y=377, anchor=CENTER)
 
         # create a frame for the canvas
         self.frame_canvas = tk.Frame(frame_main)
@@ -257,8 +259,8 @@ class App:
         menu_bar.add_cascade(label='File', menu=file)
         file.add_command(label='Import', command=None)
         submenu_1 = Menu(file, tearoff=0)
-        submenu_1.add_command(label='Save as .csv', command=self.save_csv)
-        submenu_1.add_command(label='Save as .xlsx', command=self.save_xlsx)
+        submenu_1.add_command(label='.csv file', command=self.save_csv)
+        submenu_1.add_command(label='.xlsx file', command=self.save_xlsx)
         file.add_cascade(label='Export', menu=submenu_1)
 
         file.add_separator()
@@ -712,7 +714,7 @@ class App:
 
                             # gather filtered results
                             original_divisor, modified_divisor, initial_quotas, final_quotas, initial_fair_shares, \
-                            final_fair_shares, total_initial_fair_shares = method.calculate()
+                            final_fair_shares, total_initial_fair_shares, lower_boundary, upper_boundary = method.calculate()
 
                             if original_divisor is None:
                                 self.message_variable.set(
@@ -728,6 +730,8 @@ class App:
                             else:
                                 self.original_divisor = original_divisor
                                 self.modified_divisor = modified_divisor
+                                self.lower_boundary = lower_boundary
+                                self.upper_boundary = upper_boundary
 
                                 # update values in grid
                                 for i, initial_quota in enumerate(initial_quotas):
@@ -763,8 +767,12 @@ class App:
 
                                 self.grid.append(list_temp)
 
-                                self.message_variable.set(
-                                    f'original divisor: {round(original_divisor, 4)}\tmodified divisor: {round(modified_divisor, 4)}')
+                                if selected == 'Hamilton':
+                                    self.message_variable.set(
+                                        f'divisor: {round(original_divisor, 4)}')
+                                else:
+                                    self.message_variable.set(f'original divisor: {round(original_divisor, 4)}  |  modified divisor: {round(modified_divisor, 4)}\n\n'
+                                                              f'lowest possible divisor: ~{round(lower_boundary, 4)}  |  highest possible divisor: ~{round(upper_boundary, 4)}')
 
                                 self.grid[self.rows - 1][0].grid(row=self.rows - 1, column=0, sticky='news', padx=10)
                                 self.grid[self.rows - 1][1].grid(row=self.rows - 1, column=1, sticky='news', padx=10)

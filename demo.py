@@ -69,7 +69,7 @@ def main():
 
     # hamilton
     model_1 = Hamilton(num_seats, states, state_populations)
-    original_divisor_1, modified_divisor_1, initial_quotas_1, final_quotas_1, initial_fair_shares_1, final_fair_shares_1, total_initial_fair_shares_1 = model_1.calculate()
+    original_divisor_1, modified_divisor_1, initial_quotas_1, final_quotas_1, initial_fair_shares_1, final_fair_shares_1, total_initial_fair_shares_1, lower_boundary_2, upper_boundary_2 = model_1.calculate()
 
     # adam
     model_2 = Adam(num_seats, states, state_populations)
