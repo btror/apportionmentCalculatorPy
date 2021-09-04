@@ -56,13 +56,15 @@ class App:
         frame_main.configure(bg=self.frame_background)
 
         # top label (title)
-        Label(frame_main, text='Desktop 0.9.4', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
+        Label(frame_main, text='Desktop 0.9.5', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
                                                                                                            anchor=CENTER)
 
         # select apportionment method
 
         self.clicked = StringVar()
         self.clicked.set('Hamilton')
+        self.last_calculation = StringVar()
+        self.last_calculation.set('Hamilton')
         self.button_hamilton = Button(frame_main, text='Hamilton', width=8, height=1, bg=self.frame_background,
                                       fg=self.widget_foreground, relief='groove',
                                       borderwidth=2, font=self.font,
@@ -138,8 +140,8 @@ class App:
         self.message_variable = StringVar()
 
         Label(frame_main, textvariable=self.message_variable, bg=self.frame_background,
-              fg=self.widget_foreground, font=self.tiny_font, width=65).place(
-            relx=.56, y=380, anchor=CENTER)
+              fg=self.widget_foreground, font=self.tiny_font, width=40).place(
+            relx=.7, y=380, anchor=CENTER)
 
         # create a slider for the divisors
         self.slider_value = StringVar()
@@ -149,8 +151,10 @@ class App:
                                 command=self.slider_changed)  # -----------------------------------------------------------------------------------------------------
         self.slider.place(y=368, x=20)
 
+        self.slider['state'] = DISABLED
+
         self.slider_label_title = Label(frame_main, bg=self.frame_background, fg=self.widget_foreground,
-                                        font=self.tiny_font, text='Divisor')
+                                        font=self.tiny_font, text='')
         self.slider_label_title.place(x=18, y=345)
 
         self.slider.configure(state='disabled')
@@ -158,6 +162,9 @@ class App:
         self.slider_label = Label(frame_main, bg=self.frame_background, fg=self.widget_foreground,
                                   font=self.tiny_font)
         self.slider_label.place(x=18, y=395)
+
+        self.original_divisor_label = Label(frame_main, bg=self.frame_background, fg=self.widget_foreground, font=self.tiny_font)
+        self.original_divisor_label.place(x=130, y=370)
 
         # create a frame for the canvas
         self.frame_canvas = tk.Frame(frame_main)
@@ -323,11 +330,11 @@ class App:
                     break
 
             method = None
-            if self.clicked.get() == 'Jefferson':
+            if self.last_calculation.get() == 'Jefferson':
                 method = Jefferson(float(self.num_seats.get()), self.rows - 1, populations)
-            elif self.clicked.get() == 'Adam':
+            elif self.last_calculation.get() == 'Adam':
                 method = Adam(float(self.num_seats.get()), self.rows - 1, populations)
-            elif self.clicked.get() == 'Webster':
+            elif self.last_calculation.get() == 'Webster':
                 method = Webster(float(self.num_seats.get()), self.rows - 1, populations)
 
             # gather filtered results
@@ -346,7 +353,6 @@ class App:
                 self.final_fair_shares[i].set(round(final_fair_share, 4))
 
             self.message_variable.set(
-                f'original divisor: {round(self.original_divisor, 4)}  |  modified divisor: {round(self.modified_divisor, 4)}\n\n'
                 f'{round(self.lower_boundary, 4)} > acceptable divisor range < {round(self.upper_boundary, 4)}')
 
             self.grid[self.rows - 1][0].config(text='total')
@@ -639,6 +645,13 @@ class App:
         # set canvas scrolling region
         self.canvas.config(scrollregion=self.canvas.bbox("all"))
 
+        # remove slider stuff
+        self.slider['state'] = DISABLED
+        self.slider_label_title.config(text='')
+        self.slider_label.config(text='')
+        self.original_divisor_label.config(text='')
+        self.message_variable.set('')
+
     def remove_state(self):
         """
         remove_state - removes the last row from the grid (4 labels and 1 entry)
@@ -690,6 +703,13 @@ class App:
             # set canvas scrolling region
             self.canvas.config(scrollregion=self.canvas.bbox("all"))
 
+            # remove slider stuff
+            self.slider['state'] = DISABLED
+            self.slider_label_title.config(text='')
+            self.slider_label.config(text='')
+            self.original_divisor_label.config(text='')
+            self.message_variable.set('')
+
     def clear_states(self):
         """
         clear_states - removes the all rows from the grid except for the first two default rows (4 labels and 1 entry)
@@ -716,6 +736,13 @@ class App:
             self.final_fair_shares[0].set('-')
             self.populations[0].set('')
 
+            # remove slider stuff
+            self.slider['state'] = DISABLED
+            self.slider_label_title.config(text='')
+            self.slider_label.config(text='')
+            self.original_divisor_label.config(text='')
+            self.message_variable.set('')
+
     def calculate(self):
         """
         calculate - calculates the results for the selected method
@@ -738,9 +765,9 @@ class App:
                 valid_input = False
             if not valid_input:
                 self.message_variable.set(
-                    "Invalid input type for amount of seats. Make sure there are not\n"
-                    "any letters in the textbox for the amount of seats. not any letters\n"
-                    "in the textbox for the amount of seats.                  ")
+                    "Invalid input type for amount of seats.\n"
+                    "Make sure there are not any letters in\n"
+                    "the field for the amount of seats.")
             else:
                 num_seats = 0
                 try:
@@ -750,8 +777,8 @@ class App:
 
                 if not valid_input:
                     self.message_variable.set(
-                        'Invalid character type detected in seats textbox. Make sure\n'
-                        'the seats field doesn\'t contain letters.                    ')
+                        'Invalid character type detected in seats field.\n'
+                        'Make sure the seats field doesn\'t contain letters.')
                 else:
                     populations = []
                     for i, x in enumerate(self.populations):
@@ -766,9 +793,9 @@ class App:
 
                     if not valid_input:
                         self.message_variable.set(
-                            "At least one population textfield is empty or contains invalid\n"
-                            "characters. Remove the state or enter a valid population value.\n"
-                            "a valid population value.")
+                            "At least one population textfield is empty or\n"
+                            "contains invalid characters. Remove the state or\n"
+                            "enter a valid population value.")
                     else:
                         num_states = self.rows - 1
 
@@ -798,9 +825,10 @@ class App:
 
                             if original_divisor is None:
                                 self.message_variable.set(
-                                    f'Warning: results could not be calculated. This can sometimes\n'
-                                    f'happen using {selected}\'s method with very specific number\n'
-                                    f'combinations and is rare. Make sure the correct values are\n'
+                                    f'Warning: results could not be calculated.\n'
+                                    f'This can sometimes happen using {selected}\'s\n'
+                                    f'method with very specific number combinations\n'
+                                    f'and is rare. Make sure the correct values are\n'
                                     f'entered.')
 
                                 # remove calculation values
@@ -854,12 +882,12 @@ class App:
 
                                 self.grid.append(list_temp)
 
+                                extra_text = ''
                                 if selected == 'Hamilton':
-                                    self.message_variable.set(
-                                        f'divisor: {round(original_divisor, 4)}')
+                                    self.message_variable.set('')
+                                    extra_text = f'divisor: {round(original_divisor, 4)}'
                                 else:
                                     self.message_variable.set(
-                                        f'original divisor: {round(original_divisor, 4)}  |  modified divisor: {round(modified_divisor, 4)}\n\n'
                                         f'{round(lower_boundary, 4)} > acceptable divisor range < {round(upper_boundary, 4)}')
 
                                 self.grid[self.rows - 1][0].grid(row=self.rows - 1, column=0, sticky='news', padx=10)
@@ -884,12 +912,22 @@ class App:
                                 self.canvas.config(scrollregion=self.canvas.bbox("all"))
 
                                 if selected != 'Hamilton':
+                                    self.slider_label_title.config(text='Modified Divisor')
                                     self.slider.config(state='normal', from_=self.lower_boundary,
                                                        to=self.upper_boundary, value=self.modified_divisor)
                                     self.slider_label.config(text=round(self.modified_divisor, 4))
+                                    self.original_divisor_label.config(text=f'original divisor: {round(self.original_divisor, 4)}')
+                                else:
+                                    self.slider['state'] = DISABLED
+                                    self.slider_label_title.config(text='Modified Divisor')
+                                    self.slider_label.config(text='N/A')
+                                    self.original_divisor_label.config(
+                                        text=f'divisor: {round(self.original_divisor, 4)}')
+                                    self.message_variable.set('')
 
                                 # set calculate pressed to true
                                 self.calculate_pressed = True
+                                self.last_calculation.set(selected)
 
 
 if __name__ == '__main__':

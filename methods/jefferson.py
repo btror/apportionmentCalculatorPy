@@ -137,14 +137,15 @@ class Jefferson:
                 fair_shares[i] = math.floor(quotas[i])
             if sum(fair_shares) != self.num_seats:
                 estimator = estimator / 10
+                prev_divisor = divisor
                 divisor = lowest_divisor - estimator
             else:
                 lowest_divisor = divisor
-                divisor = divisor - estimator
+                divisor = prev_divisor - estimator
                 if lowest_divisor == divisor:
                     break
             counter += 1
-        return lowest_divisor
+        return math.ceil(lowest_divisor * 1000) / 1000
 
     def calculate_upper_boundary(self, divisor):
         """
@@ -160,6 +161,7 @@ class Jefferson:
         fair_shares = [0] * self.states
         counter = 0
         highest_divisor = 0
+        prev_divisor = 0
         estimator = 1000000000
         while counter < 1000:
             for i, population in enumerate(self.populations):
@@ -167,14 +169,17 @@ class Jefferson:
                 fair_shares[i] = math.floor(quotas[i])
             if sum(fair_shares) != self.num_seats:
                 estimator = estimator / 10
+                prev_divisor = divisor
                 divisor = highest_divisor + estimator
             else:
                 highest_divisor = divisor
-                divisor = divisor + estimator
+                divisor = prev_divisor + estimator
                 if highest_divisor == divisor:
                     break
             counter += 1
-        return highest_divisor
+        print(highest_divisor)
+        print(math.floor(highest_divisor * 1000) / 1000)
+        return math.floor(highest_divisor * 1000) / 1000
 
     def calculate_plot_points(self, lower_divisor, upper_divisor):
         """
