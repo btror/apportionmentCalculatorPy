@@ -6,6 +6,78 @@ from methods.webster import Webster
 from methods.adam import Adam
 
 
+class Plot:
+    def __init__(self, original_divisor, modified_divisor, initial_quotas, final_quotas, initial_fair_shares,
+                 final_fair_shares, total_initial_fair_shares, lower_boundary, upper_boundary, estimation_history):
+        self.original_divisor = original_divisor
+        self.modified_divisor = modified_divisor
+        self.initial_quotas = initial_quotas
+        self.final_quotas = final_quotas
+        self.initial_fair_shares = initial_fair_shares
+        self.final_fair_shares = final_fair_shares
+        self.total_initial_fair_shares = total_initial_fair_shares
+        self.lower_boundary = lower_boundary
+        self.upper_boundary = upper_boundary
+        self.estimation_history = estimation_history
+
+    def create_divisor_graph(self):
+        points_1, points_2, points_3 = self.calculate_plot_points()
+        points = [points_1, points_2, points_3]
+
+        fig = plt.figure()
+        ax = plt.axes()
+
+        ax.plot(points[0], '-o', color='black', label='modified divisor')
+        ax.plot(points[1], '--', color='red', label='estimated lowest divisor')
+        ax.plot(points[2], '--', color='blue', label='estimated highest divisor')
+        ax.set_title('Estimated Divisor Boundaries')
+        ax.set_xlabel('Number of estimations', fontsize=12)
+        ax.set_ylabel('Estimated divisor', fontsize=12)
+        ax.legend()
+
+        plt.show()
+
+    def create_fair_share_plot(self):
+        fig = plt.figure()
+        ax = plt.axes()
+
+        width = .3
+        index = 0
+        ax.bar(np.arange(len(self.initial_fair_shares)) - width / 2, self.initial_fair_shares, width,
+               label='initial fair shares')
+        ax.bar(np.arange(len(self.final_fair_shares)) + width / 2, self.final_fair_shares, width,
+               label='final fair shares')
+        plt.xticks(np.arange(len(self.initial_fair_shares) + width / 2))
+        ax.set_title("Fair Shares")
+        ax.set_xlabel("State", fontsize=12)
+        ax.set_ylabel("Fair shares", fontsize=12)
+        ax.legend()
+
+        plt.show()
+
+    def calculate_plot_points(self):
+        """
+        calculate_plot_points - creates lists for estimations, lowest, and highest divisors
+
+        :param lower_divisor: lowest estimated divisor
+        :param upper_divisor: highest estimated divisor
+
+        :return: points_1 - list of estimations, points_2 - list of lower divisors, points_3 - list of highest divisors
+        """
+
+        points_1 = []
+        points_2 = []
+        points_3 = []
+
+        # plot the estimation coordinates
+        for i, estimation in enumerate(self.estimation_history):
+            points_1.append(estimation)
+            points_2.append(self.lower_boundary)
+            points_3.append(self.upper_boundary)
+
+        return points_1, points_2, points_3
+
+
 def plot_points(points, title_labels):
     """
     plot_points - plots the modified divisor, estimated lowest divisor, and estimated highest divisor
@@ -124,5 +196,4 @@ def main():
     plot_fair_shares(initial_fair_shares_list, final_fair_shares_list, title_labels, states)
     plt.show()
 
-
-main()
+# main()

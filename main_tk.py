@@ -5,6 +5,7 @@ import csv
 import xlsxwriter
 from tkinter import *
 from tkinter.filedialog import asksaveasfile
+from main_plots import Plot
 from methods.hamilton import Hamilton
 from methods.jefferson import Jefferson
 from methods.adam import Adam
@@ -38,6 +39,11 @@ class App:
         self.original_fair_share_values = []
         self.final_quota_values = []
         self.final_fair_share_values = []
+        self.divisor_estimations_history = []
+
+        # checkboxes
+        self.show_chart = IntVar()
+        self.show_graph = IntVar()
 
         # create lists to hold populations
         self.populations = []
@@ -56,7 +62,7 @@ class App:
         frame_main.configure(bg=self.frame_background)
 
         # top label (title)
-        Label(frame_main, text='Desktop 0.9.6', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
+        Label(frame_main, text='Desktop 0.9.7', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
                                                                                                            anchor=CENTER)
 
         # select apportionment method
@@ -300,7 +306,10 @@ class App:
 
         view = Menu(menu_bar, tearoff=0)
         menu_bar.add_cascade(label='View', menu=view)
-        view.add_command(label='Charts', command=None)
+        submenu_2 = Menu(view, tearoff=0)
+        submenu_2.add_checkbutton(label='Show fair share chart', variable=self.show_chart)
+        submenu_2.add_checkbutton(label='Show estimated divisor graph', variable=self.show_graph)
+        view.add_cascade(label='Charts', menu=submenu_2)
         view.add_command(label='Themes', command=None)
 
         help_ = Menu(menu_bar, tearoff=0)
@@ -353,7 +362,14 @@ class App:
             for i, final_fair_share in enumerate(final_fair_shares):
                 self.final_fair_shares[i].set(round(final_fair_share, 4))
 
-            self.original_divisor_label.config(text=f'original divisor: {round(self.original_divisor, 4)}  |  {round(self.lower_boundary, 4)} > divisor range < {round(self.upper_boundary, 4)}')
+            if round(self.lower_boundary, 4) >= round(self.upper_boundary, 4):
+                self.original_divisor_label.config(
+                    text=f'original divisor: {round(self.original_divisor, 4)}  |  could not estimate lowest or highest possible divisor ')
+                self.slider['state'] = DISABLED
+                self.slider_label_title.config(text='Modified Divisor')
+                self.slider_label.config(text='N/A')
+            else:
+                self.original_divisor_label.config(text=f'original divisor: {round(self.original_divisor, 4)}  |  {round(self.lower_boundary, 4)} > divisor range < {round(self.upper_boundary, 4)}')
             self.message_variable.set('')
 
             self.grid[self.rows - 1][0].config(text='total')
@@ -370,7 +386,7 @@ class App:
         new_file = asksaveasfile(defaultextension='*.*', filetypes=[('csv file', '.csv')])
 
         with new_file:
-            headers = ['method', 'seats', 'original_divisor', 'modified_divisor', 'state_number', 'population',
+            headers = ['method', 'seats', 'original_divisor', 'modified_divisor', 'lowest_possible_estimated_divisor', 'highest_possible_estimated_divisor', 'state_number', 'population',
                        'initial_quota', 'final_quota', 'initial_fair_share',
                        'final_fair_share']
             writer = csv.DictWriter(new_file, fieldnames=headers)
@@ -421,23 +437,27 @@ class App:
                                      headers[1]: seats,
                                      headers[2]: original_divisor,
                                      headers[3]: modified_divisor,
-                                     headers[4]: list_state_numbers[i],
-                                     headers[5]: list_populations[i],
-                                     headers[6]: list_initial_quotas[i],
-                                     headers[7]: list_final_quotas[i],
-                                     headers[8]: list_initial_fair_shares[i],
-                                     headers[9]: list_final_fair_shares[i]})
+                                     headers[4]: self.lower_boundary,
+                                     headers[5]: self.upper_boundary,
+                                     headers[6]: list_state_numbers[i],
+                                     headers[7]: list_populations[i],
+                                     headers[8]: list_initial_quotas[i],
+                                     headers[9]: list_final_quotas[i],
+                                     headers[10]: list_initial_fair_shares[i],
+                                     headers[11]: list_final_fair_shares[i]})
                 else:
                     writer.writerow({headers[0]: '',
                                      headers[1]: '',
                                      headers[2]: '',
                                      headers[3]: '',
-                                     headers[4]: list_state_numbers[i],
-                                     headers[5]: list_populations[i],
-                                     headers[6]: list_initial_quotas[i],
-                                     headers[7]: list_final_quotas[i],
-                                     headers[8]: list_initial_fair_shares[i],
-                                     headers[9]: list_final_fair_shares[i]})
+                                     headers[4]: '',
+                                     headers[5]: '',
+                                     headers[6]: list_state_numbers[i],
+                                     headers[7]: list_populations[i],
+                                     headers[8]: list_initial_quotas[i],
+                                     headers[9]: list_final_quotas[i],
+                                     headers[10]: list_initial_fair_shares[i],
+                                     headers[11]: list_final_fair_shares[i]})
 
     def save_xlsx(self):
         new_file = asksaveasfile(defaultextension='*.*', filetypes=[('xlsx file', '.xlsx')])
@@ -445,7 +465,8 @@ class App:
         workbook = xlsxwriter.Workbook(new_file.name)
         worksheet = workbook.add_worksheet("Data Sheet")
 
-        headers = ['method', 'seats', 'original_divisor', 'modified_divisor', 'state_number', 'population',
+        headers = ['method', 'seats', 'original_divisor', 'modified_divisor', 'lowest_possible_estimated_divisor',
+                   'highest_possible_estimated_divisor', 'state_number', 'population',
                    'initial_quota', 'final_quota', 'initial_fair_share',
                    'final_fair_share']
 
@@ -492,27 +513,41 @@ class App:
             else:
                 list_modified_divisor.append('')
 
-        list_state_numbers = [headers[4]]
+        list_lowest_boundary = [headers[4]]
+        for i in range(len(self.populations)):
+            if i == 0:
+                list_lowest_boundary.append(self.lower_boundary)
+            else:
+                list_lowest_boundary.append('')
+
+        list_upper_boundary = [headers[5]]
+        for i in range(len(self.populations)):
+            if i == 0:
+                list_upper_boundary.append(self.upper_boundary)
+            else:
+                list_upper_boundary.append('')
+
+        list_state_numbers = [headers[6]]
         for i in range(len(self.populations)):
             list_state_numbers.append(i + 1)
 
-        list_populations = [headers[5]]
+        list_populations = [headers[7]]
         for i in range(len(self.populations)):
             list_populations.append(self.populations[i].get())
 
-        list_initial_quotas = [headers[6]]
+        list_initial_quotas = [headers[8]]
         for i in range(len(self.initial_quotas)):
             list_initial_quotas.append(self.initial_quotas[i].get())
 
-        list_final_quotas = [headers[7]]
+        list_final_quotas = [headers[9]]
         for i in range(len(self.final_quotas)):
             list_final_quotas.append(self.final_quotas[i].get())
 
-        list_initial_fair_shares = [headers[8]]
+        list_initial_fair_shares = [headers[10]]
         for i in range(len(self.initial_fair_shares)):
             list_initial_fair_shares.append(self.initial_fair_shares[i].get())
 
-        list_final_fair_shares = [headers[9]]
+        list_final_fair_shares = [headers[11]]
         for i in range(len(self.final_fair_shares)):
             list_final_fair_shares.append(self.final_fair_shares[i].get())
 
@@ -521,6 +556,8 @@ class App:
             list_seats,
             list_original_divisor,
             list_modified_divisor,
+            list_lowest_boundary,
+            list_upper_boundary,
             list_state_numbers,
             list_populations,
             list_initial_quotas,
@@ -828,7 +865,7 @@ class App:
 
                             # gather filtered results
                             original_divisor, modified_divisor, initial_quotas, final_quotas, initial_fair_shares, \
-                            final_fair_shares, total_initial_fair_shares, lower_boundary, upper_boundary = method.calculate()
+                            final_fair_shares, total_initial_fair_shares, lower_boundary, upper_boundary, self.divisor_estimations_history = method.calculate()
 
                             if original_divisor is None:
                                 self.message_variable.set(
@@ -922,7 +959,14 @@ class App:
                                     self.slider.config(state='normal', from_=self.lower_boundary,
                                                        to=self.upper_boundary, value=self.modified_divisor)
                                     self.slider_label.config(text=round(self.modified_divisor, 4))
-                                    self.original_divisor_label.config(text=f'original divisor: {round(self.original_divisor, 4)}  |  {round(lower_boundary, 4)} > divisor range < {round(upper_boundary, 4)}')
+                                    if round(lower_boundary, 4) >= round(upper_boundary, 4):
+                                        self.original_divisor_label.config(
+                                            text=f'original divisor: {round(self.original_divisor, 4)}  |  could not estimate lowest or highest possible divisor ')
+                                        self.slider['state'] = DISABLED
+                                        self.slider_label_title.config(text='Modified Divisor')
+                                        self.slider_label.config(text='N/A')
+                                    else:
+                                        self.original_divisor_label.config(text=f'original divisor: {round(self.original_divisor, 4)}  |  {round(lower_boundary, 4)} > divisor range < {round(upper_boundary, 4)}')
                                 else:
                                     self.slider['state'] = DISABLED
                                     self.slider_label_title.config(text='Modified Divisor')
@@ -930,6 +974,19 @@ class App:
                                     self.original_divisor_label.config(
                                         text=f'divisor: {round(self.original_divisor, 4)}')
                                     self.message_variable.set('')
+
+                                # shows charts and graphs in checkboxes are check
+                                if self.show_chart.get() == 1:
+                                    print('display chart')
+                                    plot = Plot(self.original_divisor, self.modified_divisor, initial_quotas,
+                                                final_quotas, initial_fair_shares, final_fair_shares,
+                                                total_initial_fair_shares, lower_boundary, upper_boundary,
+                                                self.divisor_estimations_history)
+                                    plot.create_fair_share_plot()
+                                if self.show_graph.get() == 1 and selected != 'Hamilton':
+                                    print('display graph')
+                                    plot = Plot(self.original_divisor, self.modified_divisor, initial_quotas, final_quotas, initial_fair_shares, final_fair_shares, total_initial_fair_shares, lower_boundary, upper_boundary, self.divisor_estimations_history)
+                                    plot.create_divisor_graph()
 
                                 # set calculate pressed to true
                                 self.calculate_pressed = True
