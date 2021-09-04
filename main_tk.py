@@ -62,7 +62,7 @@ class App:
         frame_main.configure(bg=self.frame_background)
 
         # top label (title)
-        Label(frame_main, text='Desktop 0.9.7', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
+        Label(frame_main, text='Desktop 0.9.8', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
                                                                                                            anchor=CENTER)
 
         # select apportionment method
@@ -169,7 +169,8 @@ class App:
                                   font=self.tiny_font)
         self.slider_label.place(x=18, y=395)
 
-        self.original_divisor_label = Label(frame_main, bg=self.frame_background, fg=self.widget_foreground, font=self.tiny_font)
+        self.original_divisor_label = Label(frame_main, bg=self.frame_background, fg=self.widget_foreground,
+                                            font=self.tiny_font)
         self.original_divisor_label.place(x=130, y=370)
 
         # create a frame for the canvas
@@ -329,14 +330,13 @@ class App:
             self.slider_label.config(text=round(self.slider.get(), 4))
 
             populations = []
+
             for i, x in enumerate(self.populations):
                 if x.get() == '':
-                    valid_input = False
                     break
                 try:
                     populations.append(float(x.get()))
-                except ValueError as e:
-                    valid_input = False
+                except ValueError:
                     break
 
             method = None
@@ -369,7 +369,8 @@ class App:
                 self.slider_label_title.config(text='Modified Divisor')
                 self.slider_label.config(text='N/A')
             else:
-                self.original_divisor_label.config(text=f'original divisor: {round(self.original_divisor, 4)}  |  {round(self.lower_boundary, 4)} > divisor range < {round(self.upper_boundary, 4)}')
+                self.original_divisor_label.config(
+                    text=f'original divisor: {round(self.original_divisor, 4)}  |  {round(self.lower_boundary, 4)} > divisor range < {round(self.upper_boundary, 4)}')
             self.message_variable.set('')
 
             self.grid[self.rows - 1][0].config(text='total')
@@ -386,7 +387,8 @@ class App:
         new_file = asksaveasfile(defaultextension='*.*', filetypes=[('csv file', '.csv')])
 
         with new_file:
-            headers = ['method', 'seats', 'original_divisor', 'modified_divisor', 'lowest_possible_estimated_divisor', 'highest_possible_estimated_divisor', 'state_number', 'population',
+            headers = ['method', 'seats', 'original_divisor', 'modified_divisor', 'lowest_possible_estimated_divisor',
+                       'highest_possible_estimated_divisor', 'state_number', 'population',
                        'initial_quota', 'final_quota', 'initial_fair_share',
                        'final_fair_share']
             writer = csv.DictWriter(new_file, fieldnames=headers)
@@ -816,7 +818,7 @@ class App:
                 num_seats = 0
                 try:
                     num_seats = float(self.num_seats.get())
-                except ValueError as e:
+                except ValueError:
                     valid_input = False
 
                 if not valid_input:
@@ -831,7 +833,7 @@ class App:
                             break
                         try:
                             populations.append(float(x.get()))
-                        except ValueError as e:
+                        except ValueError:
                             valid_input = False
                             break
 
@@ -865,7 +867,8 @@ class App:
 
                             # gather filtered results
                             original_divisor, modified_divisor, initial_quotas, final_quotas, initial_fair_shares, \
-                            final_fair_shares, total_initial_fair_shares, lower_boundary, upper_boundary, self.divisor_estimations_history = method.calculate()
+                            final_fair_shares, total_initial_fair_shares, lower_boundary, upper_boundary, \
+                            self.divisor_estimations_history = method.calculate()
 
                             if original_divisor is None:
                                 self.message_variable.set(
@@ -926,10 +929,8 @@ class App:
 
                                 self.grid.append(list_temp)
 
-                                extra_text = ''
                                 if selected == 'Hamilton':
                                     self.message_variable.set('')
-                                    extra_text = f'divisor: {round(original_divisor, 4)}'
                                 else:
                                     self.message_variable.set('')
 
@@ -959,14 +960,17 @@ class App:
                                     self.slider.config(state='normal', from_=self.lower_boundary,
                                                        to=self.upper_boundary, value=self.modified_divisor)
                                     self.slider_label.config(text=round(self.modified_divisor, 4))
-                                    if round(lower_boundary, 4) >= round(upper_boundary, 4):
+
+                                    if round(lower_boundary, 4) >= round(upper_boundary, 4) or (
+                                            lower_boundary is None or upper_boundary is None):
                                         self.original_divisor_label.config(
                                             text=f'original divisor: {round(self.original_divisor, 4)}  |  could not estimate lowest or highest possible divisor ')
                                         self.slider['state'] = DISABLED
                                         self.slider_label_title.config(text='Modified Divisor')
                                         self.slider_label.config(text='N/A')
                                     else:
-                                        self.original_divisor_label.config(text=f'original divisor: {round(self.original_divisor, 4)}  |  {round(lower_boundary, 4)} > divisor range < {round(upper_boundary, 4)}')
+                                        self.original_divisor_label.config(
+                                            text=f'original divisor: {round(self.original_divisor, 4)}  |  {round(lower_boundary, 4)} > divisor range < {round(upper_boundary, 4)}')
                                 else:
                                     self.slider['state'] = DISABLED
                                     self.slider_label_title.config(text='Modified Divisor')
@@ -985,7 +989,10 @@ class App:
                                     plot.create_fair_share_plot()
                                 if self.show_graph.get() == 1 and selected != 'Hamilton':
                                     print('display graph')
-                                    plot = Plot(self.original_divisor, self.modified_divisor, initial_quotas, final_quotas, initial_fair_shares, final_fair_shares, total_initial_fair_shares, lower_boundary, upper_boundary, self.divisor_estimations_history)
+                                    plot = Plot(self.original_divisor, self.modified_divisor, initial_quotas,
+                                                final_quotas, initial_fair_shares, final_fair_shares,
+                                                total_initial_fair_shares, lower_boundary, upper_boundary,
+                                                self.divisor_estimations_history)
                                     plot.create_divisor_graph()
 
                                 # set calculate pressed to true

@@ -92,10 +92,11 @@ class Jefferson:
                 self.populations) / self.num_seats, sum(self.populations) / self.num_seats)
 
         lower_boundary = self.calculate_lower_boundary(modified_divisor)
+        print(lower_boundary)
         upper_boundary = self.calculate_upper_boundary(modified_divisor)
 
         if estimator is None:
-            return None, None, None, None, None, None, None
+            return None, None, None, None, None, None, None, None, None, None
         else:
             return self.original_divisor, modified_divisor, self.original_quotas, final_quotas, self.initial_fair_shares, final_fair_shares, sum(
                 self.initial_fair_shares), lower_boundary, upper_boundary, self.estimator_history
@@ -133,7 +134,9 @@ class Jefferson:
         estimator = 1000000000
         while counter < 1000:
             for i, population in enumerate(self.populations):
-                quotas[i] = round(population / divisor, 4)
+                if divisor is None or population is None:
+                    return None
+                quotas[i] = population / divisor
                 fair_shares[i] = math.floor(quotas[i])
             if sum(fair_shares) != self.num_seats:
                 estimator = estimator / 10
@@ -165,7 +168,9 @@ class Jefferson:
         estimator = 1000000000
         while counter < 1000:
             for i, population in enumerate(self.populations):
-                quotas[i] = round(population / divisor, 4)
+                if divisor is None:
+                    return None
+                quotas[i] = population / divisor
                 fair_shares[i] = math.floor(quotas[i])
             if sum(fair_shares) != self.num_seats:
                 estimator = estimator / 10

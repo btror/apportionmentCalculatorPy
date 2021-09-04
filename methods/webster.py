@@ -94,7 +94,7 @@ class Webster:
         upper_boundary = self.calculate_upper_boundary(modified_divisor)
 
         if estimator is None:
-            return None, None, None, None, None, None, None
+            return None, None, None, None, None, None, None, None, None, None
         else:
             return self.original_divisor, modified_divisor, self.original_quotas, final_quotas, self.initial_fair_shares, final_fair_shares, sum(
                 self.initial_fair_shares), lower_boundary, upper_boundary, self.estimator_history
@@ -132,6 +132,8 @@ class Webster:
         estimator = 1000000000
         while counter < 1000:
             for i, population in enumerate(self.populations):
+                if divisor is None or population is None:
+                    return None
                 quotas[i] = population / divisor
                 fair_shares[i] = round(quotas[i])
             if sum(fair_shares) != self.num_seats:
@@ -164,6 +166,8 @@ class Webster:
         estimator = 1000000000
         while counter < 1000:
             for i, population in enumerate(self.populations):
+                if divisor is None or population is None:
+                    return None
                 quotas[i] = population / divisor
                 fair_shares[i] = round(quotas[i])
             if sum(fair_shares) != self.num_seats:
