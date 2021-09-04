@@ -99,6 +99,21 @@ class Adam:
             return self.original_divisor, modified_divisor, self.original_quotas, final_quotas, self.initial_fair_shares, \
                    final_fair_shares, sum(self.initial_fair_shares), lower_boundary, upper_boundary
 
+    def calculate_with_divisor(self, divisor):
+        # calculate final quotas
+        final_quotas = []
+
+        for i, population in enumerate(self.populations):
+            final_quotas.append(population / divisor)
+
+        # calculate final fair shares
+        final_fair_shares = []
+
+        for i, quota in enumerate(final_quotas):
+            final_fair_shares.append(math.ceil(quota))
+
+        return final_quotas, final_fair_shares
+
     def calculate_lower_boundary(self, divisor):
         """
         calculate_lower_boundary - calculates the estimated lowest possible divisor

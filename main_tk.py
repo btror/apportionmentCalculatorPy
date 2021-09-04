@@ -33,6 +33,12 @@ class App:
         self.tiny_font = font.Font(family='Helvetica', size=10, weight='bold')
         self.seats_font = font.Font(family='Helvetica', size=15, weight='bold')
 
+        # list
+        self.original_quota_values = []
+        self.original_fair_share_values = []
+        self.final_quota_values = []
+        self.final_fair_share_values = []
+
         # create lists to hold populations
         self.populations = []
         self.initial_quotas = []
@@ -50,7 +56,7 @@ class App:
         frame_main.configure(bg=self.frame_background)
 
         # top label (title)
-        Label(frame_main, text='Desktop 0.9.3', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
+        Label(frame_main, text='Desktop 0.9.4', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
                                                                                                            anchor=CENTER)
 
         # select apportionment method
@@ -143,7 +149,8 @@ class App:
                                 command=self.slider_changed)  # -----------------------------------------------------------------------------------------------------
         self.slider.place(y=368, x=20)
 
-        self.slider_label_title = Label(frame_main, bg=self.frame_background, fg=self.widget_foreground, font=self.tiny_font, text='Divisor')
+        self.slider_label_title = Label(frame_main, bg=self.frame_background, fg=self.widget_foreground,
+                                        font=self.tiny_font, text='Divisor')
         self.slider_label_title.place(x=18, y=345)
 
         self.slider.configure(state='disabled')
@@ -303,6 +310,54 @@ class App:
     def slider_changed(self, event):
         if self.calculate_pressed and self.clicked != 'Hamilton':
             self.slider_label.config(text=round(self.slider.get(), 4))
+
+            populations = []
+            for i, x in enumerate(self.populations):
+                if x.get() == '':
+                    valid_input = False
+                    break
+                try:
+                    populations.append(float(x.get()))
+                except ValueError as e:
+                    valid_input = False
+                    break
+
+            method = None
+            if self.clicked.get() == 'Jefferson':
+                method = Jefferson(float(self.num_seats.get()), self.rows - 1, populations)
+            elif self.clicked.get() == 'Adam':
+                method = Adam(float(self.num_seats.get()), self.rows - 1, populations)
+            elif self.clicked.get() == 'Webster':
+                method = Webster(float(self.num_seats.get()), self.rows - 1, populations)
+
+            # gather filtered results
+            final_quotas, final_fair_shares = method.calculate_with_divisor(round(self.slider.get(), 4))
+
+            self.modified_divisor = round(self.slider.get(), 4)
+
+            # update values in grid
+            for i, initial_quota in enumerate(self.original_quota_values):
+                self.initial_quotas[i].set(round(initial_quota, 4))
+            for i, final_quota in enumerate(final_quotas):
+                self.final_quotas[i].set(round(final_quota, 4))
+            for i, initial_fair_share in enumerate(self.original_fair_share_values):
+                self.initial_fair_shares[i].set(round(initial_fair_share, 4))
+            for i, final_fair_share in enumerate(final_fair_shares):
+                self.final_fair_shares[i].set(round(final_fair_share, 4))
+
+            self.message_variable.set(
+                f'original divisor: {round(self.original_divisor, 4)}  |  modified divisor: {round(self.modified_divisor, 4)}\n\n'
+                f'{round(self.lower_boundary, 4)} > acceptable divisor range < {round(self.upper_boundary, 4)}')
+
+            self.grid[self.rows - 1][0].config(text='total')
+            self.grid[self.rows - 1][1].config(text=sum(populations))
+            self.grid[self.rows - 1][2].config(text=f'~{round(sum(self.original_quota_values), 4)}')
+            self.grid[self.rows - 1][3].config(text=f'~{round(sum(final_quotas), 4)}')
+            self.grid[self.rows - 1][4].config(text=sum(self.original_fair_share_values))
+            self.grid[self.rows - 1][5].config(text=round(sum(final_fair_shares), 4))
+
+            # set calculate pressed to true
+            self.calculate_pressed = True
 
     def save_csv(self):
         new_file = asksaveasfile(defaultextension='*.*', filetypes=[('csv file', '.csv')])
@@ -759,6 +814,11 @@ class App:
                                 self.modified_divisor = modified_divisor
                                 self.lower_boundary = lower_boundary
                                 self.upper_boundary = upper_boundary
+                                self.original_quota_values = initial_quotas
+                                self.original_fair_share_values = initial_fair_shares
+
+                                self.final_quota_values = final_quotas
+                                self.final_fair_share_values = final_fair_shares
 
                                 # update values in grid
                                 for i, initial_quota in enumerate(initial_quotas):
@@ -800,7 +860,7 @@ class App:
                                 else:
                                     self.message_variable.set(
                                         f'original divisor: {round(original_divisor, 4)}  |  modified divisor: {round(modified_divisor, 4)}\n\n'
-                                        f'lowest possible divisor: ~{round(lower_boundary, 4)}  |  highest possible divisor: ~{round(upper_boundary, 4)}')
+                                        f'{round(lower_boundary, 4)} > acceptable divisor range < {round(upper_boundary, 4)}')
 
                                 self.grid[self.rows - 1][0].grid(row=self.rows - 1, column=0, sticky='news', padx=10)
                                 self.grid[self.rows - 1][1].grid(row=self.rows - 1, column=1, sticky='news', padx=10)
@@ -824,7 +884,8 @@ class App:
                                 self.canvas.config(scrollregion=self.canvas.bbox("all"))
 
                                 if selected != 'Hamilton':
-                                    self.slider.config(state='normal', from_=self.lower_boundary, to=self.upper_boundary, value=self.modified_divisor)
+                                    self.slider.config(state='normal', from_=self.lower_boundary,
+                                                       to=self.upper_boundary, value=self.modified_divisor)
                                     self.slider_label.config(text=round(self.modified_divisor, 4))
 
                                 # set calculate pressed to true

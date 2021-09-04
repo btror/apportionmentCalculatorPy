@@ -100,6 +100,21 @@ class Jefferson:
             return self.original_divisor, modified_divisor, self.original_quotas, final_quotas, self.initial_fair_shares, final_fair_shares, sum(
                 self.initial_fair_shares), lower_boundary, upper_boundary
 
+    def calculate_with_divisor(self, divisor):
+        # calculate final quotas
+        final_quotas = []
+
+        for i, population in enumerate(self.populations):
+            final_quotas.append(population / divisor)
+
+        # calculate final fair shares
+        final_fair_shares = []
+
+        for i, quota in enumerate(final_quotas):
+            final_fair_shares.append(math.floor(quota))
+
+        return final_quotas, final_fair_shares
+
     def calculate_lower_boundary(self, divisor):
         """
         calculate_lower_boundary - calculates the estimated lowest possible divisor
@@ -114,10 +129,11 @@ class Jefferson:
         fair_shares = [0] * self.states
         counter = 0
         lowest_divisor = 0
+        prev_divisor = 0
         estimator = 1000000000
         while counter < 1000:
             for i, population in enumerate(self.populations):
-                quotas[i] = population / divisor
+                quotas[i] = round(population / divisor, 4)
                 fair_shares[i] = math.floor(quotas[i])
             if sum(fair_shares) != self.num_seats:
                 estimator = estimator / 10
@@ -147,7 +163,7 @@ class Jefferson:
         estimator = 1000000000
         while counter < 1000:
             for i, population in enumerate(self.populations):
-                quotas[i] = population / divisor
+                quotas[i] = round(population / divisor, 4)
                 fair_shares[i] = math.floor(quotas[i])
             if sum(fair_shares) != self.num_seats:
                 estimator = estimator / 10
