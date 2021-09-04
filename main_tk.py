@@ -56,7 +56,7 @@ class App:
         frame_main.configure(bg=self.frame_background)
 
         # top label (title)
-        Label(frame_main, text='Desktop 0.9.5', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
+        Label(frame_main, text='Desktop 0.9.6', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
                                                                                                            anchor=CENTER)
 
         # select apportionment method
@@ -141,7 +141,7 @@ class App:
 
         Label(frame_main, textvariable=self.message_variable, bg=self.frame_background,
               fg=self.widget_foreground, font=self.tiny_font, width=40).place(
-            relx=.7, y=380, anchor=CENTER)
+            relx=.5, y=380, anchor=CENTER)
 
         # create a slider for the divisors
         self.slider_value = StringVar()
@@ -300,7 +300,8 @@ class App:
 
         view = Menu(menu_bar, tearoff=0)
         menu_bar.add_cascade(label='View', menu=view)
-        view.add_command(label='Theme', command=None)
+        view.add_command(label='Charts', command=None)
+        view.add_command(label='Themes', command=None)
 
         help_ = Menu(menu_bar, tearoff=0)
         menu_bar.add_cascade(label='Help', menu=help_)
@@ -352,8 +353,8 @@ class App:
             for i, final_fair_share in enumerate(final_fair_shares):
                 self.final_fair_shares[i].set(round(final_fair_share, 4))
 
-            self.message_variable.set(
-                f'{round(self.lower_boundary, 4)} > acceptable divisor range < {round(self.upper_boundary, 4)}')
+            self.original_divisor_label.config(text=f'original divisor: {round(self.original_divisor, 4)}  |  {round(self.lower_boundary, 4)} > divisor range < {round(self.upper_boundary, 4)}')
+            self.message_variable.set('')
 
             self.grid[self.rows - 1][0].config(text='total')
             self.grid[self.rows - 1][1].config(text=sum(populations))
@@ -748,6 +749,12 @@ class App:
         calculate - calculates the results for the selected method
         """
 
+        self.slider['state'] = DISABLED
+        self.slider_label_title.config(text='')
+        self.slider_label.config(text='')
+        self.original_divisor_label.config(text='')
+        self.message_variable.set('')
+
         # if the row displaying the totals is present, remove it
         if self.calculate_pressed:
             self.rows -= 1
@@ -887,8 +894,7 @@ class App:
                                     self.message_variable.set('')
                                     extra_text = f'divisor: {round(original_divisor, 4)}'
                                 else:
-                                    self.message_variable.set(
-                                        f'{round(lower_boundary, 4)} > acceptable divisor range < {round(upper_boundary, 4)}')
+                                    self.message_variable.set('')
 
                                 self.grid[self.rows - 1][0].grid(row=self.rows - 1, column=0, sticky='news', padx=10)
                                 self.grid[self.rows - 1][1].grid(row=self.rows - 1, column=1, sticky='news', padx=10)
@@ -916,7 +922,7 @@ class App:
                                     self.slider.config(state='normal', from_=self.lower_boundary,
                                                        to=self.upper_boundary, value=self.modified_divisor)
                                     self.slider_label.config(text=round(self.modified_divisor, 4))
-                                    self.original_divisor_label.config(text=f'original divisor: {round(self.original_divisor, 4)}')
+                                    self.original_divisor_label.config(text=f'original divisor: {round(self.original_divisor, 4)}  |  {round(lower_boundary, 4)} > divisor range < {round(upper_boundary, 4)}')
                                 else:
                                     self.slider['state'] = DISABLED
                                     self.slider_label_title.config(text='Modified Divisor')
