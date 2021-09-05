@@ -2,7 +2,12 @@
 # Apportionment Calculator
 ### Calculate quotas, fair-shares, and divisors for Jefferson's, Adam's, Webster's, and Hamilton's methods.
 
-Release design
+Icon (1.0.1)
+
+<img src="images/apportionmentimage.png" width="300" height="300">
+
+
+Release design (1.0.0)
 
 <img src="images/image_1.JPG" width="685" height="430">
 
@@ -31,6 +36,14 @@ Android (pro no ads): https://play.google.com/store/apps/details?id=com.brandon.
 For more information visit the apps page of my website https://ticerapps.com
 
 # Download
-<a href="https://github.com/btror/apportionmentCalculatorPy/releases/download/1.0.0/apportionmentCalculatorPy.exe">apportionmentCalculatorPy.exe</a>
+1.0.1
 
-<a href="https://github.com/btror/apportionmentCalculatorPy/archive/refs/tags/1.0.0.zip">apportionmentCalculatorPy.zip</a>
+<a href="https://github.com/btror/apportionmentCalculatorPy/releases/download/1.0.1/apportionmentCalculatorPy.exe">Download exe</a>
+
+<a href="https://github.com/btror/apportionmentCalculatorPy/archive/refs/tags/1.0.1.zip">Download zip</a>
+
+1.0.0
+
+<a href="https://github.com/btror/apportionmentCalculatorPy/releases/download/1.0.0/apportionmentCalculatorPy.exe">Download exe</a>
+
+<a href="https://github.com/btror/apportionmentCalculatorPy/archive/refs/tags/1.0.0.zip">Download zip</a>
