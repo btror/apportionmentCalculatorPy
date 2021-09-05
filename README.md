@@ -28,9 +28,9 @@ You can also display a graph that shows all the estimated divisors guessed until
 <img src="images/gif_5.gif" width="685" height="460">
 
 # Mobile App Implementation:
-Android (free with ads): https://play.google.com/store/apps/details?id=com.brandon.apportionmentcalculator&hl=en_US&gl=US
+Android (free with ads): <a href="https://play.google.com/store/apps/details?id=com.brandon.apportionmentcalculator&hl=en_US&gl=US">View</a> on Play Store
 
-Android (pro no ads): https://play.google.com/store/apps/details?id=com.brandon.apportionmentcalculatorpro&hl=en_US&gl=US
+Android (99c without ads): <a href="https://play.google.com/store/apps/details?id=com.brandon.apportionmentcalculatorpro&hl=en_US&gl=US">View</a> on Play Store
 
 # Website
 For more information visit the apps page of my website https://ticerapps.com
