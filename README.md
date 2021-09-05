@@ -1,22 +1,31 @@
 
 # Apportionment Calculator
-### Calculating quotas, fair-shares, and divisors for Jefferson's, Adam's, Webster's, and Hamilton's methods.
+### Calculate quotas, fair-shares, and divisors for Jefferson's, Adam's, Webster's, and Hamilton's methods.
 
-Bar graph shows the initial and final fair share of seats for each state (state 1 is 0, state 2 is 1, etc...)
+Release design
 
-<img src="graphs/graph_1.JPG" width="500" height="400">
+<img src="images/image_1.JPG" width="685" height="430">
 
-Line graph shows the number of times the algorithms recalculates the divisor to get closer to an acceptable value (within the red and blue bounds) resulting in the proper amount of seats being distributed to each state.
+Enter a number of seats to apportion, add some states and enter their populations, and select a method to use to apportion the seats.
 
-<img src="graphs/graph_2.JPG" width="500" height="400">
+<img src="images/image_2.JPG" width="685" height="430">
 
-Detailed output is provided displaying the initially calculated fair shares, quotas, final quotas, final fair shares, initial divisor, final divisor (first acceptable one calculated), highest estimated acceptable divisor, lowest estimated acceptable divisor, etc...
+Press = to calculate results.
 
-<img src="images/output_1.JPG" width="500" height="500">
+<img src="images/image_3.JPG" width="685" height="430">
+
+You can use the slider at the bottom to change the divisor to any value that will result in the proper distributions
+
+<img src="images/gif_4.gif" width="685" height="430">
+
+You can also display a graph that shows all the estimated divisors guessed until a proper divisor is found and a bar graph showing the fair shares.
+
+<img src="images/gif_5.gif" width="685" height="460">
 
 # Mobile App Implementation:
 Android (free with ads): https://play.google.com/store/apps/details?id=com.brandon.apportionmentcalculator&hl=en_US&gl=US
 
 Android (pro no ads): https://play.google.com/store/apps/details?id=com.brandon.apportionmentcalculatorpro&hl=en_US&gl=US
 
+# Website
 For more information visit the apps page of my website https://ticerapps.com
