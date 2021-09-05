@@ -24,9 +24,9 @@ class App:
         self.root.columnconfigure(0, weight=1)
         self.root.geometry('685x430')
         self.root.resizable(False, False)
-        self.root.title('Ticer\'s Apportionment Calculator')
+        self.root.title('TICERAPPS Apportionment Calculator')
 
-        icon = PhotoImage(file='images/tab-icon.png')
+        icon = PhotoImage(file='images/apportionmentimage.png')
         self.root.iconphoto(False, icon)
 
         # colors
@@ -66,7 +66,7 @@ class App:
         frame_main.configure(bg=self.frame_background)
 
         # top label (title)
-        Label(frame_main, text='Desktop 1.0.0', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
+        Label(frame_main, text='Desktop 1.0.1', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
                                                                                                            anchor=CENTER)
 
         # select apportionment method
