@@ -29,3 +29,7 @@ Android (pro no ads): https://play.google.com/store/apps/details?id=com.brandon.
 
 # Website
 For more information visit the apps page of my website https://ticerapps.com
+
+# Download
+<a href="https://github.com/btror/apportionmentCalculatorPy/releases/download/1.0.0/apportionmentCalculatorPy.exe">apportionmentCalculatorPy.exe</a>
+<a href="https://github.com/btror/apportionmentCalculatorPy/releases/download/1.0.0/apportionmentCalculatorPy.zip">apportionmentCalculatorPy.zip</a>
