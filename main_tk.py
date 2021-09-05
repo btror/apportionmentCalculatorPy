@@ -62,7 +62,7 @@ class App:
         frame_main.configure(bg=self.frame_background)
 
         # top label (title)
-        Label(frame_main, text='Desktop 0.9.8', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
+        Label(frame_main, text='Desktop 0.9.9', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
                                                                                                            anchor=CENTER)
 
         # select apportionment method
@@ -296,7 +296,7 @@ class App:
 
         file = Menu(menu_bar, tearoff=0)
         menu_bar.add_cascade(label='File', menu=file)
-        file.add_command(label='Import', command=None)
+        # file.add_command(label='Import', command=None)
         submenu_1 = Menu(file, tearoff=0)
         submenu_1.add_command(label='.csv file', command=self.save_csv)
         submenu_1.add_command(label='.xlsx file', command=self.save_xlsx)
@@ -311,12 +311,11 @@ class App:
         submenu_2.add_checkbutton(label='Show fair share chart', variable=self.show_chart)
         submenu_2.add_checkbutton(label='Show estimated divisor graph', variable=self.show_graph)
         view.add_cascade(label='Charts', menu=submenu_2)
-        view.add_command(label='Themes', command=None)
 
         help_ = Menu(menu_bar, tearoff=0)
         menu_bar.add_cascade(label='Help', menu=help_)
-        help_.add_command(label='Guide', command=None)
-        help_.add_command(label='Demo', command=None)
+        help_.add_command(label='Guide', command=self.show_guide)
+        # help_.add_command(label='Demo', command=None)
         help_.add_separator()
         help_.add_command(label='About', command=None)
 
@@ -324,6 +323,84 @@ class App:
 
         # launch
         self.root.mainloop()
+
+    def show_guide(self):
+        guide_window = Toplevel(self.root)
+        guide_window.title('Software guide')
+        guide_window.geometry("680x530")
+        guide_window.resizable(False, False)
+
+        guide_window.configure(bg=self.frame_background)
+
+        # Instructions
+        Label(guide_window, text='Instructions', bg=self.frame_background, fg=self.widget_foreground,
+              width=50, font=self.font).place(relx=.5, y=20,
+                                              anchor=CENTER)
+
+        # step 1
+        Label(guide_window, text='Adding seats:', bg=self.frame_background, fg=self.widget_foreground,
+              width=50, font=self.tiny_font).place(relx=.5, y=60, anchor=CENTER)
+
+        Label(guide_window, text='Enter the number of seats you want to add in the field at the top left.', bg=self.frame_background, fg=self.widget_foreground,
+              width=70, font=self.tiny_font).place(relx=.5, y=80, anchor=CENTER)
+
+        # step 2
+        Label(guide_window, text='Selecting a method:', bg=self.frame_background, fg=self.widget_foreground,
+              width=50, font=self.tiny_font).place(relx=.5, y=120, anchor=CENTER)
+
+        Label(guide_window, text='Select one of the four methods at the top right to apply it.',
+              bg=self.frame_background, fg=self.widget_foreground,
+              width=70, font=self.tiny_font).place(relx=.5, y=140, anchor=CENTER)
+
+        # step 3
+        Label(guide_window, text='Add/remove/clear states & calculate results:', bg=self.frame_background, fg=self.widget_foreground,
+              width=50, font=self.tiny_font).place(relx=.5, y=180, anchor=CENTER)
+
+        Label(guide_window, text='Use the calculator buttons at the top middle to add and remove. Press = to get results.',
+              bg=self.frame_background, fg=self.widget_foreground,
+              width=90, font=self.tiny_font).place(relx=.5, y=200, anchor=CENTER)
+
+        # step 4
+        Label(guide_window, text='Show initial fair share chart:', bg=self.frame_background,
+              fg=self.widget_foreground,
+              width=50, font=self.tiny_font).place(relx=.5, y=240, anchor=CENTER)
+
+        Label(guide_window,
+              text='Navigate to view/charts and select "show fair share chart."',
+              bg=self.frame_background, fg=self.widget_foreground,
+              width=90, font=self.tiny_font).place(relx=.5, y=260, anchor=CENTER)
+
+        # step 5
+        Label(guide_window, text='Show divisor boundaries graph:', bg=self.frame_background,
+              fg=self.widget_foreground,
+              width=50, font=self.tiny_font).place(relx=.5, y=300, anchor=CENTER)
+
+        Label(guide_window,
+              text='Navigate to view/charts and select "show estimated divisor graph."',
+              bg=self.frame_background, fg=self.widget_foreground,
+              width=90, font=self.tiny_font).place(relx=.5, y=320, anchor=CENTER)
+
+        # step 6
+        Label(guide_window, text='Save data to csv/xlsx file:', bg=self.frame_background,
+              fg=self.widget_foreground,
+              width=50, font=self.tiny_font).place(relx=.5, y=360, anchor=CENTER)
+
+        Label(guide_window,
+              text='Navigate to file/export and select ".csv file" or ".xlsx file" to save current data to a file.',
+              bg=self.frame_background, fg=self.widget_foreground,
+              width=90, font=self.tiny_font).place(relx=.5, y=380, anchor=CENTER)
+
+        # step 7
+        Label(guide_window, text='Dynamically change modified divisor:', bg=self.frame_background,
+              fg=self.widget_foreground,
+              width=50, font=self.tiny_font).place(relx=.5, y=420, anchor=CENTER)
+
+        Label(guide_window,
+              text='After calculating results for any method (except Hamilton) the slider at the bottom left\n'
+                   'is enabled and you can use it to change the divisor to any value between the lowest and\n'
+                   'highest possible divisor.',
+              bg=self.frame_background, fg=self.widget_foreground,
+              width=90, font=self.tiny_font).place(relx=.5, y=460, anchor=CENTER)
 
     def slider_changed(self, event):
         if self.calculate_pressed and self.clicked != 'Hamilton':
@@ -979,25 +1056,36 @@ class App:
                                         text=f'divisor: {round(self.original_divisor, 4)}')
                                     self.message_variable.set('')
 
+                                # set calculate pressed to true
+                                self.calculate_pressed = True
+                                self.last_calculation.set(selected)
+
                                 # shows charts and graphs in checkboxes are check
-                                if self.show_chart.get() == 1:
-                                    print('display chart')
+                                if self.show_chart.get() == 1 and self.show_graph.get() != 1:
                                     plot = Plot(self.original_divisor, self.modified_divisor, initial_quotas,
                                                 final_quotas, initial_fair_shares, final_fair_shares,
                                                 total_initial_fair_shares, lower_boundary, upper_boundary,
                                                 self.divisor_estimations_history)
                                     plot.create_fair_share_plot()
-                                if self.show_graph.get() == 1 and selected != 'Hamilton':
-                                    print('display graph')
+                                elif self.show_graph.get() == 1 and self.show_chart.get() != 1 and selected != 'Hamilton':
                                     plot = Plot(self.original_divisor, self.modified_divisor, initial_quotas,
                                                 final_quotas, initial_fair_shares, final_fair_shares,
                                                 total_initial_fair_shares, lower_boundary, upper_boundary,
                                                 self.divisor_estimations_history)
                                     plot.create_divisor_graph()
-
-                                # set calculate pressed to true
-                                self.calculate_pressed = True
-                                self.last_calculation.set(selected)
+                                elif self.show_graph.get() == 1 and self.show_chart.get() == 1:
+                                    if selected != 'Hamilton':
+                                        plot = Plot(self.original_divisor, self.modified_divisor, initial_quotas,
+                                                    final_quotas, initial_fair_shares, final_fair_shares,
+                                                    total_initial_fair_shares, lower_boundary, upper_boundary,
+                                                    self.divisor_estimations_history)
+                                        plot.create_combined_graph()
+                                    else:
+                                        plot = Plot(self.original_divisor, self.modified_divisor, initial_quotas,
+                                                    final_quotas, initial_fair_shares, final_fair_shares,
+                                                    total_initial_fair_shares, lower_boundary, upper_boundary,
+                                                    self.divisor_estimations_history)
+                                        plot.create_fair_share_plot()
 
 
 if __name__ == '__main__':
