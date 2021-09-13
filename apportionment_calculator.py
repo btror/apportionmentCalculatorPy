@@ -19,6 +19,7 @@ class App:
         init - initialize variables
         """
 
+        # tkinter gui
         self.root = tk.Tk()
         self.root.grid_rowconfigure(0, weight=1)
         self.root.columnconfigure(0, weight=1)
@@ -26,55 +27,78 @@ class App:
         self.root.resizable(False, False)
         self.root.title('TICERAPPS Apportionment Calculator')
 
+        # set gui icon
         icon = PhotoImage(file='images/apportionmentimage.png')
         self.root.iconphoto(False, icon)
 
-        # colors
-        self.frame_background = 'gray23'
-        self.widget_foreground = 'ghost white'
+        self.frame_background = None
+        self.widget_foreground = None
 
-        # fonts
+        # default colors
+        with open('data/settings.csv', mode='r') as csv_file:
+            csv_reader = csv.reader(csv_file)
+            rows = []
+            for row in csv_reader:
+                rows.append(row)
+
+            for row in rows:
+                i = 0
+                for col in row:
+                    if i == 0:
+                        self.widget_foreground = col
+                    if i == 1:
+                        self.frame_background = col
+                    i += 1
+
+        # default fonts
         self.font = font.Font(family='Helvetica', size=12, weight='bold')
         self.tiny_font = font.Font(family='Helvetica', size=10, weight='bold')
         self.seats_font = font.Font(family='Helvetica', size=15, weight='bold')
 
-        # list
+        # lists to keep track of table (values)
         self.original_quota_values = []
         self.original_fair_share_values = []
         self.final_quota_values = []
         self.final_fair_share_values = []
         self.divisor_estimations_history = []
 
-        # checkboxes
-        self.show_chart = IntVar()
-        self.show_graph = IntVar()
-
-        # create lists to hold populations
+        # lists to keep track of table (objects)
         self.populations = []
         self.initial_quotas = []
         self.final_quotas = []
         self.initial_fair_shares = []
         self.final_fair_shares = []
+
+        # track graph/chart settings
+        self.show_chart = IntVar()
+        self.show_graph = IntVar()
+
+        # track if calculate button is pressed
         self.calculate_pressed = False
+
+        # initialize original/modified divisors and lower/upper boundaries (boundaries are referring to lowest and
+        # highest estimated divisors possible)
         self.original_divisor = None
         self.modified_divisor = None
         self.lower_boundary = None
         self.upper_boundary = None
 
+        # create a frame to put objects in
         frame_main = tk.Frame(self.root)
         frame_main.grid(sticky='news')
         frame_main.configure(bg=self.frame_background)
 
-        # top label (title)
+        # desktop version label
         Label(frame_main, text='Desktop 1.0.1', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
                                                                                                            anchor=CENTER)
 
-        # select apportionment method
-
+        # track selected method (default is hamilton)
         self.clicked = StringVar()
         self.clicked.set('Hamilton')
         self.last_calculation = StringVar()
         self.last_calculation.set('Hamilton')
+
+        # initialize buttons for choosing methods
         self.button_hamilton = Button(frame_main, text='Hamilton', width=8, height=1, bg=self.frame_background,
                                       fg=self.widget_foreground, relief='groove',
                                       borderwidth=2, font=self.font,
@@ -109,7 +133,7 @@ class App:
 
         self.change_method_hamilton()
 
-        # entry for amount of seats
+        # initialize entry widget for getting the number of seats
         Label(frame_main, text='seats: ', bg=self.frame_background, fg=self.widget_foreground,
               font=self.font).place(
             x=45, y=69,
@@ -146,33 +170,37 @@ class App:
             x=210, y=105,
             anchor=CENTER)
 
-        # create labels for original and modified divisor
+        # create a message variable for results output
         self.message_variable = StringVar()
 
+        # create a label to display message variable
         Label(frame_main, textvariable=self.message_variable, bg=self.frame_background,
               fg=self.widget_foreground, font=self.tiny_font, width=40).place(
             relx=.5, y=380, anchor=CENTER)
 
-        # create a slider for the divisors
+        # create a slider for changing the divisor (only applies to jefferson, adam, and webster)
         self.slider_value = StringVar()
         style = ttk.Style()
         style.configure('scale.Horizontal.TScale', background=self.frame_background)
         self.slider = ttk.Scale(frame_main, from_=0, to=10, orient=HORIZONTAL, style='scale.Horizontal.TScale',
-                                command=self.slider_changed)  # -----------------------------------------------------------------------------------------------------
+                                command=self.slider_changed)
         self.slider.place(y=368, x=20)
 
+        # disable the slider by default
         self.slider['state'] = DISABLED
 
+        # configure slider settings
         self.slider_label_title = Label(frame_main, bg=self.frame_background, fg=self.widget_foreground,
                                         font=self.tiny_font, text='')
         self.slider_label_title.place(x=18, y=345)
-
         self.slider.configure(state='disabled')
 
+        # create a label letting the user know what the slider is for (modifying the modified divisor when applicable)
         self.slider_label = Label(frame_main, bg=self.frame_background, fg=self.widget_foreground,
                                   font=self.tiny_font)
         self.slider_label.place(x=18, y=395)
 
+        # create a label displaying the changed modified divisor based on slider usage
         self.original_divisor_label = Label(frame_main, bg=self.frame_background, fg=self.widget_foreground,
                                             font=self.tiny_font)
         self.original_divisor_label.place(x=130, y=370)
@@ -197,8 +225,8 @@ class App:
         self.canvas.configure(yscrollcommand=self.vsb.set)
 
         # create a frame to contain the widgets
-        self.frame_buttons = tk.Frame(self.canvas, bg=self.frame_background)
-        self.canvas.create_window((0, 0), window=self.frame_buttons, anchor='nw')
+        self.frame_widgets = tk.Frame(self.canvas, bg=self.frame_background)
+        self.canvas.create_window((0, 0), window=self.frame_widgets, anchor='nw')
 
         # initialize a default number of rows and columns (cols is ALWAYS 6 and rows is dynamic, but starts as 2)
         self.rows = 2
@@ -208,22 +236,22 @@ class App:
         self.grid = []
 
         # add the first row of widgets (all labels)
-        list_temp = [Label(self.frame_buttons, text='\nstate', width=14, bg=self.frame_background,
+        list_temp = [Label(self.frame_widgets, text='\nstate', width=14, bg=self.frame_background,
                            fg=self.widget_foreground,
                            relief='flat', pady=10),
-                     Label(self.frame_buttons, text='state\npopulation', width=14, bg=self.frame_background,
+                     Label(self.frame_widgets, text='state\npopulation', width=14, bg=self.frame_background,
                            fg=self.widget_foreground,
                            relief='flat', pady=10),
-                     Label(self.frame_buttons, text='initial\nquotas', width=14, bg=self.frame_background,
+                     Label(self.frame_widgets, text='initial\nquotas', width=14, bg=self.frame_background,
                            fg=self.widget_foreground,
                            relief='flat', pady=10),
-                     Label(self.frame_buttons, text='final\nquotas', width=14, bg=self.frame_background,
+                     Label(self.frame_widgets, text='final\nquotas', width=14, bg=self.frame_background,
                            fg=self.widget_foreground,
                            relief='flat', pady=10),
-                     Label(self.frame_buttons, text='initial\nfair share', width=14, bg=self.frame_background,
+                     Label(self.frame_widgets, text='initial\nfair share', width=14, bg=self.frame_background,
                            fg=self.widget_foreground,
                            relief='flat', pady=10),
-                     Label(self.frame_buttons, text='final\nfair share', width=14, bg=self.frame_background,
+                     Label(self.frame_widgets, text='final\nfair share', width=14, bg=self.frame_background,
                            fg=self.widget_foreground,
                            relief='flat', pady=10)]
 
@@ -248,22 +276,22 @@ class App:
         self.temp_4.set('-')
 
         # add the second row of widgets (all labels and one entry)
-        list_temp = [Label(self.frame_buttons, text='1', width=10, bg=self.frame_background,
+        list_temp = [Label(self.frame_widgets, text='1', width=10, bg=self.frame_background,
                            fg=self.widget_foreground),
-                     Entry(self.frame_buttons, textvariable=self.default_entry_value, width=10,
+                     Entry(self.frame_widgets, textvariable=self.default_entry_value, width=10,
                            bg=self.frame_background,
                            fg=self.widget_foreground, relief='solid', highlightthickness=1,
                            highlightbackground=self.widget_foreground),
-                     Label(self.frame_buttons, text='-', textvariable=self.temp_1, width=10, bg=self.frame_background,
+                     Label(self.frame_widgets, text='-', textvariable=self.temp_1, width=10, bg=self.frame_background,
                            fg=self.widget_foreground,
                            relief='flat'),
-                     Label(self.frame_buttons, text='-', textvariable=self.temp_2, width=10, bg=self.frame_background,
+                     Label(self.frame_widgets, text='-', textvariable=self.temp_2, width=10, bg=self.frame_background,
                            fg=self.widget_foreground,
                            relief='flat'),
-                     Label(self.frame_buttons, text='-', textvariable=self.temp_3, width=10, bg=self.frame_background,
+                     Label(self.frame_widgets, text='-', textvariable=self.temp_3, width=10, bg=self.frame_background,
                            fg=self.widget_foreground,
                            relief='flat'),
-                     Label(self.frame_buttons, text='-', textvariable=self.temp_4, width=10, bg=self.frame_background,
+                     Label(self.frame_widgets, text='-', textvariable=self.temp_4, width=10, bg=self.frame_background,
                            fg=self.widget_foreground,
                            relief='flat')]
 
@@ -283,7 +311,7 @@ class App:
         self.grid[1][5].grid(row=1, column=5, sticky='news', padx=10)
 
         # update widget frames idle tasks to let tkinter calculate widget sizes
-        self.frame_buttons.update_idletasks()
+        self.frame_widgets.update_idletasks()
 
         # resize the canvas frame (width fits depending on input, height is static)
         first5columns_width = sum(self.grid[0][j].winfo_width() for j in range(0, self.columns)) + 4
@@ -329,52 +357,55 @@ class App:
         self.root.mainloop()
 
     def show_about(self):
+        """
+        show_about - displays a popup gui with information about the app
+        """
+
+        # create new tkinter window
         about_window = Toplevel(self.root)
         about_window.title('Software guide')
         about_window.geometry("640x430")
         about_window.resizable(False, False)
-
         about_window.configure(bg=self.frame_background)
 
-        # header
+        # create heading label
         Label(about_window, text='About', bg=self.frame_background, fg=self.widget_foreground,
               width=50, font=self.font).place(relx=.5, y=20,
                                               anchor=CENTER)
 
-        # line 1
+        # about line 1
         Label(about_window, text='What this is:', bg=self.frame_background, fg=self.widget_foreground,
               width=50, font=self.tiny_font).place(relx=.5, y=60, anchor=CENTER)
-
         Label(about_window, text='This software allows users to apportion seats to states using four historic\n'
                                  'methods used in the United States hundreds of years ago. Those methods are\n'
                                  'Hamilton\'s, Adam\'s, Jefferson\'s, and Webster\'s methods of apportionment.',
               bg=self.frame_background, fg=self.widget_foreground,
               width=70, font=self.tiny_font).place(relx=.5, y=100, anchor=CENTER)
 
+        # about line 2
         Label(about_window, text='Google Play free version with ads',
               bg=self.frame_background, fg=self.widget_foreground,
               width=70, font=self.tiny_font).place(relx=.5, y=165, anchor=CENTER)
-
         Button(about_window, text='view', width=9, height=1, bg=self.frame_background,
                fg=self.widget_foreground, relief='groove',
                borderwidth=2, font=self.font, command=lambda: webbrowser.open(
                 'https://play.google.com/store/apps/details?id=com.brandon.apportionmentcalculator&hl=en_US&gl=US')).place(
             relx=.5, y=200, anchor=CENTER)
 
+        # about line 3
         Label(about_window, text='Google Play 0.99c version without ads',
               bg=self.frame_background, fg=self.widget_foreground,
               width=70, font=self.tiny_font).place(relx=.5, y=250, anchor=CENTER)
-
         Button(about_window, text='view', width=9, height=1, bg=self.frame_background,
                fg=self.widget_foreground, relief='groove',
                borderwidth=2, font=self.font, command=lambda: webbrowser.open(
                 'https://play.google.com/store/apps/details?id=com.brandon.apportionmentcalculatorpro&hl=en_US&gl=US')).place(
             relx=.5, y=288, anchor=CENTER)
 
+        # about line 4
         Label(about_window, text='Check out our other apps',
               bg=self.frame_background, fg=self.widget_foreground,
               width=70, font=self.tiny_font).place(relx=.5, y=340, anchor=CENTER)
-
         Button(about_window, text='website', width=9, height=1, bg=self.frame_background,
                fg=self.widget_foreground, relief='groove',
                borderwidth=2, font=self.font, command=lambda: webbrowser.open(
@@ -382,79 +413,76 @@ class App:
             relx=.5, y=378, anchor=CENTER)
 
     def show_guide(self):
+        """
+        show_guide - shows popup gui containing documentation on how to use the app
+        """
+
+        # create new tkinter window
         guide_window = Toplevel(self.root)
         guide_window.title('Software guide')
         guide_window.geometry("680x530")
         guide_window.resizable(False, False)
-
         guide_window.configure(bg=self.frame_background)
 
-        # Instructions
+        # create heading label
         Label(guide_window, text='Instructions', bg=self.frame_background, fg=self.widget_foreground,
               width=50, font=self.font).place(relx=.5, y=20,
                                               anchor=CENTER)
 
-        # step 1
+        # instruction line 1
         Label(guide_window, text='Adding seats:', bg=self.frame_background, fg=self.widget_foreground,
               width=50, font=self.tiny_font).place(relx=.5, y=60, anchor=CENTER)
-
         Label(guide_window, text='Enter the number of seats you want to add in the field at the top left.',
               bg=self.frame_background, fg=self.widget_foreground,
               width=70, font=self.tiny_font).place(relx=.5, y=80, anchor=CENTER)
 
-        # step 2
+        # instruction line 2
         Label(guide_window, text='Selecting a method:', bg=self.frame_background, fg=self.widget_foreground,
               width=50, font=self.tiny_font).place(relx=.5, y=120, anchor=CENTER)
-
         Label(guide_window, text='Select one of the four methods at the top right to apply it.',
               bg=self.frame_background, fg=self.widget_foreground,
               width=70, font=self.tiny_font).place(relx=.5, y=140, anchor=CENTER)
 
-        # step 3
+        # instruction line 3
         Label(guide_window, text='Add/remove/clear states & calculate results:', bg=self.frame_background,
               fg=self.widget_foreground,
               width=50, font=self.tiny_font).place(relx=.5, y=180, anchor=CENTER)
-
         Label(guide_window,
               text='Use the calculator buttons at the top middle to add and remove. Press = to get results.',
               bg=self.frame_background, fg=self.widget_foreground,
               width=90, font=self.tiny_font).place(relx=.5, y=200, anchor=CENTER)
 
-        # step 4
+        # instruction line 4
         Label(guide_window, text='Show initial fair share chart:', bg=self.frame_background,
               fg=self.widget_foreground,
               width=50, font=self.tiny_font).place(relx=.5, y=240, anchor=CENTER)
-
         Label(guide_window,
               text='Navigate to view/charts and select "show fair share chart."',
               bg=self.frame_background, fg=self.widget_foreground,
               width=90, font=self.tiny_font).place(relx=.5, y=260, anchor=CENTER)
 
-        # step 5
+        # instruction line 5
         Label(guide_window, text='Show divisor boundaries graph:', bg=self.frame_background,
               fg=self.widget_foreground,
               width=50, font=self.tiny_font).place(relx=.5, y=300, anchor=CENTER)
-
         Label(guide_window,
               text='Navigate to view/charts and select "show estimated divisor graph."',
               bg=self.frame_background, fg=self.widget_foreground,
               width=90, font=self.tiny_font).place(relx=.5, y=320, anchor=CENTER)
 
-        # step 6
+        # instruction line 6
         Label(guide_window, text='Save data to csv/xlsx file:', bg=self.frame_background,
               fg=self.widget_foreground,
               width=50, font=self.tiny_font).place(relx=.5, y=360, anchor=CENTER)
-
         Label(guide_window,
               text='Navigate to file/export and select ".csv file" or ".xlsx file" to save current data to a file.',
               bg=self.frame_background, fg=self.widget_foreground,
               width=90, font=self.tiny_font).place(relx=.5, y=380, anchor=CENTER)
 
-        # step 7
+        # instruction line 7
         Label(guide_window, text='Dynamically change modified divisor:', bg=self.frame_background,
               fg=self.widget_foreground,
               width=50, font=self.tiny_font).place(relx=.5, y=420, anchor=CENTER)
-
         Label(guide_window,
               text='After calculating results for any method (except Hamilton) the slider at the bottom left\n'
                    'is enabled and you can use it to change the divisor to any value between the lowest and\n'
@@ -463,11 +491,18 @@ class App:
               width=90, font=self.tiny_font).place(relx=.5, y=460, anchor=CENTER)
 
     def slider_changed(self, event):
+        """
+        slider_changed - listener to update table values and widgets when slider is changed
+
+        :param event: event
+        """
+
+        # if not hamilton update the label displaying the slider value
         if self.calculate_pressed and self.clicked != 'Hamilton':
             self.slider_label.config(text=round(self.slider.get(), 4))
 
+            # get the populations
             populations = []
-
             for i, x in enumerate(self.populations):
                 if x.get() == '':
                     break
@@ -476,6 +511,7 @@ class App:
                 except ValueError:
                     break
 
+            # get new values based on new information
             method = None
             if self.last_calculation.get() == 'Jefferson':
                 method = Jefferson(float(self.num_seats.get()), self.rows - 1, populations)
@@ -487,9 +523,10 @@ class App:
             # gather filtered results
             final_quotas, final_fair_shares = method.calculate_with_divisor(round(self.slider.get(), 4))
 
+            # update modified divisor depending on slider result
             self.modified_divisor = round(self.slider.get(), 4)
 
-            # update values in grid
+            # update widgets in the grid
             for i, initial_quota in enumerate(self.original_quota_values):
                 self.initial_quotas[i].set(round(initial_quota, 4))
             for i, final_quota in enumerate(final_quotas):
@@ -499,9 +536,11 @@ class App:
             for i, final_fair_share in enumerate(final_fair_shares):
                 self.final_fair_shares[i].set(round(final_fair_share, 4))
 
+            # if the boundary calculations are inconclusive, do not display results
             if round(self.lower_boundary, 4) >= round(self.upper_boundary, 4):
                 self.original_divisor_label.config(
-                    text=f'original divisor: {round(self.original_divisor, 4)}  |  could not estimate lowest or highest possible divisor ')
+                    text=f'original divisor: {round(self.original_divisor, 4)}  |  could not estimate lowest or '
+                         f'highest possible divisor ')
                 self.slider['state'] = DISABLED
                 self.slider_label_title.config(text='Modified Divisor')
                 self.slider_label.config(text='N/A')
@@ -509,7 +548,6 @@ class App:
                 self.original_divisor_label.config(
                     text=f'original divisor: {round(self.original_divisor, 4)}  |  {round(self.lower_boundary, 4)} > divisor range < {round(self.upper_boundary, 4)}')
             self.message_variable.set('')
-
             self.grid[self.rows - 1][0].config(text='total')
             self.grid[self.rows - 1][1].config(text=sum(populations))
             self.grid[self.rows - 1][2].config(text=f'~{round(sum(self.original_quota_values), 4)}')
@@ -521,8 +559,14 @@ class App:
             self.calculate_pressed = True
 
     def save_csv(self):
+        """
+        save_csv - save csv data of what is in the table. Creates a CSV file and saves it to system.
+        """
+
+        # only allow users to save csv file type
         new_file = asksaveasfile(defaultextension='*.*', filetypes=[('csv file', '.csv')])
 
+        # create headers and append data
         with new_file:
             headers = ['method', 'seats', 'original_divisor', 'modified_divisor', 'lowest_possible_estimated_divisor',
                        'highest_possible_estimated_divisor', 'state_number', 'population',
@@ -599,11 +643,17 @@ class App:
                                      headers[11]: list_final_fair_shares[i]})
 
     def save_xlsx(self):
+        """
+        save_xlsx - save xlsx data of what is in the table. Creates a xlsx file and saves it to system.
+        """
+
+        # only allow users to save csv file type
         new_file = asksaveasfile(defaultextension='*.*', filetypes=[('xlsx file', '.xlsx')])
 
         workbook = xlsxwriter.Workbook(new_file.name)
         worksheet = workbook.add_worksheet("Data Sheet")
 
+        # create headers
         headers = ['method', 'seats', 'original_divisor', 'modified_divisor', 'lowest_possible_estimated_divisor',
                    'highest_possible_estimated_divisor', 'state_number', 'population',
                    'initial_quota', 'final_quota', 'initial_fair_share',
@@ -712,6 +762,10 @@ class App:
         workbook.close()
 
     def change_method_hamilton(self):
+        """
+        change_method_hamilton - updates method tracker variable, updates method button colors
+        """
+
         self.clicked.set('Hamilton')
         self.button_hamilton.config(background=self.widget_foreground, foreground=self.frame_background)
 
@@ -720,6 +774,10 @@ class App:
         self.button_webster.config(background=self.frame_background, foreground=self.widget_foreground)
 
     def change_method_jefferson(self):
+        """
+        change_method_hamilton - updates method tracker variable, updates method button colors
+        """
+
         self.clicked.set('Jefferson')
         self.button_jefferson.config(background=self.widget_foreground, foreground=self.frame_background)
 
@@ -728,6 +786,10 @@ class App:
         self.button_webster.config(background=self.frame_background, foreground=self.widget_foreground)
 
     def change_method_adam(self):
+        """
+        change_method_hamilton - updates method tracker variable, updates method button colors
+        """
+
         self.clicked.set('Adam')
         self.button_adam.config(background=self.widget_foreground, foreground=self.frame_background)
 
@@ -736,6 +798,10 @@ class App:
         self.button_webster.config(background=self.frame_background, foreground=self.widget_foreground)
 
     def change_method_webster(self):
+        """
+        change_method_hamilton - updates method tracker variable, updates method button colors
+        """
+
         self.clicked.set('Webster')
         self.button_webster.config(background=self.widget_foreground, foreground=self.frame_background)
 
@@ -780,18 +846,18 @@ class App:
         temp_4.set('-')
 
         # add a new row of widgets to the grid
-        list_temp = [Label(self.frame_buttons, text=self.rows - 1, width=10, bg=self.frame_background,
+        list_temp = [Label(self.frame_widgets, text=self.rows - 1, width=10, bg=self.frame_background,
                            fg=self.widget_foreground),
-                     Entry(self.frame_buttons, textvariable=value, width=10, bg=self.frame_background,
+                     Entry(self.frame_widgets, textvariable=value, width=10, bg=self.frame_background,
                            fg=self.widget_foreground, relief='solid', highlightthickness=1,
                            highlightbackground=self.widget_foreground),
-                     Label(self.frame_buttons, textvariable=temp_1, width=10, bg=self.frame_background,
+                     Label(self.frame_widgets, textvariable=temp_1, width=10, bg=self.frame_background,
                            fg=self.widget_foreground),
-                     Label(self.frame_buttons, textvariable=temp_2, width=10, bg=self.frame_background,
+                     Label(self.frame_widgets, textvariable=temp_2, width=10, bg=self.frame_background,
                            fg=self.widget_foreground),
-                     Label(self.frame_buttons, textvariable=temp_3, width=10, bg=self.frame_background,
+                     Label(self.frame_widgets, textvariable=temp_3, width=10, bg=self.frame_background,
                            fg=self.widget_foreground),
-                     Label(self.frame_buttons, textvariable=temp_4, width=10, bg=self.frame_background,
+                     Label(self.frame_widgets, textvariable=temp_4, width=10, bg=self.frame_background,
                            fg=self.widget_foreground)]
 
         self.initial_quotas.append(temp_1)
@@ -810,7 +876,7 @@ class App:
         self.grid[self.rows - 1][5].grid(row=self.rows - 1, column=5, sticky='news', padx=10)
 
         # update widget frames idle tasks to calculate widget sizes
-        self.frame_buttons.update_idletasks()
+        self.frame_widgets.update_idletasks()
 
         # resize the canvas frame (width fits depending on input, height is static)
         first5columns_width = sum(self.grid[0][j].winfo_width() for j in range(0, self.columns)) + 4
@@ -868,7 +934,7 @@ class App:
             self.populations.pop(len(self.populations) - 1)
 
             # update widget frames idle tasks to calculate widget sizes
-            self.frame_buttons.update_idletasks()
+            self.frame_widgets.update_idletasks()
 
             # resize the canvas frame (width fits depending on input, height is static)
             first5columns_width = sum(self.grid[0][j].winfo_width() for j in range(0, self.columns)) + 4
@@ -1046,21 +1112,21 @@ class App:
                                 self.rows += 1
 
                                 # add a new row of widgets to the grid
-                                list_temp = [Label(self.frame_buttons, text='total', width=10, bg=self.frame_background,
+                                list_temp = [Label(self.frame_widgets, text='total', width=10, bg=self.frame_background,
                                                    fg=self.widget_foreground),
-                                             Label(self.frame_buttons, text=sum(populations), width=10,
+                                             Label(self.frame_widgets, text=sum(populations), width=10,
                                                    bg=self.frame_background,
                                                    fg=self.widget_foreground),
-                                             Label(self.frame_buttons, text=f'~{round(sum(initial_quotas), 4)}',
+                                             Label(self.frame_widgets, text=f'~{round(sum(initial_quotas), 4)}',
                                                    width=10, bg=self.frame_background,
                                                    fg=self.widget_foreground),
-                                             Label(self.frame_buttons, text=f'~{round(sum(final_quotas), 4)}', width=10,
+                                             Label(self.frame_widgets, text=f'~{round(sum(final_quotas), 4)}', width=10,
                                                    bg=self.frame_background,
                                                    fg=self.widget_foreground),
-                                             Label(self.frame_buttons, text=sum(initial_fair_shares), width=10,
+                                             Label(self.frame_widgets, text=sum(initial_fair_shares), width=10,
                                                    bg=self.frame_background,
                                                    fg=self.widget_foreground),
-                                             Label(self.frame_buttons, text=sum(final_fair_shares), width=10,
+                                             Label(self.frame_widgets, text=sum(final_fair_shares), width=10,
                                                    bg=self.frame_background,
                                                    fg=self.widget_foreground)]
 
@@ -1079,7 +1145,7 @@ class App:
                                 self.grid[self.rows - 1][5].grid(row=self.rows - 1, column=5, sticky='news', padx=10)
 
                                 # update widget frames idle tasks to calculate widget sizes
-                                self.frame_buttons.update_idletasks()
+                                self.frame_widgets.update_idletasks()
 
                                 # resize the canvas frame (width fits depending on input, height is static)
                                 first5columns_width = sum(
