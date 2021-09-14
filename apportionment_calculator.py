@@ -1,5 +1,6 @@
 import tkinter as tk
 import tkinter.font as font
+import pandas as pd
 from tkinter import ttk
 import csv
 import xlsxwriter
@@ -45,8 +46,10 @@ class App:
                 i = 0
                 for col in row:
                     if i == 0:
+                        self.selected_theme = col
+                    elif i == 1:
                         self.widget_foreground = col
-                    if i == 1:
+                    elif i == 2:
                         self.frame_background = col
                     i += 1
 
@@ -339,10 +342,18 @@ class App:
 
         view = Menu(menu_bar, tearoff=0)
         menu_bar.add_cascade(label='View', menu=view)
+
+        # submenu for charts
         submenu_2 = Menu(view, tearoff=0)
         submenu_2.add_checkbutton(label='Show fair share chart', variable=self.show_chart)
         submenu_2.add_checkbutton(label='Show estimated divisor graph', variable=self.show_graph)
         view.add_cascade(label='Charts', menu=submenu_2)
+
+        # submenu for themes
+        submenu_3 = Menu(view, tearoff=0)
+        submenu_3.add_command(label='Light theme', command=self.change_theme_light)
+        submenu_3.add_command(label='Dark theme', command=self.change_theme_dark)
+        view.add_cascade(label="Theme", menu=submenu_3)
 
         help_ = Menu(menu_bar, tearoff=0)
         menu_bar.add_cascade(label='Help', menu=help_)
@@ -355,6 +366,40 @@ class App:
 
         # launch
         self.root.mainloop()
+
+    def change_theme_light(self): # fix this
+        self.selected_theme = 1
+
+        df = pd.read_csv('data/settings.csv')
+        df.head(1)
+        df.set_value(0, 'theme', 1)
+        df.to_csv('data/settings.csv', index=False)
+        # default colors
+        # data = csv.reader(open('data/settings.csv'))
+        # lines = list(data)
+        # lines[1][0] = self.selected_theme
+        # writer = csv.writer(open('data/settings.csv', 'w'))
+        # writer.writerows(lines)
+
+        #self.root.destroy()
+        #App()
+
+    def change_theme_dark(self): # fix this
+        self.selected_theme = 0
+
+        df = pd.read_csv('data/settings.csv')
+        df.head(1)
+        df.set_value(0, 'theme', 0)
+        df.to_csv('data/settings.csv', index=False)
+        # default colors
+        # data = csv.reader(open('data/settings.csv'))
+        # lines = list(data)
+        # lines[1][0] = self.selected_theme
+        # writer = csv.writer(open('data/settings.csv', 'w'))
+        # writer.writerows(lines)
+
+        #self.root.destroy()
+        #App()
 
     def show_about(self):
         """
