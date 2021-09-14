@@ -6,11 +6,11 @@ import xlsxwriter
 import webbrowser
 from tkinter import *
 from tkinter.filedialog import asksaveasfile
-from main_plots import Plot
-from methods.hamilton import Hamilton
-from methods.jefferson import Jefferson
-from methods.adam import Adam
-from methods.webster import Webster
+from main.main_plots import Plot
+from main.methods.hamilton import Hamilton
+from main.methods.jefferson import Jefferson
+from main.methods.adam import Adam
+from main.methods.webster import Webster
 
 
 class App:
@@ -28,14 +28,14 @@ class App:
         self.root.title('TICERAPPS Apportionment Calculator')
 
         # set gui icon
-        icon = PhotoImage(file='images/apportionmentimage.png')
+        icon = PhotoImage(file='../res/apportionmentimage.png')
         self.root.iconphoto(False, icon)
 
         self.frame_background = None
         self.widget_foreground = None
 
         # default colors
-        with open('data/settings.csv', mode='r') as csv_file:
+        with open('../data/settings.csv', mode='r') as csv_file:
             csv_reader = csv.reader(csv_file)
             rows = []
             for row in csv_reader:
@@ -378,12 +378,12 @@ class App:
         self.selected_theme = 0
 
         # clear data
-        data = open('data/settings.csv', 'r+')
+        data = open('../data/settings.csv', 'r+')
         data.truncate(0)
         data.close()
 
         # write new data
-        with open('data/settings.csv', 'w', newline='') as file:
+        with open('../data/settings.csv', 'w', newline='') as file:
             headers = ['theme', 'fg', 'bg']
             writer = csv.DictWriter(file, fieldnames=headers)
             writer.writeheader()
@@ -404,12 +404,12 @@ class App:
         self.selected_theme = 1
 
         # clear data
-        data = open('data/settings.csv', 'r+')
+        data = open('../data/settings.csv', 'r+')
         data.truncate(0)
         data.close()
 
         # write new data
-        with open('data/settings.csv', 'w', newline='') as file:
+        with open('../data/settings.csv', 'w', newline='') as file:
             headers = ['theme', 'fg', 'bg']
             writer = csv.DictWriter(file, fieldnames=headers)
             writer.writeheader()
@@ -430,12 +430,12 @@ class App:
         self.selected_theme = 2
 
         # clear data
-        data = open('data/settings.csv', 'r+')
+        data = open('../data/settings.csv', 'r+')
         data.truncate(0)
         data.close()
 
         # write new data
-        with open('data/settings.csv', 'w', newline='') as file:
+        with open('../data/settings.csv', 'w', newline='') as file:
             headers = ['theme', 'fg', 'bg']
             writer = csv.DictWriter(file, fieldnames=headers)
             writer.writeheader()
@@ -456,12 +456,12 @@ class App:
         self.selected_theme = 3
 
         # clear data
-        data = open('data/settings.csv', 'r+')
+        data = open('../data/settings.csv', 'r+')
         data.truncate(0)
         data.close()
 
         # write new data
-        with open('data/settings.csv', 'w', newline='') as file:
+        with open('../data/settings.csv', 'w', newline='') as file:
             headers = ['theme', 'fg', 'bg']
             writer = csv.DictWriter(file, fieldnames=headers)
             writer.writeheader()
@@ -482,12 +482,12 @@ class App:
         self.selected_theme = 4
 
         # clear data
-        data = open('data/settings.csv', 'r+')
+        data = open('../data/settings.csv', 'r+')
         data.truncate(0)
         data.close()
 
         # write new data
-        with open('data/settings.csv', 'w', newline='') as file:
+        with open('../data/settings.csv', 'w', newline='') as file:
             headers = ['theme', 'fg', 'bg']
             writer = csv.DictWriter(file, fieldnames=headers)
             writer.writeheader()
