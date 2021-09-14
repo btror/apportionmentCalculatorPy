@@ -370,338 +370,96 @@ class App:
         # launch
         self.root.mainloop()
 
-    def change_theme_dark(self):
+    def save_recent_data(self):
         """
-        change_theme_dark - changes gui to dark mode
+        save_recent_data - saves recent table entries
         """
-
-        self.selected_theme = 0
 
         # clear data
-        data = open('../data/settings.csv', 'r+')
+        data = open('../data/recent_table_data.csv', 'r+')
         data.truncate(0)
         data.close()
 
         # write new data
-        with open('../data/settings.csv', 'w', newline='') as file:
-            headers = ['theme', 'fg', 'bg']
+        with open('../data/recent_table_data.csv', 'w', newline='') as file:
+            headers = ['method', 'seats', 'original_divisor', 'modified_divisor', 'lowest_possible_estimated_divisor',
+                       'highest_possible_estimated_divisor', 'state_number', 'population',
+                       'initial_quota', 'final_quota', 'initial_fair_share',
+                       'final_fair_share']
+
             writer = csv.DictWriter(file, fieldnames=headers)
             writer.writeheader()
 
-            writer.writerow({headers[0]: self.selected_theme,
-                             headers[1]: "ghost white",
-                             headers[2]: "gray23"})
+            method = self.clicked.get()
+            seats = self.num_seats.get()
 
-        # restart app
-        self.root.destroy()
-        App()
+            if seats == '':
+                seats = '-'
 
-    def change_theme_light(self):
-        """
-        change_theme_light - changes gui to light mode
-        """
+            original_divisor = self.original_divisor
+            modified_divisor = self.modified_divisor
 
-        self.selected_theme = 1
+            if self.original_divisor is None:
+                original_divisor = '-'
 
-        # clear data
-        data = open('../data/settings.csv', 'r+')
-        data.truncate(0)
-        data.close()
+            if self.modified_divisor is None:
+                modified_divisor = '-'
 
-        # write new data
-        with open('../data/settings.csv', 'w', newline='') as file:
-            headers = ['theme', 'fg', 'bg']
-            writer = csv.DictWriter(file, fieldnames=headers)
-            writer.writeheader()
+            list_state_numbers = []
+            for i in range(len(self.populations)):
+                list_state_numbers.append(i + 1)
 
-            writer.writerow({headers[0]: self.selected_theme,
-                             headers[1]: "gray23",
-                             headers[2]: "ghost white"})
+            list_populations = []
+            for i in range(len(self.populations)):
+                list_populations.append(self.populations[i].get())
 
-        # restart app
-        self.root.destroy()
-        App()
+            list_initial_quotas = []
+            for i in range(len(self.initial_quotas)):
+                list_initial_quotas.append(self.initial_quotas[i].get())
 
-    def change_theme_clt_green(self):
-        """
-        change_theme_clt_green - changes gui to unc-charlotte school colors
-        """
+            list_final_quotas = []
+            for i in range(len(self.final_quotas)):
+                list_final_quotas.append(self.final_quotas[i].get())
 
-        self.selected_theme = 2
+            list_initial_fair_shares = []
+            for i in range(len(self.initial_fair_shares)):
+                list_initial_fair_shares.append(self.initial_fair_shares[i].get())
 
-        # clear data
-        data = open('../data/settings.csv', 'r+')
-        data.truncate(0)
-        data.close()
+            list_final_fair_shares = []
+            for i in range(len(self.final_fair_shares)):
+                list_final_fair_shares.append(self.final_fair_shares[i].get())
 
-        # write new data
-        with open('../data/settings.csv', 'w', newline='') as file:
-            headers = ['theme', 'fg', 'bg']
-            writer = csv.DictWriter(file, fieldnames=headers)
-            writer.writeheader()
+            for i in range(len(list_state_numbers)):
+                if i == 0:
+                    writer.writerow({headers[0]: method,
+                                     headers[1]: seats,
+                                     headers[2]: original_divisor,
+                                     headers[3]: modified_divisor,
+                                     headers[4]: self.lower_boundary,
+                                     headers[5]: self.upper_boundary,
+                                     headers[6]: list_state_numbers[i],
+                                     headers[7]: list_populations[i],
+                                     headers[8]: list_initial_quotas[i],
+                                     headers[9]: list_final_quotas[i],
+                                     headers[10]: list_initial_fair_shares[i],
+                                     headers[11]: list_final_fair_shares[i]})
+                else:
+                    writer.writerow({headers[0]: '',
+                                     headers[1]: '',
+                                     headers[2]: '',
+                                     headers[3]: '',
+                                     headers[4]: '',
+                                     headers[5]: '',
+                                     headers[6]: list_state_numbers[i],
+                                     headers[7]: list_populations[i],
+                                     headers[8]: list_initial_quotas[i],
+                                     headers[9]: list_final_quotas[i],
+                                     headers[10]: list_initial_fair_shares[i],
+                                     headers[11]: list_final_fair_shares[i]})
 
-            writer.writerow({headers[0]: self.selected_theme,
-                             headers[1]: "#B3A369",
-                             headers[2]: "#2C5234"})
-
-        # restart app
-        self.root.destroy()
-        App()
-
-    def change_theme_tarheel_blue(self):
-        """
-        change_theme_tarheel_blue - changes gui to unc-chapel hill school colors
-        """
-
-        self.selected_theme = 3
-
-        # clear data
-        data = open('../data/settings.csv', 'r+')
-        data.truncate(0)
-        data.close()
-
-        # write new data
-        with open('../data/settings.csv', 'w', newline='') as file:
-            headers = ['theme', 'fg', 'bg']
-            writer = csv.DictWriter(file, fieldnames=headers)
-            writer.writeheader()
-
-            writer.writerow({headers[0]: self.selected_theme,
-                             headers[1]: "ghost white",
-                             headers[2]: "#4B9CD3"})
-
-        # restart app
-        self.root.destroy()
-        App()
-
-    def change_theme_wolfpack_red(self):
-        """
-        change_theme_tarheel_blue - changes gui to nc state school colors
-        """
-
-        self.selected_theme = 4
-
-        # clear data
-        data = open('../data/settings.csv', 'r+')
-        data.truncate(0)
-        data.close()
-
-        # write new data
-        with open('../data/settings.csv', 'w', newline='') as file:
-            headers = ['theme', 'fg', 'bg']
-            writer = csv.DictWriter(file, fieldnames=headers)
-            writer.writeheader()
-
-            writer.writerow({headers[0]: self.selected_theme,
-                             headers[1]: "ghost white",
-                             headers[2]: "#CC0000"})
-
-        # restart app
-        self.root.destroy()
-        App()
-
-    def show_about(self):
-        """
-        show_about - displays a popup gui with information about the app
-        """
-
-        # create new tkinter window
-        about_window = Toplevel(self.root)
-        about_window.title('about')
-        about_window.geometry("640x430")
-        about_window.resizable(False, False)
-        about_window.configure(bg=self.frame_background)
-
-        # create heading label
-        Label(about_window, text='About', bg=self.frame_background, fg=self.widget_foreground,
-              width=50, font=self.font).place(relx=.5, y=20,
-                                              anchor=CENTER)
-
-        # about line 1
-        Label(about_window, text='What this is:', bg=self.frame_background, fg=self.widget_foreground,
-              width=50, font=self.tiny_font).place(relx=.5, y=60, anchor=CENTER)
-        Label(about_window, text='This software allows users to apportion seats to states using four historic\n'
-                                 'methods used in the United States hundreds of years ago. Those methods are\n'
-                                 'Hamilton\'s, Adam\'s, Jefferson\'s, and Webster\'s methods of apportionment.',
-              bg=self.frame_background, fg=self.widget_foreground,
-              width=70, font=self.tiny_font).place(relx=.5, y=100, anchor=CENTER)
-
-        # about line 2
-        Label(about_window, text='Google Play free version with ads',
-              bg=self.frame_background, fg=self.widget_foreground,
-              width=70, font=self.tiny_font).place(relx=.5, y=165, anchor=CENTER)
-        Button(about_window, text='view', width=9, height=1, bg=self.frame_background,
-               fg=self.widget_foreground, relief='groove',
-               borderwidth=2, font=self.font, command=lambda: webbrowser.open(
-                'https://play.google.com/store/apps/details?id=com.brandon.apportionmentcalculator&hl=en_US&gl=US')).place(
-            relx=.5, y=200, anchor=CENTER)
-
-        # about line 3
-        Label(about_window, text='Google Play 0.99c version without ads',
-              bg=self.frame_background, fg=self.widget_foreground,
-              width=70, font=self.tiny_font).place(relx=.5, y=250, anchor=CENTER)
-        Button(about_window, text='view', width=9, height=1, bg=self.frame_background,
-               fg=self.widget_foreground, relief='groove',
-               borderwidth=2, font=self.font, command=lambda: webbrowser.open(
-                'https://play.google.com/store/apps/details?id=com.brandon.apportionmentcalculatorpro&hl=en_US&gl=US')).place(
-            relx=.5, y=288, anchor=CENTER)
-
-        # about line 4
-        Label(about_window, text='Check out our other apps',
-              bg=self.frame_background, fg=self.widget_foreground,
-              width=70, font=self.tiny_font).place(relx=.5, y=340, anchor=CENTER)
-        Button(about_window, text='website', width=9, height=1, bg=self.frame_background,
-               fg=self.widget_foreground, relief='groove',
-               borderwidth=2, font=self.font, command=lambda: webbrowser.open(
-                'https://ticerapps.com/')).place(
-            relx=.5, y=378, anchor=CENTER)
-
-    def show_guide(self):
-        """
-        show_guide - shows popup gui containing documentation on how to use the app
-        """
-
-        # create new tkinter window
-        guide_window = Toplevel(self.root)
-        guide_window.title('Software guide')
-        guide_window.geometry("680x530")
-        guide_window.resizable(False, False)
-        guide_window.configure(bg=self.frame_background)
-
-        # create heading label
-        Label(guide_window, text='Instructions', bg=self.frame_background, fg=self.widget_foreground,
-              width=50, font=self.font).place(relx=.5, y=20,
-                                              anchor=CENTER)
-
-        # instruction line 1
-        Label(guide_window, text='Adding seats:', bg=self.frame_background, fg=self.widget_foreground,
-              width=50, font=self.tiny_font).place(relx=.5, y=60, anchor=CENTER)
-        Label(guide_window, text='Enter the number of seats you want to add in the field at the top left.',
-              bg=self.frame_background, fg=self.widget_foreground,
-              width=70, font=self.tiny_font).place(relx=.5, y=80, anchor=CENTER)
-
-        # instruction line 2
-        Label(guide_window, text='Selecting a method:', bg=self.frame_background, fg=self.widget_foreground,
-              width=50, font=self.tiny_font).place(relx=.5, y=120, anchor=CENTER)
-        Label(guide_window, text='Select one of the four methods at the top right to apply it.',
-              bg=self.frame_background, fg=self.widget_foreground,
-              width=70, font=self.tiny_font).place(relx=.5, y=140, anchor=CENTER)
-
-        # instruction line 3
-        Label(guide_window, text='Add/remove/clear states & calculate results:', bg=self.frame_background,
-              fg=self.widget_foreground,
-              width=50, font=self.tiny_font).place(relx=.5, y=180, anchor=CENTER)
-        Label(guide_window,
-              text='Use the calculator buttons at the top middle to add and remove. Press = to get results.',
-              bg=self.frame_background, fg=self.widget_foreground,
-              width=90, font=self.tiny_font).place(relx=.5, y=200, anchor=CENTER)
-
-        # instruction line 4
-        Label(guide_window, text='Show initial fair share chart:', bg=self.frame_background,
-              fg=self.widget_foreground,
-              width=50, font=self.tiny_font).place(relx=.5, y=240, anchor=CENTER)
-        Label(guide_window,
-              text='Navigate to view/charts and select "show fair share chart."',
-              bg=self.frame_background, fg=self.widget_foreground,
-              width=90, font=self.tiny_font).place(relx=.5, y=260, anchor=CENTER)
-
-        # instruction line 5
-        Label(guide_window, text='Show divisor boundaries graph:', bg=self.frame_background,
-              fg=self.widget_foreground,
-              width=50, font=self.tiny_font).place(relx=.5, y=300, anchor=CENTER)
-        Label(guide_window,
-              text='Navigate to view/charts and select "show estimated divisor graph."',
-              bg=self.frame_background, fg=self.widget_foreground,
-              width=90, font=self.tiny_font).place(relx=.5, y=320, anchor=CENTER)
-
-        # instruction line 6
-        Label(guide_window, text='Save data to csv/xlsx file:', bg=self.frame_background,
-              fg=self.widget_foreground,
-              width=50, font=self.tiny_font).place(relx=.5, y=360, anchor=CENTER)
-        Label(guide_window,
-              text='Navigate to file/export and select ".csv file" or ".xlsx file" to save current data to a file.',
-              bg=self.frame_background, fg=self.widget_foreground,
-              width=90, font=self.tiny_font).place(relx=.5, y=380, anchor=CENTER)
-
-        # instruction line 7
-        Label(guide_window, text='Dynamically change modified divisor:', bg=self.frame_background,
-              fg=self.widget_foreground,
-              width=50, font=self.tiny_font).place(relx=.5, y=420, anchor=CENTER)
-        Label(guide_window,
-              text='After calculating results for any method (except Hamilton) the slider at the bottom left\n'
-                   'is enabled and you can use it to change the divisor to any value between the lowest and\n'
-                   'highest possible divisor.',
-              bg=self.frame_background, fg=self.widget_foreground,
-              width=90, font=self.tiny_font).place(relx=.5, y=460, anchor=CENTER)
-
-    def slider_changed(self, event):
-        """
-        slider_changed - listener to update table values and widgets when slider is changed
-
-        :param event: event
-        """
-
-        # if not hamilton update the label displaying the slider value
-        if self.calculate_pressed and self.clicked != 'Hamilton':
-            self.slider_label.config(text=round(self.slider.get(), 4))
-
-            # get the populations
-            populations = []
-            for i, x in enumerate(self.populations):
-                if x.get() == '':
-                    break
-                try:
-                    populations.append(float(x.get()))
-                except ValueError:
-                    break
-
-            # get new values based on new information
-            method = None
-            if self.last_calculation.get() == 'Jefferson':
-                method = Jefferson(float(self.num_seats.get()), self.rows - 1, populations)
-            elif self.last_calculation.get() == 'Adam':
-                method = Adam(float(self.num_seats.get()), self.rows - 1, populations)
-            elif self.last_calculation.get() == 'Webster':
-                method = Webster(float(self.num_seats.get()), self.rows - 1, populations)
-
-            # gather filtered results
-            final_quotas, final_fair_shares = method.calculate_with_divisor(round(self.slider.get(), 4))
-
-            # update modified divisor depending on slider result
-            self.modified_divisor = round(self.slider.get(), 4)
-
-            # update widgets in the grid
-            for i, initial_quota in enumerate(self.original_quota_values):
-                self.initial_quotas[i].set(round(initial_quota, 4))
-            for i, final_quota in enumerate(final_quotas):
-                self.final_quotas[i].set(round(final_quota, 4))
-            for i, initial_fair_share in enumerate(self.original_fair_share_values):
-                self.initial_fair_shares[i].set(round(initial_fair_share, 4))
-            for i, final_fair_share in enumerate(final_fair_shares):
-                self.final_fair_shares[i].set(round(final_fair_share, 4))
-
-            # if the boundary calculations are inconclusive, do not display results
-            if round(self.lower_boundary, 4) >= round(self.upper_boundary, 4):
-                self.original_divisor_label.config(
-                    text=f'original divisor: {round(self.original_divisor, 4)}  |  could not estimate lowest or '
-                         f'highest possible divisor ')
-                self.slider['state'] = DISABLED
-                self.slider_label_title.config(text='Modified Divisor')
-                self.slider_label.config(text='N/A')
-            else:
-                self.original_divisor_label.config(
-                    text=f'original divisor: {round(self.original_divisor, 4)}  |  {round(self.lower_boundary, 4)} > '
-                         f'safe divisor range < {round(self.upper_boundary, 4)}')
-            self.message_variable.set('')
-            self.grid[self.rows - 1][0].config(text='total')
-            self.grid[self.rows - 1][1].config(text=sum(populations))
-            self.grid[self.rows - 1][2].config(text=f'~{round(sum(self.original_quota_values), 4)}')
-            self.grid[self.rows - 1][3].config(text=f'~{round(sum(final_quotas), 4)}')
-            self.grid[self.rows - 1][4].config(text=sum(self.original_fair_share_values))
-            self.grid[self.rows - 1][5].config(text=round(sum(final_fair_shares), 4))
-
-            # set calculate pressed to true
-            self.calculate_pressed = True
+    def load_saved_table_data(self):
+        # TODO: when the software starts, load recent data into the table
+        x = 10
 
     def save_csv(self):
         """
@@ -1131,6 +889,11 @@ class App:
             self.original_divisor_label.config(text='')
             self.message_variable.set('')
 
+            # clear recent data
+            data = open('../data/recent_table_data.csv', 'r+')
+            data.truncate(0)
+            data.close()
+
     def calculate(self):
         """
         calculate - calculates the results for the selected method
@@ -1358,6 +1121,342 @@ class App:
                                                     total_initial_fair_shares, lower_boundary, upper_boundary,
                                                     self.divisor_estimations_history)
                                         plot.create_fair_share_plot()
+
+                                # save recent calculation
+                                self.save_recent_data()
+
+    def show_about(self):
+        """
+        show_about - displays a popup gui with information about the app
+        """
+
+        # create new tkinter window
+        about_window = Toplevel(self.root)
+        about_window.title('about')
+        about_window.geometry("640x430")
+        about_window.resizable(False, False)
+        about_window.configure(bg=self.frame_background)
+
+        # create heading label
+        Label(about_window, text='About', bg=self.frame_background, fg=self.widget_foreground,
+              width=50, font=self.font).place(relx=.5, y=20,
+                                              anchor=CENTER)
+
+        # about line 1
+        Label(about_window, text='What this is:', bg=self.frame_background, fg=self.widget_foreground,
+              width=50, font=self.tiny_font).place(relx=.5, y=60, anchor=CENTER)
+        Label(about_window, text='This software allows users to apportion seats to states using four historic\n'
+                                 'methods used in the United States hundreds of years ago. Those methods are\n'
+                                 'Hamilton\'s, Adam\'s, Jefferson\'s, and Webster\'s methods of apportionment.',
+              bg=self.frame_background, fg=self.widget_foreground,
+              width=70, font=self.tiny_font).place(relx=.5, y=100, anchor=CENTER)
+
+        # about line 2
+        Label(about_window, text='Google Play free version with ads',
+              bg=self.frame_background, fg=self.widget_foreground,
+              width=70, font=self.tiny_font).place(relx=.5, y=165, anchor=CENTER)
+        Button(about_window, text='view', width=9, height=1, bg=self.frame_background,
+               fg=self.widget_foreground, relief='groove',
+               borderwidth=2, font=self.font, command=lambda: webbrowser.open(
+                'https://play.google.com/store/apps/details?id=com.brandon.apportionmentcalculator&hl=en_US&gl=US')).place(
+            relx=.5, y=200, anchor=CENTER)
+
+        # about line 3
+        Label(about_window, text='Google Play 0.99c version without ads',
+              bg=self.frame_background, fg=self.widget_foreground,
+              width=70, font=self.tiny_font).place(relx=.5, y=250, anchor=CENTER)
+        Button(about_window, text='view', width=9, height=1, bg=self.frame_background,
+               fg=self.widget_foreground, relief='groove',
+               borderwidth=2, font=self.font, command=lambda: webbrowser.open(
+                'https://play.google.com/store/apps/details?id=com.brandon.apportionmentcalculatorpro&hl=en_US&gl=US')).place(
+            relx=.5, y=288, anchor=CENTER)
+
+        # about line 4
+        Label(about_window, text='Check out our other apps',
+              bg=self.frame_background, fg=self.widget_foreground,
+              width=70, font=self.tiny_font).place(relx=.5, y=340, anchor=CENTER)
+        Button(about_window, text='website', width=9, height=1, bg=self.frame_background,
+               fg=self.widget_foreground, relief='groove',
+               borderwidth=2, font=self.font, command=lambda: webbrowser.open(
+                'https://ticerapps.com/')).place(
+            relx=.5, y=378, anchor=CENTER)
+
+    def show_guide(self):
+        """
+        show_guide - shows popup gui containing documentation on how to use the app
+        """
+
+        # create new tkinter window
+        guide_window = Toplevel(self.root)
+        guide_window.title('Software guide')
+        guide_window.geometry("680x530")
+        guide_window.resizable(False, False)
+        guide_window.configure(bg=self.frame_background)
+
+        # create heading label
+        Label(guide_window, text='Instructions', bg=self.frame_background, fg=self.widget_foreground,
+              width=50, font=self.font).place(relx=.5, y=20,
+                                              anchor=CENTER)
+
+        # instruction line 1
+        Label(guide_window, text='Adding seats:', bg=self.frame_background, fg=self.widget_foreground,
+              width=50, font=self.tiny_font).place(relx=.5, y=60, anchor=CENTER)
+        Label(guide_window, text='Enter the number of seats you want to add in the field at the top left.',
+              bg=self.frame_background, fg=self.widget_foreground,
+              width=70, font=self.tiny_font).place(relx=.5, y=80, anchor=CENTER)
+
+        # instruction line 2
+        Label(guide_window, text='Selecting a method:', bg=self.frame_background, fg=self.widget_foreground,
+              width=50, font=self.tiny_font).place(relx=.5, y=120, anchor=CENTER)
+        Label(guide_window, text='Select one of the four methods at the top right to apply it.',
+              bg=self.frame_background, fg=self.widget_foreground,
+              width=70, font=self.tiny_font).place(relx=.5, y=140, anchor=CENTER)
+
+        # instruction line 3
+        Label(guide_window, text='Add/remove/clear states & calculate results:', bg=self.frame_background,
+              fg=self.widget_foreground,
+              width=50, font=self.tiny_font).place(relx=.5, y=180, anchor=CENTER)
+        Label(guide_window,
+              text='Use the calculator buttons at the top middle to add and remove. Press = to get results.',
+              bg=self.frame_background, fg=self.widget_foreground,
+              width=90, font=self.tiny_font).place(relx=.5, y=200, anchor=CENTER)
+
+        # instruction line 4
+        Label(guide_window, text='Show initial fair share chart:', bg=self.frame_background,
+              fg=self.widget_foreground,
+              width=50, font=self.tiny_font).place(relx=.5, y=240, anchor=CENTER)
+        Label(guide_window,
+              text='Navigate to view/charts and select "show fair share chart."',
+              bg=self.frame_background, fg=self.widget_foreground,
+              width=90, font=self.tiny_font).place(relx=.5, y=260, anchor=CENTER)
+
+        # instruction line 5
+        Label(guide_window, text='Show divisor boundaries graph:', bg=self.frame_background,
+              fg=self.widget_foreground,
+              width=50, font=self.tiny_font).place(relx=.5, y=300, anchor=CENTER)
+        Label(guide_window,
+              text='Navigate to view/charts and select "show estimated divisor graph."',
+              bg=self.frame_background, fg=self.widget_foreground,
+              width=90, font=self.tiny_font).place(relx=.5, y=320, anchor=CENTER)
+
+        # instruction line 6
+        Label(guide_window, text='Save data to csv/xlsx file:', bg=self.frame_background,
+              fg=self.widget_foreground,
+              width=50, font=self.tiny_font).place(relx=.5, y=360, anchor=CENTER)
+        Label(guide_window,
+              text='Navigate to file/export and select ".csv file" or ".xlsx file" to save current data to a file.',
+              bg=self.frame_background, fg=self.widget_foreground,
+              width=90, font=self.tiny_font).place(relx=.5, y=380, anchor=CENTER)
+
+        # instruction line 7
+        Label(guide_window, text='Dynamically change modified divisor:', bg=self.frame_background,
+              fg=self.widget_foreground,
+              width=50, font=self.tiny_font).place(relx=.5, y=420, anchor=CENTER)
+        Label(guide_window,
+              text='After calculating results for any method (except Hamilton) the slider at the bottom left\n'
+                   'is enabled and you can use it to change the divisor to any value between the lowest and\n'
+                   'highest possible divisor.',
+              bg=self.frame_background, fg=self.widget_foreground,
+              width=90, font=self.tiny_font).place(relx=.5, y=460, anchor=CENTER)
+
+    def slider_changed(self, event):
+        """
+        slider_changed - listener to update table values and widgets when slider is changed
+
+        :param event: event
+        """
+
+        # if not hamilton update the label displaying the slider value
+        if self.calculate_pressed and self.clicked != 'Hamilton':
+            self.slider_label.config(text=round(self.slider.get(), 4))
+
+            # get the populations
+            populations = []
+            for i, x in enumerate(self.populations):
+                if x.get() == '':
+                    break
+                try:
+                    populations.append(float(x.get()))
+                except ValueError:
+                    break
+
+            # get new values based on new information
+            method = None
+            if self.last_calculation.get() == 'Jefferson':
+                method = Jefferson(float(self.num_seats.get()), self.rows - 1, populations)
+            elif self.last_calculation.get() == 'Adam':
+                method = Adam(float(self.num_seats.get()), self.rows - 1, populations)
+            elif self.last_calculation.get() == 'Webster':
+                method = Webster(float(self.num_seats.get()), self.rows - 1, populations)
+
+            # gather filtered results
+            final_quotas, final_fair_shares = method.calculate_with_divisor(round(self.slider.get(), 4))
+
+            # update modified divisor depending on slider result
+            self.modified_divisor = round(self.slider.get(), 4)
+
+            # update widgets in the grid
+            for i, initial_quota in enumerate(self.original_quota_values):
+                self.initial_quotas[i].set(round(initial_quota, 4))
+            for i, final_quota in enumerate(final_quotas):
+                self.final_quotas[i].set(round(final_quota, 4))
+            for i, initial_fair_share in enumerate(self.original_fair_share_values):
+                self.initial_fair_shares[i].set(round(initial_fair_share, 4))
+            for i, final_fair_share in enumerate(final_fair_shares):
+                self.final_fair_shares[i].set(round(final_fair_share, 4))
+
+            # if the boundary calculations are inconclusive, do not display results
+            if round(self.lower_boundary, 4) >= round(self.upper_boundary, 4):
+                self.original_divisor_label.config(
+                    text=f'original divisor: {round(self.original_divisor, 4)}  |  could not estimate lowest or '
+                         f'highest possible divisor ')
+                self.slider['state'] = DISABLED
+                self.slider_label_title.config(text='Modified Divisor')
+                self.slider_label.config(text='N/A')
+            else:
+                self.original_divisor_label.config(
+                    text=f'original divisor: {round(self.original_divisor, 4)}  |  {round(self.lower_boundary, 4)} > '
+                         f'safe divisor range < {round(self.upper_boundary, 4)}')
+            self.message_variable.set('')
+            self.grid[self.rows - 1][0].config(text='total')
+            self.grid[self.rows - 1][1].config(text=sum(populations))
+            self.grid[self.rows - 1][2].config(text=f'~{round(sum(self.original_quota_values), 4)}')
+            self.grid[self.rows - 1][3].config(text=f'~{round(sum(final_quotas), 4)}')
+            self.grid[self.rows - 1][4].config(text=sum(self.original_fair_share_values))
+            self.grid[self.rows - 1][5].config(text=round(sum(final_fair_shares), 4))
+
+            # set calculate pressed to true
+            self.calculate_pressed = True
+
+    def change_theme_dark(self):
+        """
+        change_theme_dark - changes gui to dark mode
+        """
+
+        self.selected_theme = 0
+
+        # clear data
+        data = open('../data/settings.csv', 'r+')
+        data.truncate(0)
+        data.close()
+
+        # write new data
+        with open('../data/settings.csv', 'w', newline='') as file:
+            headers = ['theme', 'fg', 'bg']
+            writer = csv.DictWriter(file, fieldnames=headers)
+            writer.writeheader()
+
+            writer.writerow({headers[0]: self.selected_theme,
+                             headers[1]: "ghost white",
+                             headers[2]: "gray23"})
+
+        # restart app
+        self.root.destroy()
+        App()
+
+    def change_theme_light(self):
+        """
+        change_theme_light - changes gui to light mode
+        """
+
+        self.selected_theme = 1
+
+        # clear data
+        data = open('../data/settings.csv', 'r+')
+        data.truncate(0)
+        data.close()
+
+        # write new data
+        with open('../data/settings.csv', 'w', newline='') as file:
+            headers = ['theme', 'fg', 'bg']
+            writer = csv.DictWriter(file, fieldnames=headers)
+            writer.writeheader()
+
+            writer.writerow({headers[0]: self.selected_theme,
+                             headers[1]: "gray23",
+                             headers[2]: "ghost white"})
+
+        # restart app
+        self.root.destroy()
+        App()
+
+    def change_theme_clt_green(self):
+        """
+        change_theme_clt_green - changes gui to unc-charlotte school colors
+        """
+
+        self.selected_theme = 2
+
+        # clear data
+        data = open('../data/settings.csv', 'r+')
+        data.truncate(0)
+        data.close()
+
+        # write new data
+        with open('../data/settings.csv', 'w', newline='') as file:
+            headers = ['theme', 'fg', 'bg']
+            writer = csv.DictWriter(file, fieldnames=headers)
+            writer.writeheader()
+
+            writer.writerow({headers[0]: self.selected_theme,
+                             headers[1]: "#B3A369",
+                             headers[2]: "#2C5234"})
+
+        # restart app
+        self.root.destroy()
+        App()
+
+    def change_theme_tarheel_blue(self):
+        """
+        change_theme_tarheel_blue - changes gui to unc-chapel hill school colors
+        """
+
+        self.selected_theme = 3
+
+        # clear data
+        data = open('../data/settings.csv', 'r+')
+        data.truncate(0)
+        data.close()
+
+        # write new data
+        with open('../data/settings.csv', 'w', newline='') as file:
+            headers = ['theme', 'fg', 'bg']
+            writer = csv.DictWriter(file, fieldnames=headers)
+            writer.writeheader()
+
+            writer.writerow({headers[0]: self.selected_theme,
+                             headers[1]: "ghost white",
+                             headers[2]: "#4B9CD3"})
+
+        # restart app
+        self.root.destroy()
+        App()
+
+    def change_theme_wolfpack_red(self):
+        """
+        change_theme_tarheel_blue - changes gui to nc state school colors
+        """
+
+        self.selected_theme = 4
+
+        # clear data
+        data = open('../data/settings.csv', 'r+')
+        data.truncate(0)
+        data.close()
+
+        # write new data
+        with open('../data/settings.csv', 'w', newline='') as file:
+            headers = ['theme', 'fg', 'bg']
+            writer = csv.DictWriter(file, fieldnames=headers)
+            writer.writeheader()
+
+            writer.writerow({headers[0]: self.selected_theme,
+                             headers[1]: "ghost white",
+                             headers[2]: "#CC0000"})
+
+        # restart app
+        self.root.destroy()
+        App()
 
 
 if __name__ == '__main__':
