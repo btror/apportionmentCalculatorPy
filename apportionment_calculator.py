@@ -1,6 +1,5 @@
 import tkinter as tk
 import tkinter.font as font
-import pandas as pd
 from tkinter import ttk
 import csv
 import xlsxwriter
@@ -92,7 +91,7 @@ class App:
         frame_main.configure(bg=self.frame_background)
 
         # desktop version label
-        Label(frame_main, text='Desktop 1.0.1', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
+        Label(frame_main, text='Desktop 1.1.0', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
                                                                                                            anchor=CENTER)
 
         # track selected method (default is hamilton)
@@ -347,13 +346,17 @@ class App:
         submenu_2 = Menu(view, tearoff=0)
         submenu_2.add_checkbutton(label='Show fair share chart', variable=self.show_chart)
         submenu_2.add_checkbutton(label='Show estimated divisor graph', variable=self.show_graph)
-        view.add_cascade(label='Charts', menu=submenu_2)
+        view.add_cascade(label='Chart settings', menu=submenu_2)
 
         # submenu for themes
         submenu_3 = Menu(view, tearoff=0)
         submenu_3.add_command(label='Light theme', command=self.change_theme_light)
         submenu_3.add_command(label='Dark theme', command=self.change_theme_dark)
-        view.add_cascade(label="Theme", menu=submenu_3)
+        submenu_3.add_separator()
+        submenu_3.add_command(label='Clt green', command=self.change_theme_clt_green)
+        submenu_3.add_command(label='Tarheel blue', command=self.change_theme_tarheel_blue)
+        submenu_3.add_command(label='Wolfpack red', command=self.change_theme_wolfpack_red)
+        view.add_cascade(label="Themes", menu=submenu_3)
 
         help_ = Menu(menu_bar, tearoff=0)
         menu_bar.add_cascade(label='Help', menu=help_)
@@ -367,39 +370,135 @@ class App:
         # launch
         self.root.mainloop()
 
-    def change_theme_light(self): # fix this
-        self.selected_theme = 1
+    def change_theme_dark(self):
+        """
+        change_theme_dark - changes gui to dark mode
+        """
 
-        df = pd.read_csv('data/settings.csv')
-        df.head(1)
-        df.set_value(0, 'theme', 1)
-        df.to_csv('data/settings.csv', index=False)
-        # default colors
-        # data = csv.reader(open('data/settings.csv'))
-        # lines = list(data)
-        # lines[1][0] = self.selected_theme
-        # writer = csv.writer(open('data/settings.csv', 'w'))
-        # writer.writerows(lines)
-
-        #self.root.destroy()
-        #App()
-
-    def change_theme_dark(self): # fix this
         self.selected_theme = 0
 
-        df = pd.read_csv('data/settings.csv')
-        df.head(1)
-        df.set_value(0, 'theme', 0)
-        df.to_csv('data/settings.csv', index=False)
-        # default colors
-        # data = csv.reader(open('data/settings.csv'))
-        # lines = list(data)
-        # lines[1][0] = self.selected_theme
-        # writer = csv.writer(open('data/settings.csv', 'w'))
-        # writer.writerows(lines)
+        # clear data
+        data = open('data/settings.csv', 'r+')
+        data.truncate(0)
+        data.close()
 
-        #self.root.destroy()
-        #App()
+        # write new data
+        with open('data/settings.csv', 'w', newline='') as file:
+            headers = ['theme', 'fg', 'bg']
+            writer = csv.DictWriter(file, fieldnames=headers)
+            writer.writeheader()
+
+            writer.writerow({headers[0]: self.selected_theme,
+                             headers[1]: "ghost white",
+                             headers[2]: "gray23"})
+
+        # restart app
+        self.root.destroy()
+        App()
+
+    def change_theme_light(self):
+        """
+        change_theme_light - changes gui to light mode
+        """
+
+        self.selected_theme = 1
+
+        # clear data
+        data = open('data/settings.csv', 'r+')
+        data.truncate(0)
+        data.close()
+
+        # write new data
+        with open('data/settings.csv', 'w', newline='') as file:
+            headers = ['theme', 'fg', 'bg']
+            writer = csv.DictWriter(file, fieldnames=headers)
+            writer.writeheader()
+
+            writer.writerow({headers[0]: self.selected_theme,
+                             headers[1]: "gray23",
+                             headers[2]: "ghost white"})
+
+        # restart app
+        self.root.destroy()
+        App()
+
+    def change_theme_clt_green(self):
+        """
+        change_theme_clt_green - changes gui to unc-charlotte school colors
+        """
+
+        self.selected_theme = 2
+
+        # clear data
+        data = open('data/settings.csv', 'r+')
+        data.truncate(0)
+        data.close()
+
+        # write new data
+        with open('data/settings.csv', 'w', newline='') as file:
+            headers = ['theme', 'fg', 'bg']
+            writer = csv.DictWriter(file, fieldnames=headers)
+            writer.writeheader()
+
+            writer.writerow({headers[0]: self.selected_theme,
+                             headers[1]: "#B3A369",
+                             headers[2]: "#2C5234"})
+
+        # restart app
+        self.root.destroy()
+        App()
+
+    def change_theme_tarheel_blue(self):
+        """
+        change_theme_tarheel_blue - changes gui to unc-chapel hill school colors
+        """
+
+        self.selected_theme = 3
+
+        # clear data
+        data = open('data/settings.csv', 'r+')
+        data.truncate(0)
+        data.close()
+
+        # write new data
+        with open('data/settings.csv', 'w', newline='') as file:
+            headers = ['theme', 'fg', 'bg']
+            writer = csv.DictWriter(file, fieldnames=headers)
+            writer.writeheader()
+
+            writer.writerow({headers[0]: self.selected_theme,
+                             headers[1]: "ghost white",
+                             headers[2]: "#4B9CD3"})
+
+        # restart app
+        self.root.destroy()
+        App()
+
+    def change_theme_wolfpack_red(self):
+        """
+        change_theme_tarheel_blue - changes gui to nc state school colors
+        """
+
+        self.selected_theme = 4
+
+        # clear data
+        data = open('data/settings.csv', 'r+')
+        data.truncate(0)
+        data.close()
+
+        # write new data
+        with open('data/settings.csv', 'w', newline='') as file:
+            headers = ['theme', 'fg', 'bg']
+            writer = csv.DictWriter(file, fieldnames=headers)
+            writer.writeheader()
+
+            writer.writerow({headers[0]: self.selected_theme,
+                             headers[1]: "ghost white",
+                             headers[2]: "#CC0000"})
+
+        # restart app
+        self.root.destroy()
+        App()
 
     def show_about(self):
         """
@@ -408,7 +507,7 @@ class App:
 
         # create new tkinter window
         about_window = Toplevel(self.root)
-        about_window.title('Software guide')
+        about_window.title('about')
         about_window.geometry("640x430")
         about_window.resizable(False, False)
         about_window.configure(bg=self.frame_background)
@@ -591,7 +690,8 @@ class App:
                 self.slider_label.config(text='N/A')
             else:
                 self.original_divisor_label.config(
-                    text=f'original divisor: {round(self.original_divisor, 4)}  |  {round(self.lower_boundary, 4)} > divisor range < {round(self.upper_boundary, 4)}')
+                    text=f'original divisor: {round(self.original_divisor, 4)}  |  {round(self.lower_boundary, 4)} > '
+                         f'safe divisor range < {round(self.upper_boundary, 4)}')
             self.message_variable.set('')
             self.grid[self.rows - 1][0].config(text='total')
             self.grid[self.rows - 1][1].config(text=sum(populations))
@@ -1212,13 +1312,14 @@ class App:
                                     if round(lower_boundary, 4) >= round(upper_boundary, 4) or (
                                             lower_boundary is None or upper_boundary is None):
                                         self.original_divisor_label.config(
-                                            text=f'original divisor: {round(self.original_divisor, 4)}  |  could not estimate lowest or highest possible divisor ')
+                                            text=f'original divisor: {round(self.original_divisor, 4)}  |  could not '
+                                                 f'estimate lowest or highest possible divisor ')
                                         self.slider['state'] = DISABLED
                                         self.slider_label_title.config(text='Modified Divisor')
                                         self.slider_label.config(text='N/A')
                                     else:
                                         self.original_divisor_label.config(
-                                            text=f'original divisor: {round(self.original_divisor, 4)}  |  {round(lower_boundary, 4)} > divisor range < {round(upper_boundary, 4)}')
+                                            text=f'original divisor: {round(self.original_divisor, 4)}  |  {round(lower_boundary, 4)} > safe divisor range < {round(upper_boundary, 4)}')
                                 else:
                                     self.slider['state'] = DISABLED
                                     self.slider_label_title.config(text='Modified Divisor')

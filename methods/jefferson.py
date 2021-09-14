@@ -92,7 +92,6 @@ class Jefferson:
                 self.populations) / self.num_seats, sum(self.populations) / self.num_seats)
 
         lower_boundary = self.calculate_lower_boundary(modified_divisor)
-        print(lower_boundary)
         upper_boundary = self.calculate_upper_boundary(modified_divisor)
 
         if estimator is None:
@@ -182,8 +181,6 @@ class Jefferson:
                 if highest_divisor == divisor:
                     break
             counter += 1
-        print(highest_divisor)
-        print(math.floor(highest_divisor * 1000) / 1000)
         return math.floor(highest_divisor * 1000) / 1000
 
     def calculate_plot_points(self, lower_divisor, upper_divisor):
