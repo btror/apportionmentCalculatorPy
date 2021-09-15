@@ -6,11 +6,11 @@ import xlsxwriter
 import webbrowser
 from tkinter import *
 from tkinter.filedialog import asksaveasfile
-from main.main_plots import Plot
-from main.methods.hamilton import Hamilton
-from main.methods.jefferson import Jefferson
-from main.methods.adam import Adam
-from main.methods.webster import Webster
+from src.main_plots import Plot
+from src.methods.hamilton import Hamilton
+from src.methods.jefferson import Jefferson
+from src.methods.adam import Adam
+from src.methods.webster import Webster
 
 
 class App:
@@ -28,7 +28,7 @@ class App:
         self.root.title('TICERAPPS Apportionment Calculator')
 
         # set gui icon
-        icon = PhotoImage(file='res/apportionmentimage.png')
+        icon = PhotoImage(file='res/icon.png')
         self.root.iconphoto(False, icon)
 
         self.frame_background = None

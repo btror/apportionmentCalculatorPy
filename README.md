@@ -4,28 +4,28 @@
 
 Icon (1.0.1)
 
-<img src="res/apportionmentimage.png" width="300" height="300">
+<img src="res/icon.png" width="300" height="300" >
 
 
 Release design (1.0.0)
 
-<img src="res/image_1.JPG" width="685" height="430">
+<img src="res/demo_1.JPG" width="685" height="430">
 
 Enter a number of seats to apportion, add some states and enter their populations, and select a method to use to apportion the seats.
 
-<img src="res/image_2.JPG" width="685" height="430">
+<img src="res/demo_2.JPG" width="685" height="430">
 
 Press = to calculate results.
 
-<img src="res/image_3.JPG" width="685" height="430">
+<img src="res/demo_3.JPG" width="685" height="430">
 
 You can use the slider at the bottom to change the divisor to any value that will result in the proper distributions
 
-<img src="res/gif_4.gif" width="685" height="430">
+<img src="res/demo_4.gif" width="685" height="430">
 
 You can also display a graph that shows all the estimated divisors guessed until a proper divisor is found and a bar graph showing the fair shares.
 
-<img src="res/gif_5.gif" width="685" height="460">
+<img src="res/demo_5.gif" width="685" height="460">
 
 # Mobile App Implementation:
 Android (free with ads): <a href="https://play.google.com/store/apps/details?id=com.brandon.apportionmentcalculator&hl=en_US&gl=US">View</a> on Play Store
