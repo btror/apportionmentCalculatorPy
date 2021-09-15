@@ -1,4 +1,0 @@
-method,seats,original_divisor,modified_divisor,lowest_possible_estimated_divisor,highest_possible_estimated_divisor,state_number,population,initial_quota,final_quota,initial_fair_share,final_fair_share
-Jefferson,43,231.0,224.78125,223.671,225.892,1,1234,5.342,5.4898,5,5
-,,,,,,2,2345,10.1515,10.4324,10,10
-,,,,,,3,6354,27.5065,28.2675,27,28
