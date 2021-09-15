@@ -41,6 +41,8 @@ For more information visit the apps page of my website https://ticerapps.com
 
 <a href="https://github.com/btror/apportionmentCalculatorPy/releases/download/1.1.0/apportionmentCalculatorPy.exe">Download exe</a>
 
+<a href="https://github.com/btror/apportionmentCalculatorPy/archive/refs/tags/1.1.0.zip">Download zip</a>
+
 1.0.1
 
 <a href="https://github.com/btror/apportionmentCalculatorPy/releases/download/1.0.1/apportionmentCalculatorPy.exe">Download exe</a>
