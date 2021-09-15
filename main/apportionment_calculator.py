@@ -461,7 +461,10 @@ class App:
                                      headers[11]: list_final_fair_shares[i]})
 
     def load_saved_table_data(self):
-        # TODO: when the software starts, load recent data into the table
+        """
+        load_saved_table_data - loads most recent data in table
+        """
+
         with open('../data/recent_table_data.csv', newline='') as file:
             reader = csv.reader(file, delimiter=',')
 
@@ -475,11 +478,23 @@ class App:
                     self.lower_boundary = float(row[4])
                     self.upper_boundary = float(row[5])
                     self.populations[line_count - 1].set(float(row[7]))
+
+                    self.initial_quotas[line_count - 1].set(row[8])
+                    self.final_quotas[line_count - 1].set(row[9])
+                    self.initial_fair_shares[line_count - 1].set(row[10])
+                    self.final_fair_shares[line_count - 1].set(row[11])
+
                 if line_count > 1:
-                    x = 1
                     self.add_state()
                     self.populations[line_count - 1].set(float(row[7]))
+
+                    self.initial_quotas[line_count - 1].set(row[8])
+                    self.final_quotas[line_count - 1].set(row[9])
+                    self.initial_fair_shares[line_count - 1].set(row[10])
+                    self.final_fair_shares[line_count - 1].set(row[11])
+
                 line_count += 1
+
             if self.method == 'Hamilton':
                 self.change_method_hamilton()
             elif self.method == 'Jefferson':
@@ -763,11 +778,11 @@ class App:
         self.rows += 1
 
         # remove calculation values
-        for i in range(len(self.populations)):
-            self.initial_quotas[i].set('-')
-            self.final_quotas[i].set('-')
-            self.initial_fair_shares[i].set('-')
-            self.final_fair_shares[i].set('-')
+        # for i in range(len(self.populations)):
+        #     self.initial_quotas[i].set('-')
+        #     self.final_quotas[i].set('-')
+        #     self.initial_fair_shares[i].set('-')
+        #     self.final_fair_shares[i].set('-')
 
         value = StringVar()
         temp_1 = StringVar()
