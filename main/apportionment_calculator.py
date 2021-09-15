@@ -52,6 +52,10 @@ class App:
                         self.frame_background = col
                     i += 1
 
+        # track chart and graph settings
+        self.show_chart = IntVar()
+        self.show_graph = IntVar()
+
         # default fonts
         self.font = font.Font(family='Helvetica', size=12, weight='bold')
         self.tiny_font = font.Font(family='Helvetica', size=10, weight='bold')
@@ -63,6 +67,7 @@ class App:
         self.final_quota_values = []
         self.final_fair_share_values = []
         self.divisor_estimations_history = []
+        self.method = None
 
         # lists to keep track of table (objects)
         self.populations = []
@@ -70,10 +75,6 @@ class App:
         self.final_quotas = []
         self.initial_fair_shares = []
         self.final_fair_shares = []
-
-        # track graph/chart settings
-        self.show_chart = IntVar()
-        self.show_graph = IntVar()
 
         # track if calculate button is pressed
         self.calculate_pressed = False
@@ -367,6 +368,8 @@ class App:
 
         self.root.config(menu=menu_bar)
 
+        self.load_saved_table_data()
+
         # launch
         self.root.mainloop()
 
@@ -459,7 +462,30 @@ class App:
 
     def load_saved_table_data(self):
         # TODO: when the software starts, load recent data into the table
-        x = 10
+        with open('../data/recent_table_data.csv', newline='') as file:
+            reader = csv.reader(file, delimiter=',')
+
+            line_count = 0
+            for row in reader:
+                if line_count == 1:
+                    self.method = row[0]
+                    self.num_seats.set(row[1])
+                    self.original_divisor = row[2]
+                    self.modified_divisor = row[3]
+                    self.lower_boundary = row[4]
+                    self.upper_boundary = row[5]
+                if line_count > 1:
+                    x = 1
+                    # self.add_state()
+                line_count += 1
+            if self.method == 'Hamilton':
+                self.change_method_hamilton()
+            elif self.method == 'Jefferson':
+                self.change_method_jefferson()
+            elif self.method == 'Adam':
+                self.change_method_adam()
+            elif self.method == 'Webster':
+                self.change_method_webster()
 
     def save_csv(self):
         """
@@ -669,6 +695,7 @@ class App:
         change_method_hamilton - updates method tracker variable, updates method button colors
         """
 
+        self.method = 'Hamilton'
         self.clicked.set('Hamilton')
         self.button_hamilton.config(background=self.widget_foreground, foreground=self.frame_background)
 
@@ -681,6 +708,7 @@ class App:
         change_method_hamilton - updates method tracker variable, updates method button colors
         """
 
+        self.method = 'Jefferson'
         self.clicked.set('Jefferson')
         self.button_jefferson.config(background=self.widget_foreground, foreground=self.frame_background)
 
@@ -693,6 +721,7 @@ class App:
         change_method_hamilton - updates method tracker variable, updates method button colors
         """
 
+        self.method = 'Adam'
         self.clicked.set('Adam')
         self.button_adam.config(background=self.widget_foreground, foreground=self.frame_background)
 
@@ -705,6 +734,7 @@ class App:
         change_method_hamilton - updates method tracker variable, updates method button colors
         """
 
+        self.method = 'Webster'
         self.clicked.set('Webster')
         self.button_webster.config(background=self.widget_foreground, foreground=self.frame_background)
 
@@ -1124,6 +1154,7 @@ class App:
 
                                 # save recent calculation
                                 self.save_recent_data()
+                                self.load_saved_table_data()
 
     def show_about(self):
         """

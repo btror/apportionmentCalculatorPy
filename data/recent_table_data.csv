@@ -1,0 +1,2 @@
+method,seats,original_divisor,modified_divisor,lowest_possible_estimated_divisor,highest_possible_estimated_divisor,state_number,population,initial_quota,final_quota,initial_fair_share,final_fair_share
+Hamilton,65,0.07692307692307693,0.07692307692307693,0,0,1,5,65.0,65.0,65,65
