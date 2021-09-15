@@ -474,9 +474,11 @@ class App:
                     self.modified_divisor = float(row[3])
                     self.lower_boundary = float(row[4])
                     self.upper_boundary = float(row[5])
+                    self.populations[line_count - 1].set(float(row[7]))
                 if line_count > 1:
                     x = 1
-                    # self.add_state()
+                    self.add_state()
+                    self.populations[line_count - 1].set(float(row[7]))
                 line_count += 1
             if self.method == 'Hamilton':
                 self.change_method_hamilton()
@@ -1154,7 +1156,6 @@ class App:
 
                                 # save recent calculation
                                 self.save_recent_data()
-                                self.load_saved_table_data()
 
     def show_about(self):
         """
