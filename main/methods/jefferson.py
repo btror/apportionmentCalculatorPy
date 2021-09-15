@@ -97,8 +97,9 @@ class Jefferson:
         if estimator is None:
             return None, None, None, None, None, None, None, None, None, None
         else:
-            return self.original_divisor, modified_divisor, self.original_quotas, final_quotas, self.initial_fair_shares, final_fair_shares, sum(
-                self.initial_fair_shares), lower_boundary, upper_boundary, self.estimator_history
+            return self.original_divisor, modified_divisor, self.original_quotas, final_quotas, \
+                   self.initial_fair_shares, final_fair_shares, sum(self.initial_fair_shares), lower_boundary, \
+                   upper_boundary, self.estimator_history
 
     def calculate_with_divisor(self, divisor):
         # calculate final quotas

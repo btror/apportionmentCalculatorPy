@@ -92,8 +92,8 @@ class App:
         frame_main.configure(bg=self.frame_background)
 
         # desktop version label
-        Label(frame_main, text='Desktop 1.1.0', bg=self.frame_background, fg=self.widget_foreground).place(x=55, y=20,
-                                                                                                           anchor=CENTER)
+        Label(frame_main, text='Desktop 1.1.0', bg=self.frame_background, fg=self.widget_foreground) \
+            .place(x=55, y=20, anchor=CENTER)
 
         # track selected method (default is hamilton)
         self.clicked = StringVar()
@@ -777,13 +777,6 @@ class App:
         # increment rows
         self.rows += 1
 
-        # remove calculation values
-        # for i in range(len(self.populations)):
-        #     self.initial_quotas[i].set('-')
-        #     self.final_quotas[i].set('-')
-        #     self.initial_fair_shares[i].set('-')
-        #     self.final_fair_shares[i].set('-')
-
         value = StringVar()
         temp_1 = StringVar()
         temp_2 = StringVar()
@@ -1024,9 +1017,9 @@ class App:
                                 self.message_variable.set('drop-down menu error!')
 
                             # gather filtered results
-                            original_divisor, modified_divisor, initial_quotas, final_quotas, initial_fair_shares, \
-                            final_fair_shares, total_initial_fair_shares, lower_boundary, upper_boundary, \
-                            self.divisor_estimations_history = method.calculate()
+                            [original_divisor, modified_divisor, initial_quotas, final_quotas, initial_fair_shares,
+                             final_fair_shares, total_initial_fair_shares, lower_boundary, upper_boundary,
+                             self.divisor_estimations_history] = method.calculate()
 
                             if original_divisor is None:
                                 self.message_variable.set(
@@ -1129,7 +1122,9 @@ class App:
                                         self.slider_label.config(text='N/A')
                                     else:
                                         self.original_divisor_label.config(
-                                            text=f'original divisor: {round(self.original_divisor, 4)}  |  {round(lower_boundary, 4)} > safe divisor range < {round(upper_boundary, 4)}')
+                                            text=f'original divisor: {round(self.original_divisor, 4)}  |  '
+                                                 f'{round(lower_boundary, 4)} > safe divisor range < '
+                                                 f'{round(upper_boundary, 4)}')
                                 else:
                                     self.slider['state'] = DISABLED
                                     self.slider_label_title.config(text='Modified Divisor')
@@ -1149,7 +1144,8 @@ class App:
                                                 total_initial_fair_shares, lower_boundary, upper_boundary,
                                                 self.divisor_estimations_history)
                                     plot.create_fair_share_plot()
-                                elif self.show_graph.get() == 1 and self.show_chart.get() != 1 and selected != 'Hamilton':
+                                elif self.show_graph.get() == 1 and self.show_chart.get() != 1 and selected != \
+                                        'Hamilton':
                                     plot = Plot(self.original_divisor, self.modified_divisor, initial_quotas,
                                                 final_quotas, initial_fair_shares, final_fair_shares,
                                                 total_initial_fair_shares, lower_boundary, upper_boundary,
@@ -1205,8 +1201,8 @@ class App:
         Button(about_window, text='view', width=9, height=1, bg=self.frame_background,
                fg=self.widget_foreground, relief='groove',
                borderwidth=2, font=self.font, command=lambda: webbrowser.open(
-                'https://play.google.com/store/apps/details?id=com.brandon.apportionmentcalculator&hl=en_US&gl=US')).place(
-            relx=.5, y=200, anchor=CENTER)
+                'https://play.google.com/store/apps/details?id=com.brandon.apportionmentcalculator&hl=en_US&gl=US'))\
+            .place(relx=.5, y=200, anchor=CENTER)
 
         # about line 3
         Label(about_window, text='Google Play 0.99c version without ads',
@@ -1215,8 +1211,8 @@ class App:
         Button(about_window, text='view', width=9, height=1, bg=self.frame_background,
                fg=self.widget_foreground, relief='groove',
                borderwidth=2, font=self.font, command=lambda: webbrowser.open(
-                'https://play.google.com/store/apps/details?id=com.brandon.apportionmentcalculatorpro&hl=en_US&gl=US')).place(
-            relx=.5, y=288, anchor=CENTER)
+                'https://play.google.com/store/apps/details?id=com.brandon.apportionmentcalculatorpro&hl=en_US&gl=US'))\
+            .place(relx=.5, y=288, anchor=CENTER)
 
         # about line 4
         Label(about_window, text='Check out our other apps',
@@ -1310,7 +1306,7 @@ class App:
         """
         slider_changed - listener to update table values and widgets when slider is changed
 
-        :param event: event
+        :type event: object
         """
 
         # if not hamilton update the label displaying the slider value

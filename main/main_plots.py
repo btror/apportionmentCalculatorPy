@@ -5,6 +5,10 @@ import numpy as np
 class Plot:
     def __init__(self, original_divisor, modified_divisor, initial_quotas, final_quotas, initial_fair_shares,
                  final_fair_shares, total_initial_fair_shares, lower_boundary, upper_boundary, estimation_history):
+        """
+        init - initialize variables
+        """
+
         self.original_divisor = original_divisor
         self.modified_divisor = modified_divisor
         self.initial_quotas = initial_quotas
@@ -17,6 +21,10 @@ class Plot:
         self.estimation_history = estimation_history
 
     def create_combined_graph(self):
+        """
+        create_combined_graph - creates two graphs (fair shares and divisor algorithm visualization)
+        """
+
         fig, ax = plt.subplots(1, 2, figsize=(10, 4))
 
         # line graph
@@ -54,10 +62,15 @@ class Plot:
         plt.show()
 
     def create_divisor_graph(self):
+        """
+        create_divisor_graph - creates a graph visualizing the algorithm calculating the modified divisor
+        """
+
+        # points_1 - modified divisor list, points_2 - estimated lowest divisor, points_3 - estimated highest divisor
         points_1, points_2, points_3 = self.calculate_plot_points()
         points = [points_1, points_2, points_3]
 
-        fig = plt.figure()
+        # create plots
         ax = plt.axes()
 
         ax.plot(points[0], '-o', color='black', label='modified divisor')
@@ -71,11 +84,16 @@ class Plot:
         plt.show()
 
     def create_fair_share_plot(self):
-        fig = plt.figure()
-        ax = plt.axes()
+        """
+        create_fair_share_plot - creates a bar graph showing fair share allocation per state
+        """
 
+        # initialize lists with one value (0)
         initial_fair_shares = [0]
         final_fair_shares = [0]
+
+        # create plots
+        ax = plt.axes()
 
         for i in range(len(self.initial_fair_shares)):
             initial_fair_shares.append(self.initial_fair_shares[i])
@@ -99,9 +117,6 @@ class Plot:
         """
         calculate_plot_points - creates lists for estimations, lowest, and highest divisors
 
-        :param lower_divisor: lowest estimated divisor
-        :param upper_divisor: highest estimated divisor
-
         :return: points_1 - list of estimations, points_2 - list of lower divisors, points_3 - list of highest divisors
         """
 
@@ -116,5 +131,3 @@ class Plot:
             points_3.append(self.upper_boundary)
 
         return points_1, points_2, points_3
-
-
