@@ -470,10 +470,10 @@ class App:
                 if line_count == 1:
                     self.method = row[0]
                     self.num_seats.set(row[1])
-                    self.original_divisor = row[2]
-                    self.modified_divisor = row[3]
-                    self.lower_boundary = row[4]
-                    self.upper_boundary = row[5]
+                    self.original_divisor = float(row[2])
+                    self.modified_divisor = float(row[3])
+                    self.lower_boundary = float(row[4])
+                    self.upper_boundary = float(row[5])
                 if line_count > 1:
                     x = 1
                     # self.add_state()
