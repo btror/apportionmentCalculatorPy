@@ -92,7 +92,7 @@ class App:
         frame_main.configure(bg=self.frame_background)
 
         # desktop version label
-        Label(frame_main, text='Desktop 1.1.0', bg=self.frame_background, fg=self.widget_foreground) \
+        Label(frame_main, text='Desktop 1.1.1', bg=self.frame_background, fg=self.widget_foreground) \
             .place(x=55, y=20, anchor=CENTER)
 
         # track selected method (default is hamilton)
@@ -503,6 +503,9 @@ class App:
                 self.change_method_adam()
             elif self.method == 'Webster':
                 self.change_method_webster()
+
+            if self.num_seats.get() != '':
+                self.calculate()
 
     def save_csv(self):
         """
@@ -921,6 +924,9 @@ class App:
             self.initial_fair_shares[0].set('-')
             self.final_fair_shares[0].set('-')
             self.populations[0].set('')
+
+            # clear seats field
+            self.num_seats.set('')
 
             # remove slider stuff
             self.slider['state'] = DISABLED
