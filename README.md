@@ -36,6 +36,11 @@ Android (99c without ads): <a href="https://play.google.com/store/apps/details?i
 For more information visit the apps page of my website https://ticerapps.com
 
 # Download
+
+1.1.0
+
+<a href="https://github.com/btror/apportionmentCalculatorPy/releases/download/1.1.0/apportionmentCalculatorPy.exe">Download exe</a>
+
 1.0.1
 
 <a href="https://github.com/btror/apportionmentCalculatorPy/releases/download/1.0.1/apportionmentCalculatorPy.exe">Download exe</a>
