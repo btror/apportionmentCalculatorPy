@@ -92,7 +92,7 @@ class App:
         frame_main.configure(bg=self.frame_background)
 
         # desktop version label
-        Label(frame_main, text='Desktop 1.1.1', bg=self.frame_background, fg=self.widget_foreground) \
+        Label(frame_main, text='Desktop 1.1.2', bg=self.frame_background, fg=self.widget_foreground) \
             .place(x=55, y=20, anchor=CENTER)
 
         # track selected method (default is hamilton)
@@ -306,12 +306,12 @@ class App:
         self.initial_fair_shares.append(self.temp_3)
         self.final_fair_shares.append(self.temp_4)
 
-        self.grid[1][0].grid(row=1, column=0, sticky='news', padx=10)
-        self.grid[1][1].grid(row=1, column=1, sticky='news', padx=10)
-        self.grid[1][2].grid(row=1, column=2, sticky='news', padx=10)
-        self.grid[1][3].grid(row=1, column=3, sticky='news', padx=10)
-        self.grid[1][4].grid(row=1, column=4, sticky='news', padx=10)
-        self.grid[1][5].grid(row=1, column=5, sticky='news', padx=10)
+        self.grid[1][0].grid(row=1, column=0, sticky='news', padx=10, pady=5)
+        self.grid[1][1].grid(row=1, column=1, sticky='news', padx=10, pady=5)
+        self.grid[1][2].grid(row=1, column=2, sticky='news', padx=10, pady=5)
+        self.grid[1][3].grid(row=1, column=3, sticky='news', padx=10, pady=5)
+        self.grid[1][4].grid(row=1, column=4, sticky='news', padx=10, pady=5)
+        self.grid[1][5].grid(row=1, column=5, sticky='news', padx=10, pady=5)
 
         # update widget frames idle tasks to let tkinter calculate widget sizes
         self.frame_widgets.update_idletasks()
@@ -521,7 +521,7 @@ class App:
                        'highest_possible_estimated_divisor', 'state_number', 'population',
                        'initial_quota', 'final_quota', 'initial_fair_share',
                        'final_fair_share']
-            writer = csv.DictWriter(new_file, fieldnames=headers)
+            writer = csv.DictWriter(new_file, fieldnames=headers, lineterminator='\n')
             writer.writeheader()
 
             method = self.clicked.get()
@@ -793,7 +793,7 @@ class App:
 
         # add a new row of widgets to the grid
         list_temp = [Label(self.frame_widgets, text=self.rows - 1, width=10, bg=self.frame_background,
-                           fg=self.widget_foreground),
+                           fg=self.widget_foreground, ),
                      Entry(self.frame_widgets, textvariable=value, width=10, bg=self.frame_background,
                            fg=self.widget_foreground, relief='solid', highlightthickness=1,
                            highlightbackground=self.widget_foreground),
@@ -814,12 +814,12 @@ class App:
         self.grid.append(list_temp)
         self.populations.append(value)
 
-        self.grid[self.rows - 1][0].grid(row=self.rows - 1, column=0, sticky='news', padx=10)
-        self.grid[self.rows - 1][1].grid(row=self.rows - 1, column=1, sticky='news', padx=10)
-        self.grid[self.rows - 1][2].grid(row=self.rows - 1, column=2, sticky='news', padx=10)
-        self.grid[self.rows - 1][3].grid(row=self.rows - 1, column=3, sticky='news', padx=10)
-        self.grid[self.rows - 1][4].grid(row=self.rows - 1, column=4, sticky='news', padx=10)
-        self.grid[self.rows - 1][5].grid(row=self.rows - 1, column=5, sticky='news', padx=10)
+        self.grid[self.rows - 1][0].grid(row=self.rows - 1, column=0, sticky='news', padx=10, pady=5)
+        self.grid[self.rows - 1][1].grid(row=self.rows - 1, column=1, sticky='news', padx=10, pady=5)
+        self.grid[self.rows - 1][2].grid(row=self.rows - 1, column=2, sticky='news', padx=10, pady=5)
+        self.grid[self.rows - 1][3].grid(row=self.rows - 1, column=3, sticky='news', padx=10, pady=5)
+        self.grid[self.rows - 1][4].grid(row=self.rows - 1, column=4, sticky='news', padx=10, pady=5)
+        self.grid[self.rows - 1][5].grid(row=self.rows - 1, column=5, sticky='news', padx=10, pady=5)
 
         # update widget frames idle tasks to calculate widget sizes
         self.frame_widgets.update_idletasks()
@@ -1091,12 +1091,12 @@ class App:
                                 else:
                                     self.message_variable.set('')
 
-                                self.grid[self.rows - 1][0].grid(row=self.rows - 1, column=0, sticky='news', padx=10)
-                                self.grid[self.rows - 1][1].grid(row=self.rows - 1, column=1, sticky='news', padx=10)
-                                self.grid[self.rows - 1][2].grid(row=self.rows - 1, column=2, sticky='news', padx=10)
-                                self.grid[self.rows - 1][3].grid(row=self.rows - 1, column=3, sticky='news', padx=10)
-                                self.grid[self.rows - 1][4].grid(row=self.rows - 1, column=4, sticky='news', padx=10)
-                                self.grid[self.rows - 1][5].grid(row=self.rows - 1, column=5, sticky='news', padx=10)
+                                self.grid[self.rows - 1][0].grid(row=self.rows - 1, column=0, sticky='news', padx=10, pady=5)
+                                self.grid[self.rows - 1][1].grid(row=self.rows - 1, column=1, sticky='news', padx=10, pady=5)
+                                self.grid[self.rows - 1][2].grid(row=self.rows - 1, column=2, sticky='news', padx=10, pady=5)
+                                self.grid[self.rows - 1][3].grid(row=self.rows - 1, column=3, sticky='news', padx=10, pady=5)
+                                self.grid[self.rows - 1][4].grid(row=self.rows - 1, column=4, sticky='news', padx=10, pady=5)
+                                self.grid[self.rows - 1][5].grid(row=self.rows - 1, column=5, sticky='news', padx=10, pady=5)
 
                                 # update widget frames idle tasks to calculate widget sizes
                                 self.frame_widgets.update_idletasks()
