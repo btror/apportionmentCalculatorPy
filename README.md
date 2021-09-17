@@ -38,7 +38,7 @@ You can also display a graph that shows all the estimated divisors guessed until
 
 # Downloads
 
-| 1.1.2 | 1.1.1 | 1.1.0 | 
+| 1.1.2 (latest) | 1.1.1 | 1.1.0 | 
 |-------|-------|-------|
 | <a href="https://github.com/btror/apportionmentCalculatorPy/releases/download/1.1.2/apportionmentCalculatorPy.exe">Download exe</a> | <a href="https://github.com/btror/apportionmentCalculatorPy/releases/download/1.1.1/Apportionment.Calculator.exe">Download exe</a> | <a href="https://github.com/btror/apportionmentCalculatorPy/releases/download/1.1.0/apportionmentCalculatorPy.exe">Download exe</a> |
 | <a href="https://github.com/btror/apportionmentCalculatorPy/archive/refs/tags/1.1.2.zip">Download zip</a> | <a href="https://github.com/btror/apportionmentCalculatorPy/archive/refs/tags/1.1.1.zip">Download zip</a> | <a href="https://github.com/btror/apportionmentCalculatorPy/archive/refs/tags/1.1.0.zip">Download zip</a>
