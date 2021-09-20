@@ -83,6 +83,18 @@ For more information visit the apps page of my website https://ticerapps.com/app
           method = Hamilton(num_seats, states, populations)
           results = method.calculate() -> returns original divisor, modified divisor, original quotas, final quotas, 
                                           initial fair shares, final fair shares, sum of inititial fair shares, 0, 0, 0
+          ```
+          # define parameters
+          num_seats = 15
+          states = 3
+          populations = [2400, 3300, 955]
+            
+          # create object
+          method = Hamilton(num_seats, states, populations)
+            
+          # calculate results
+          results = method.calculate()
+          ```
     
     
     
@@ -107,6 +119,18 @@ For more information visit the apps page of my website https://ticerapps.com/app
           results = method.calculate() -> returns original divisor, modified divisor, original quotas, final quotas, 
                                           initial fair shares, final fair shares, sum of inititial fair shares, 
                                           lower boundary, upper boundary, estimation history
+          ```
+          # define parameters
+          num_seats = 15
+          states = 3
+          populations = [2400, 3300, 955]
+            
+          # create object
+          method = Jefferson(num_seats, states, populations)
+            
+          # calculate results
+          results = method.calculate()
+          ```
     
     
     
@@ -131,6 +155,18 @@ For more information visit the apps page of my website https://ticerapps.com/app
           results = method.calculate() -> returns original divisor, modified divisor, original quotas, final quotas, 
                                           initial fair shares, final fair shares, sum of inititial fair shares, 
                                           lower boundary, upper boundary, estimation history
+          ```
+          # define parameters
+          num_seats = 15
+          states = 3
+          populations = [2400, 3300, 955]
+            
+          # create object
+          method = Adam(num_seats, states, populations)
+            
+          # calculate results
+          results = method.calculate()
+          ```
     
     
     
@@ -155,6 +191,18 @@ For more information visit the apps page of my website https://ticerapps.com/app
           results = method.calculate() -> returns original divisor, modified divisor, original quotas, final quotas, 
                                           initial fair shares, final fair shares, sum of inititial fair shares, 
                                           lower boundary, upper boundary, estimation history
+          ```
+          # define parameters
+          num_seats = 15
+          states = 3
+          populations = [2400, 3300, 955]
+            
+          # create object
+          method = Webster(num_seats, states, populations)
+            
+          # calculate results
+          results = method.calculate()
+          ```
         
     
       
