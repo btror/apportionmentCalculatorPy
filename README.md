@@ -72,21 +72,26 @@ For more information visit the apps page of my website https://ticerapps.com/app
           num_seats: int - number of seats to apportion
           states: int - number of states to apportion seats to
           populations: [float] * states - list of populations per state (list must be same size as number of states)
+    
         functions
           calculate_quotas([0] * states) - calculates the original quotas for each state and initializes a list for 
                                            final quotas
           calculate_fair_shares([0] * states, quotas) - calculates final fair shares and final quotas
           calculate - apportions seats to states, uses calculate_quotas and calculate_fair_shares
+    
         Usage
           method = Hamilton(num_seats, states, populations)
           results = method.calculate() -> returns original divisor, modified divisor, original quotas, final quotas, 
                                           initial fair shares, final fair shares, sum of inititial fair shares, 0, 0, 0
+    
+    
     
       class - Jefferson
         parameters 
           num_seats: int - number of seats to apportion
           states: int - number of states to apportion seats to
           populations: [float] * states - list of populations per state (list must be same size as number of states)
+    
         functions
           calculate_quotas([0] * states) - calculates the original quotas for each state and initializes a list for 
                                            final quotas
@@ -96,17 +101,21 @@ For more information visit the apps page of my website https://ticerapps.com/app
           calculate_lower_boundary(float: divisor) - calculates lowest estimated possible divisor that can be used
           calculate_upper_boundary(float: divisor) - calculates highest estimated possible divisor that can be used
           calculate_plot_points(lower_divisor, upper_divisor) - creates lists of divisors and estimations
+    
         Usage
           method = Jefferson(num_seats, states, populations)
           results = method.calculate() -> returns original divisor, modified divisor, original quotas, final quotas, 
                                           initial fair shares, final fair shares, sum of inititial fair shares, 
                                           lower boundary, upper boundary, estimation history
     
+    
+    
       class - Adam
         parameters 
           num_seats: int - number of seats to apportion
           states: int - number of states to apportion seats to
           populations: [float] * states - list of populations per state (list must be same size as number of states)
+    
         functions
           calculate_quotas([0] * states) - calculates the original quotas for each state and initializes a list for 
                                            final quotas
@@ -116,17 +125,21 @@ For more information visit the apps page of my website https://ticerapps.com/app
           calculate_lower_boundary(float: divisor) - calculates lowest estimated possible divisor that can be used
           calculate_upper_boundary(float: divisor) - calculates highest estimated possible divisor that can be used
           calculate_plot_points(lower_divisor, upper_divisor) - creates lists of divisors and estimations
+    
         Usage
           method = Adam(num_seats, states, populations)
           results = method.calculate() -> returns original divisor, modified divisor, original quotas, final quotas, 
                                           initial fair shares, final fair shares, sum of inititial fair shares, 
                                           lower boundary, upper boundary, estimation history
     
+    
+    
       class - Webster
         parameters 
           num_seats: int - number of seats to apportion
           states: int - number of states to apportion seats to
           populations: [float] * states - list of populations per state (list must be same size as number of states)
+    
         functions
           calculate_quotas([0] * states) - calculates the original quotas for each state and initializes a list for 
                                            final quotas
@@ -136,6 +149,7 @@ For more information visit the apps page of my website https://ticerapps.com/app
           calculate_lower_boundary(float: divisor) - calculates lowest estimated possible divisor that can be used
           calculate_upper_boundary(float: divisor) - calculates highest estimated possible divisor that can be used
           calculate_plot_points(lower_divisor, upper_divisor) - creates lists of divisors and estimations
+    
         Usage
           method = Webster(num_seats, states, populations)
           results = method.calculate() -> returns original divisor, modified divisor, original quotas, final quotas, 
