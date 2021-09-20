@@ -65,7 +65,7 @@ For more information visit the apps page of my website https://ticerapps.com/app
   <details>
     <summary>Methods</summary>
     
-      API
+      Package
     
       class - Hamilton
         parameters 
