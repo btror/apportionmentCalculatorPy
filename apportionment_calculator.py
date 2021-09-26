@@ -52,14 +52,14 @@ class App:
                         self.frame_background = col
                     i += 1
 
-        # track chart and graph settings
-        self.show_chart = IntVar()
-        self.show_graph = IntVar()
-
         # default fonts
         self.font = font.Font(family='Helvetica', size=12, weight='bold')
         self.tiny_font = font.Font(family='Helvetica', size=10, weight='bold')
         self.seats_font = font.Font(family='Helvetica', size=15, weight='bold')
+
+        # track chart and graph settings
+        self.show_chart = IntVar()
+        self.show_graph = IntVar()
 
         # lists to keep track of table (values)
         self.original_quota_values = []

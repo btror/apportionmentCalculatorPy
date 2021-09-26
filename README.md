@@ -224,13 +224,21 @@ Press = to calculate results.
 
 <img src="res/demo_3.JPG" width="685" height="430">
 
-You can use the slider at the bottom to change the divisor to any value that will result in the proper distributions
+Use the slider at the bottom to change the divisor to any value that will result in the proper distributions
 
 <img src="res/demo_4.gif" width="685" height="430">
 
-You can also display a graph that shows all the estimated divisors guessed until a proper divisor is found and a bar graph showing the fair shares.
+Display a graph that shows all the estimated divisors guessed until a proper divisor is found and a bar graph showing the fair shares.
 
 <img src="res/demo_5.gif" width="685" height="460">
+
+Save and export data to .csv or .xlsx file
+
+<img src="res/demo_6.gif" width="685" height="460">
+
+Change themes
+
+<img src="res/demo_7.gif" width="685" height="460">
 
 # Downloads
 
