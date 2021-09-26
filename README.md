@@ -234,11 +234,11 @@ Display a graph that shows all the estimated divisors guessed until a proper div
 
 Save and export data to .csv or .xlsx file
 
-<img src="res/demo_6.gif" width="795" height="500">
+<img src="res/demo_6.gif" width="685" height="380">
 
 Change themes
 
-<img src="res/demo_7.gif" width="795" height="500">
+<img src="res/demo_7.gif" width="685" height="380">
 
 # Downloads
 
