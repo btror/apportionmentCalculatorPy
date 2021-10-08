@@ -6,12 +6,12 @@ Dessktop icon (1.0.1)
 
 <img src="res/icon.png" width="300" height="300" >
 
-# Mobile app implementation:
+# Mobile app implementation
 Android (free with ads): <a href="https://play.google.com/store/apps/details?id=com.brandon.apportionmentcalculator&hl=en_US&gl=US">view</a> on Play Store
 
 Android (99c without ads): <a href="https://play.google.com/store/apps/details?id=com.brandon.apportionmentcalculatorpro&hl=en_US&gl=US">view</a> on Play Store
 
-# Other implementations:
+# Other implementations
 .NET version: <a href="https://github.com/btror/apportionmentCalculatorCS">view</a> repository
 
 # Website
