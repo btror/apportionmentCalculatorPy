@@ -12,6 +12,8 @@ Android (free with ads): <a href="https://play.google.com/store/apps/details?id=
 Android (99c without ads): <a href="https://play.google.com/store/apps/details?id=com.brandon.apportionmentcalculatorpro&hl=en_US&gl=US">view</a> on Play Store
 
 # Other implementations
+Web version: access webpage <a href="https://btror.github.io/apportionment.github.io/">here</a>
+
 .NET version: <a href="https://github.com/btror/apportionmentCalculatorCS">view</a> repository
 
 # Website
